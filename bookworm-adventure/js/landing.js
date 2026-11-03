@@ -20,3 +20,205 @@ modePicker.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !modePicker.hidden) closeModes();
 });
+
+const heroVisual = document.querySelector(".hero-visual");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function animateWilbur() {
+  const gsap = window.gsap;
+  if (!heroVisual || !gsap || reduceMotion.matches) return;
+
+  heroVisual.classList.add("motion-ready");
+
+  const head = heroVisual.querySelector(".worm-head");
+  const tail = heroVisual.querySelector(".worm-tail");
+  const segments = heroVisual.querySelectorAll(".worm-segment");
+  const antennae = heroVisual.querySelector(".worm-antennae");
+  const antennaTips = heroVisual.querySelectorAll(".antenna-tip");
+  const book = heroVisual.querySelector(".worm-book-float");
+  const shadow = heroVisual.querySelector(".worm-shadow");
+  const eyelids = heroVisual.querySelectorAll(".worm-eyelid");
+  const lashes = heroVisual.querySelectorAll(".worm-lash");
+  const pupils = [...heroVisual.querySelectorAll(".worm-eye")].map((eye) =>
+    eye.querySelector("circle:nth-of-type(2)"),
+  );
+
+  gsap.set(eyelids, { scaleY: 0, transformOrigin: "50% 0%" });
+  gsap.set(lashes, { opacity: 0 });
+
+  gsap.to(head, {
+    y: -3,
+    rotation: 1.4,
+    duration: 2.1,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    transformOrigin: "54% 92%",
+  });
+  gsap.to(tail, {
+    y: -2,
+    rotation: -1.1,
+    duration: 1.7,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    transformOrigin: "75% 82%",
+  });
+  gsap.to(segments, {
+    y: -3,
+    duration: 1.05,
+    ease: "sine.inOut",
+    stagger: 0.18,
+    repeat: -1,
+    yoyo: true,
+  });
+  gsap.to(antennae, {
+    rotation: 4,
+    duration: 1.15,
+    ease: "sine.inOut",
+    transformOrigin: "50% 100%",
+    repeat: -1,
+    yoyo: true,
+  });
+  gsap.to(antennaTips, {
+    scale: 1.16,
+    duration: 0.72,
+    ease: "sine.inOut",
+    stagger: 0.18,
+    repeat: -1,
+    yoyo: true,
+    transformOrigin: "50% 50%",
+  });
+  gsap.to(book, {
+    y: -3,
+    rotation: 1.8,
+    duration: 1.6,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    transformOrigin: "52% 72%",
+  });
+  gsap.to(shadow, {
+    scaleX: 0.92,
+    opacity: 0.34,
+    duration: 2.1,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    transformOrigin: "50% 50%",
+  });
+  gsap.to(pupils, {
+    x: 1.3,
+    y: -0.8,
+    duration: 2.4,
+    ease: "sine.inOut",
+    stagger: 0.06,
+    repeat: -1,
+    yoyo: true,
+  });
+  gsap.to(heroVisual.querySelectorAll(".orbit-one, .orbit-three"), {
+    rotation: "+=360",
+    duration: 48,
+    ease: "none",
+    repeat: -1,
+  });
+  gsap.to(heroVisual.querySelector(".orbit-two"), {
+    rotation: "-=360",
+    duration: 64,
+    ease: "none",
+    repeat: -1,
+  });
+  gsap.to(heroVisual.querySelectorAll(".spark"), {
+    opacity: 0.42,
+    scale: 0.78,
+    duration: 1.35,
+    stagger: 0.28,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+  });
+  gsap.fromTo(
+    heroVisual,
+    { opacity: 0, scale: 0.94, y: 16 },
+    {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 1.05,
+      ease: "power3.out",
+      clearProps: "opacity,scale,y",
+    },
+  );
+  gsap.fromTo(
+    document.querySelectorAll(".hero-copy > *"),
+    { opacity: 0, y: 15 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.65,
+      stagger: 0.11,
+      delay: 0.08,
+      ease: "power2.out",
+      clearProps: "opacity,y",
+    },
+  );
+  gsap.fromTo(
+    heroVisual.querySelectorAll(".hero-art-badge, .scene-chip"),
+    { opacity: 0, y: 11 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.55,
+      stagger: 0.12,
+      delay: 0.5,
+      ease: "power2.out",
+      clearProps: "opacity,y",
+    },
+  );
+
+  let blinkTimer;
+  const blink = () => {
+    if (document.hidden || reduceMotion.matches) {
+      blinkTimer = window.setTimeout(blink, 1000);
+      return;
+    }
+
+    gsap.to(eyelids, {
+      scaleY: 1,
+      duration: 0.085,
+      stagger: 0.025,
+      ease: "power2.in",
+      onComplete: () => {
+        gsap.to(eyelids, {
+          scaleY: 0,
+          duration: 0.12,
+          stagger: 0.025,
+          ease: "power2.out",
+        });
+      },
+    });
+    gsap.fromTo(
+      lashes,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: 0.075,
+        stagger: 0.025,
+        repeat: 1,
+        yoyo: true,
+      },
+    );
+    blinkTimer = window.setTimeout(blink, 2300 + Math.random() * 2600);
+  };
+
+  blinkTimer = window.setTimeout(blink, 900);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      window.clearTimeout(blinkTimer);
+    } else {
+      blinkTimer = window.setTimeout(blink, 600 + Math.random() * 900);
+    }
+  });
+}
+
+animateWilbur();

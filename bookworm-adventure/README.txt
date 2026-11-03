@@ -9,5 +9,5 @@ Use the game menu to return home or toggle the original synthesized battle music
 Open the game menu's Worm skin marketplace to buy and equip skins with coins earned from battles.
 The marketplace has 33 skins: 12 Normal, 8 Rare, 6 Epic, and 7 Legendary.
 Every skin has its own face design; Epic and Legendary skins also carry animated, skin-matched premium gear.
-GSAP is loaded from jsDelivr for animated skins and Legendary attack effects; a browser-animation fallback is used if it is unavailable.
+GSAP is loaded from jsDelivr for the animated landing-page mascot, animated skins, and Legendary attack effects; CSS/browser-animation fallbacks are used when it is unavailable.
 Or serve locally:  python3 -m http.server 8000   then visit http://localhost:8000
