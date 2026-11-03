@@ -1517,6 +1517,12 @@ a.mode-card:focus-visible {
   --shadow: rgba(1, 7, 14, 0.52);
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   background:
     radial-gradient(
@@ -1530,7 +1536,7 @@ body {
       transparent 45%
     ),
     linear-gradient(155deg, #102634 0%, #0b1825 52%, #141327 100%);
-  font-family: "Baloo 2", system-ui, sans-serif;
+  font-family: "DM Sans", "Baloo 2", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -2228,11 +2234,14 @@ a.mode-card:hover .mode-arrow {
   }
 
   .landing-hero {
+    grid-template-columns: 1fr;
     gap: 24px;
+    min-height: 0;
     padding: 58px 0 48px;
   }
 
   .hero-art {
+    width: 100%;
     border-radius: 45%;
   }
 
