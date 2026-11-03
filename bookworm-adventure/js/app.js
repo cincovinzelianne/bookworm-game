@@ -1,0 +1,1579 @@
+const WORDS = new Set(
+  `able acid aged also area army away baby back ball band bank base bath bear beat been bell belt best bill bird blow blue boat body bomb bond bone book boot born boss both bowl bulk burn bush busy cafe cake call calm came camp card care cart case cash cast cell chat chip city clay club coal coat code cold come cook cool cope copy core corn cost crew crop dark data date dawn days dead deal dear debt deep deer desk dial diet dirt disk dock does dome done door dose down draw drew drop drum dual duke dust duty each earn ease east easy edge else even ever evil exit face fact fail fair fall farm fast fate fear feed feel feet fell felt file fill film find fine fire firm fish five flat flew flow folk food foot ford form fort four free from fuel full fund gain game gate gave gear gift girl give glad goal goes gold golf gone good grab gray grew grid grow gulf hair half hall hand hang hard harm hate have head hear heat held hell help here hero hide high hill hold hole holy home hope horn host hour huge hunt hurt idea inch into iron item jack join joke jump jury just keen keep kept kick kill kind king knee knew know lack lady laid lake land lane last late lead left less life lift like line link lion list live load loan lock logo long look lord lose loss lost loud love luck made mail main make male many mark mass math meal mean meat meet menu mild mile milk mill mind mine miss mode mood moon more most move much must myth name navy near neck need news next nice nine node none noon nose note okay once only onto open oral over pace pack page paid pain pair palm park part pass past path peak pick pile pine pink pipe plan play plot plug plus poem pole poll pond pool poor port post pull pure push race rail rain rank rare rate read real rear rely rent rest rice rich ride ring rise risk road rock role roll roof room root rope rose rule rush safe sail sake sale salt same sand save seat seed seek seem seen self sell send sent ship shop shot show shut sick side sign silk sing sink site size skin slip slow snow soft soil sold sole some song soon sort soul soup spot star stay stem step stop such suit sure swim tail take tale talk tall tank tape task team tear tell tend term test text than that them then they thin this thus tide tied till time tiny tire told toll tone took tool tops tour town tree trip true tube tune turn twin type unit upon used user vast very view vote wage wait wake walk wall want warm wash wave ways weak wear week well went were west what when whom wide wife wild will wind wine wing wire wise wish with wolf wood word wore work worm wrap yard yeah year your zero zone
+about above acorn actor adult after again agent agree ahead alarm album alert alike alive allow alone along alter among angel anger angle angry ankle apple apply arena argue arise armor array arrow aside asset avoid awake award aware badge baker basic basin batch beach beard beast begin being belly below bench berry birth black blade blame blank blast blaze bleed blend bless blind block blood bloom blown board boast bonus boost booth bound brain brake brand brave bread break breed brick bride brief bring broad broke brook brown brush build built bunch burst cabin cable camel candy canoe carry carve catch cause chain chair chalk charm chart chase cheap check cheek cheer chess chest chief child chill chime choir chose civil claim class clean clear clerk click cliff climb clock close cloth cloud clown coach coast color comet comic coral couch could count court cover crack craft crane crash crawl crazy cream crest crime crisp cross crowd crown crumb crush curve cycle daily dance dealt death debut decay delay dense depth diary digit dirty ditch dodge doubt dough dozen draft drain drama drank drawn dream dress dried drift drill drink drive drove eager eagle early earth eight elbow elder elect elite empty enemy enjoy enter equal error essay event every exact exist extra fable faint fairy faith false fancy fatal feast fence fever fiber field fifth fifty fight final first flame flash fleet flesh flight float flock flood floor flour fluid flute focus force forge forth forty forum found frame fresh front frost fruit fully giant given glass globe glory glove going grace grade grain grand grant grape graph grasp grass grave great green greet grief grill grind groan gross group grove grown guard guess guest guide habit happy harsh haste heart heavy hedge hello hence honey honor horse hotel house human humor hurry ideal image imply index inner input irony ivory jelly jewel joint judge juice knife knock known label labor large laser later laugh layer learn lease least leave legal lemon level light limit linen liver lobby local lodge logic loose lover lower loyal lucky lunch magic major maker maple march match maybe mayor meant medal media mercy merge merit metal meter might minor mixed model money month moral motor mount mouse mouth movie music naive nasty naval nerve never newly night noble noise north novel nurse ocean offer often olive onion opera orbit order other otter ought outer owner paint panel paper party pasta patch pause peace pearl phase phone photo piano piece pilot pitch pizza place plain plane plant plate plaza point polar porch pound power press price pride prime print prize proof proud prove pulse punch pupil queen query quest quick quiet quite quote radar radio raise rally ranch range rapid ratio reach react ready realm rebel refer relax reply rider ridge rifle right rigid rival river roast robin robot rocky rough round route royal rural sadly saint salad sauce scale scare scene scent scope score scout screw sense serve seven shade shadow shake shall shape share sharp sheep sheet shelf shell shift shine shirt shock shoot shore short shout sight silly since sixth skill skirt sleep slice slide slope small smart smell smile smoke snake solid solve sorry sound south space spare spark speak speed spell spend spice spine spoke spoon sport spray squad stack staff stage stair stake stamp stand stare start state steak steal steam steel steep stick stiff still stock stone stood store storm story stove straw strip stuck study stuff style sugar suite sunny super surge swamp swear sweat sweep sweet swept swift swing sword table taken taste teach teeth thank theme there thick thing think third those three threw throw thumb tiger tight timer tired title toast today token tooth topic total touch tough tower toxic trace track trade trail train trait treat trend trial tribe trick tried troop truck truly trunk trust truth twice twist ultra uncle under union unite unity until upper upset urban usage usual valid value vapor vault verse video vigor villa vines vinyl viral visit vital vivid vocal voice waste watch water weary weave weigh weird whale wheat wheel where which while white whole whose widow width witch woman world worry worse worst worth would wound woven wrist write wrong yield young youth zebra
+bridge candle castle garden golden dragon wizard forest knight silver winter summer spring magic rabbit turtle pocket basket button butter cookie cotton flower hunter island jungle kitten ladder lizard marble monkey needle orange pepper pillow planet pirate rocket school spider street tunnel violin window wonder yellow zipper author battle beauty belong bottle bright broken button chance change circle cursor dinner doctor double family famous father finger flight friend golden hammer happen heaven hidden hunger insect letter listen little lovely modern moment mother nature number object orange outlet people planet pretty pursue quiet reader remain remind repair rescue return reward rhythm sketch spirit sprout stream strike sunset system talent thirst thunder travel unique valley wisdom writer adventure library monster stories journey mystery crystal pattern thought fiction lantern chapter pages paper reading wizards treasure wander whisper shadows`.split(
+    /\s+/,
+  ),
+);
+const PTS = {
+  E: 1,
+  A: 1,
+  I: 1,
+  O: 1,
+  N: 1,
+  R: 1,
+  T: 1,
+  L: 1,
+  S: 1,
+  U: 1,
+  D: 2,
+  G: 2,
+  B: 3,
+  C: 3,
+  M: 3,
+  P: 3,
+  F: 4,
+  H: 4,
+  V: 4,
+  W: 4,
+  Y: 4,
+  K: 5,
+  J: 8,
+  X: 8,
+  Z: 10,
+};
+const BAG =
+  "EEEEEEEEEEEEAAAAAAAAAIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXZ";
+const VOW = "AEIOU";
+const hero = `<svg viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="60" ry="6" fill="#0006"/>
+<g class="seg" style="animation-delay:.6s"><circle cx="28" cy="122" r="22" fill="#7bd35c"/></g><g class="seg" style="animation-delay:.4s"><circle cx="58" cy="118" r="25" fill="#8fe06c"/></g><g class="seg" style="animation-delay:.2s"><circle cx="92" cy="104" r="30" fill="#a4ee7a"/></g>
+<g class="seg"><circle cx="104" cy="62" r="36" fill="#b9f78d"/>
+<path d="M92 28q-6-18 8-20M112 28q4-16 18-14" stroke="#5aa83c" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="100" cy="8" r="5" fill="#ffd23f"/><circle cx="130" cy="14" r="5" fill="#ffd23f"/></g>
+<!--skin-item--><!--skin-face--></svg>`;
+const SKIN_PALETTES = [
+  ["garden", "Garden", 0, "#b9f78d", "#a4ee7a", "#7bd35c", "#5aa83c"],
+  ["moonbeam", "Moonbeam", 30, "#b2dcff", "#90c4f1", "#6092c9", "#4778ae"],
+  ["berry", "Berry", 45, "#ffabc1", "#e87ba0", "#b44772", "#92375c"],
+  ["ocean", "Ocean", 60, "#8be7d5", "#4cc9c0", "#258b91", "#176970"],
+  ["sunfire", "Sunfire", 75, "#ffdb78", "#ffb94f", "#d4742e", "#ac5424"],
+  ["lavender", "Lavender", 35, "#d5b5ff", "#b68ce8", "#8458bd", "#654092"],
+  ["mint", "Mint", 40, "#b6f7ce", "#7bdfa4", "#42a972", "#2c8052"],
+  ["rose", "Rose", 45, "#ffc4bc", "#f28e86", "#ce5a61", "#a8404b"],
+  ["cocoa", "Cocoa", 50, "#d9b38b", "#bb8b63", "#885d42", "#68432e"],
+  ["sky", "Sky", 55, "#c2eeff", "#7dd3ef", "#3d9fc6", "#287596"],
+  ["lemon", "Lemon", 60, "#fff39b", "#e9d45d", "#baa537", "#87782b"],
+  ["lilac", "Lilac", 65, "#f2c5ff", "#d393ec", "#a553bd", "#793a91"],
+];
+const RARE_SKINS = [
+  [
+    "starlight",
+    "Starlight",
+    130,
+    "#c4d2ff",
+    "#8ba6f5",
+    "#6175cb",
+    "#45549b",
+    "stars",
+  ],
+  [
+    "mosskeeper",
+    "Mosskeeper",
+    145,
+    "#d5e78a",
+    "#a4c55a",
+    "#718d36",
+    "#4e6727",
+    "leaves",
+  ],
+  [
+    "candyfloss",
+    "Candyfloss",
+    160,
+    "#ffc3e7",
+    "#f18acb",
+    "#c65caa",
+    "#984183",
+    "freckles",
+  ],
+  [
+    "frostbite",
+    "Frostbite",
+    175,
+    "#ddffff",
+    "#94e6e9",
+    "#51b5c5",
+    "#348493",
+    "ice",
+  ],
+  [
+    "copperleaf",
+    "Copperleaf",
+    190,
+    "#ffd095",
+    "#e79a56",
+    "#b76536",
+    "#854425",
+    "scales",
+  ],
+  [
+    "nightink",
+    "Night Ink",
+    205,
+    "#a9a8d7",
+    "#77759f",
+    "#504c78",
+    "#393550",
+    "glasses",
+  ],
+  [
+    "meadow",
+    "Meadow",
+    220,
+    "#e5f591",
+    "#b7d85d",
+    "#7aa744",
+    "#567832",
+    "blossoms",
+  ],
+  [
+    "tidepool",
+    "Tidepool",
+    235,
+    "#9ef1e8",
+    "#5dcbbb",
+    "#359789",
+    "#246c63",
+    "bubbles",
+  ],
+];
+const EPIC_SKINS = [
+  [
+    "dragonling",
+    "Dragonling",
+    350,
+    "#ffaf76",
+    "#ed7148",
+    "#bd4537",
+    "#87302d",
+    "dragon",
+  ],
+  [
+    "royalreader",
+    "Royal Reader",
+    380,
+    "#ffe88f",
+    "#e9bd50",
+    "#b88634",
+    "#805b26",
+    "crown",
+  ],
+  [
+    "starweaver",
+    "Starweaver",
+    410,
+    "#e8c4ff",
+    "#ba88e8",
+    "#8555c1",
+    "#5b398e",
+    "wizard",
+  ],
+  [
+    "shellguard",
+    "Shellguard",
+    440,
+    "#d8d1bd",
+    "#aaa38d",
+    "#777360",
+    "#514f43",
+    "armor",
+  ],
+  [
+    "dreamwing",
+    "Dreamwing",
+    470,
+    "#ffc7e7",
+    "#ed9ed3",
+    "#ba70ab",
+    "#84517e",
+    "wings",
+  ],
+  [
+    "aurora",
+    "Aurora",
+    500,
+    "#baffec",
+    "#74dbc1",
+    "#439b96",
+    "#2b6b72",
+    "aurora",
+  ],
+];
+const LEGENDARY_SKINS = [
+  [
+    "phoenix",
+    "Phoenix Reborn",
+    900,
+    "#fff0a1",
+    "#ff9d45",
+    "#e54c38",
+    "#a92e43",
+    "phoenix",
+    "inferno",
+  ],
+  [
+    "celestial",
+    "Celestial",
+    1050,
+    "#f6d5ff",
+    "#ce9cff",
+    "#8b64dd",
+    "#5539a2",
+    "celestial",
+    "nova",
+  ],
+  [
+    "stormcaller",
+    "Stormcaller",
+    1200,
+    "#d2f7ff",
+    "#78d8ec",
+    "#388ecc",
+    "#245795",
+    "storm",
+    "thunder",
+  ],
+  [
+    "verdantking",
+    "Verdant King",
+    1350,
+    "#eaff9c",
+    "#9bdd61",
+    "#57a64b",
+    "#337442",
+    "verdant",
+    "vine",
+  ],
+  [
+    "voidwalker",
+    "Voidwalker",
+    1500,
+    "#d4c8ee",
+    "#9888bd",
+    "#5b4b82",
+    "#342c54",
+    "void",
+    "rift",
+  ],
+  [
+    "starlord",
+    "Star Lord",
+    1700,
+    "#fff2ad",
+    "#e8bd62",
+    "#ac793f",
+    "#704b33",
+    "starlord",
+    "constellation",
+  ],
+  [
+    "timekeeper",
+    "Timekeeper",
+    1900,
+    "#c3fff4",
+    "#78d9cb",
+    "#428f9d",
+    "#2b5b79",
+    "timekeeper",
+    "chronosphere",
+  ],
+];
+const SKIN_ACCESSORIES = {
+  stars: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="m75 60 4 9 10 1-8 7 2 10-8-5-8 5 2-10-8-7 10-1z"/><path d="m133 88 3 6 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z"/></g>`,
+  leaves: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="M75 41q-19-24-25-3 14 12 25 3zm6-1q8-30 22-17-2 17-22 17zm-12 8q-28-14-29 5 17 10 29-5z"/></g>`,
+  freckles: `<g class="skin-accessory" fill="${"${accent}"}"><circle cx="78" cy="69" r="3"/><circle cx="84" cy="74" r="2"/><circle cx="76" cy="79" r="2"/><circle cx="132" cy="69" r="3"/><circle cx="138" cy="74" r="2"/><circle cx="130" cy="79" r="2"/></g>`,
+  ice: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="m80 51 9 13-9 13-9-13zm57 0 9 13-9 13-9-13z"/><path d="m107 26 6 9-6 9-6-9z"/></g>`,
+  scales: `<g class="skin-accessory" fill="none" stroke="${"${accent}"}" stroke-width="3"><path d="M82 89q7 8 14 0m-17 8q7 8 14 0m22-8q7 8 14 0m-17 8q7 8 14 0"/></g>`,
+  glasses: `<g class="skin-accessory" fill="none" stroke="${"${accent}"}" stroke-width="4"><circle cx="92" cy="58" r="14"/><circle cx="118" cy="58" r="14"/><path d="M106 58h-2"/></g>`,
+  blossoms: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="M77 46q-9-10 0-14 8 4 0 14 11-9 14 0-3 9-14 0 8 12-1 14-8-4 1-14-11 9-14 0 3-9 14 0zm59 0q-9-10 0-14 8 4 0 14 11-9 14 0-3 9-14 0 8 12-1 14-8-4 1-14-11 9-14 0 3-9 14 0z"/></g>`,
+  bubbles: `<g class="skin-accessory skin-float" fill="none" stroke="${"${accent}"}" stroke-width="3"><circle cx="77" cy="67" r="7"/><circle cx="138" cy="69" r="5"/><circle cx="73" cy="87" r="3"/><circle cx="143" cy="87" r="3"/></g>`,
+  dragon: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="M79 40 66 8l28 18 10-17 9 19 24-17-9 37q-25-13-49-8z"/><path d="m79 97 14 9-13 8 14 9-18 10-5-18z"/></g>`,
+  crown: `<g class="skin-accessory skin-float" fill="${"${accent}"}" stroke="#6b471a" stroke-width="2"><path d="m72 43 6-25 16 17 12-25 13 25 18-17 4 30z"/><circle cx="105" cy="23" r="4" fill="#ff637d"/></g>`,
+  wizard: `<g class="skin-accessory skin-float" fill="${"${accent}"}" stroke="#59367e" stroke-width="2"><path d="m70 47 30-42 32 43q-30-10-62-1z"/><path d="M68 45q32-8 67 2l-3 10H70z"/><path d="m99 26 4 8 9 1-7 6 2 8-8-5-7 5 2-8-7-6 9-1z" fill="#fff1a1"/></g>`,
+  armor: `<g class="skin-accessory" fill="${"${accent}"}" stroke="#f1dfae" stroke-width="3"><path d="M58 103 43 112v14l19 8 11-17zm70 0 15 9v14l-19 8-11-17z"/><path d="m104 109 10 8-10 8-10-8z"/></g>`,
+  wings: `<g class="skin-accessory skin-wings" fill="${"${accent}"}" fill-opacity=".72" stroke="#fff1fa" stroke-width="2"><path d="M77 91Q45 57 39 85q5 19 32 25-32 2-26 20 17 4 34-13z"/><path d="M133 91q32-34 38-6-5 19-32 25 32 2 26 20-17 4-32-13z"/></g>`,
+  aurora: `<g class="skin-accessory skin-float" fill="none" stroke="${"${accent}"}" stroke-width="5" opacity=".8"><path d="M73 40q25-35 45 0t45 0"/><path d="M68 49q25-30 48 0t47 0" opacity=".55"/></g>`,
+  phoenix: `<g class="skin-accessory skin-flame" fill="${"${accent}"}"><path d="M76 48Q49 12 82 0q-5 18 9 20Q90 2 113-5q-8 28 17 38 7-15 18-18-6 25-23 38-27-15-49-5z"/><path d="M64 91Q35 75 28 99q18-3 29 15m74-23q29-16 36 8-18-3-29 15" opacity=".82"/></g>`,
+  celestial: `<g class="skin-accessory skin-float" fill="none" stroke="${"${accent}"}" stroke-width="3"><ellipse cx="104" cy="64" rx="57" ry="25" transform="rotate(-24 104 64)"/><ellipse cx="104" cy="64" rx="59" ry="29" transform="rotate(32 104 64)" opacity=".55"/><circle cx="153" cy="38" r="5" fill="#fff3ac"/></g>`,
+  storm: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="m92 3-28 43h19l-9 29 38-48H92z"/><path d="M73 102q-15 17 0 29m65-29q15 17 0 29" fill="none" stroke="${"${accent}"}" stroke-width="5"/></g>`,
+  verdant: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="M70 45Q45 18 62 11q12 4 12 21 3-28 19-22 8 14-11 32 26-18 34-3-2 17-33 15z"/><path d="M72 87q-24 8-10 26 16-8 10-26m58 0q24 8 10 26-16-8-10-26" stroke="#d7ff98" stroke-width="3"/></g>`,
+  void: `<g class="skin-accessory skin-float" fill="none" stroke="${"${accent}"}" stroke-width="4"><circle cx="105" cy="62" r="62"/><circle cx="105" cy="62" r="51" stroke-dasharray="3 8"/><path d="m104 5 7 14-7 14-7-14z" fill="#fff"/></g>`,
+  starlord: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="M76 42 91 5l13 31 25-28-4 39q-25-9-49-5z"/><path d="m147 85 5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2z"/><circle cx="77" cy="89" r="5"/></g>`,
+  timekeeper: `<g class="skin-accessory skin-float" fill="none" stroke="${"${accent}"}" stroke-width="4"><circle cx="105" cy="62" r="58"/><circle cx="105" cy="62" r="46"/><path d="M105 30v33l23 13M74 24l-8-8m72 8 8-8"/></g>`,
+};
+const SKIN_FACE_CONFIG = {
+  garden: ["round", "freckles", "smile", "#315e32"],
+  moonbeam: ["sleepy", "crescent", "smirk", "#28436f"],
+  berry: ["lashes", "blush", "fangs", "#792b52"],
+  ocean: ["goggles", "bubbles", "grin", "#164f59"],
+  sunfire: ["angry", "lightning", "fangs", "#783b1d"],
+  lavender: ["sparkle", "diamonds", "open", "#573177"],
+  mint: ["wink", "leaf", "smile", "#1d5e43"],
+  rose: ["heart", "freckles", "pout", "#802e42"],
+  cocoa: ["monocle", "whiskers", "smirk", "#513522"],
+  sky: ["wide", "stars", "grin", "#245978"],
+  lemon: ["spiral", "dots", "open", "#706219"],
+  lilac: ["star", "cheek-stars", "smile", "#632774"],
+  starlight: ["star", "constellation", "smirk", "#303f88"],
+  mosskeeper: ["sleepy", "leaf", "grin", "#3f5320"],
+  candyfloss: ["heart", "blush", "tongue", "#842e70"],
+  frostbite: ["slit", "ice", "fangs", "#1e6677"],
+  copperleaf: ["monocle", "scales", "smirk", "#743b1f"],
+  nightink: ["mask", "scar", "pout", "#29253f"],
+  meadow: ["lashes", "blossoms", "smile", "#506e27"],
+  tidepool: ["cyclops", "bubbles", "open", "#175e57"],
+  dragonling: ["slit", "scales", "fangs", "#6a2925"],
+  royalreader: ["monocle", "crown-jewel", "smirk", "#69491c"],
+  starweaver: ["sparkle", "runes", "open", "#553181"],
+  shellguard: ["goggles", "armor-marks", "grin", "#484638"],
+  dreamwing: ["lashes", "teardrops", "smile", "#713f6a"],
+  aurora: ["wide", "aurora", "pout", "#205d65"],
+  phoenix: ["angry", "flame-marks", "fangs", "#7d2527"],
+  celestial: ["star", "constellation", "smile", "#493185"],
+  stormcaller: ["lightning-eyes", "lightning", "open", "#1c477c"],
+  verdantking: ["sleepy", "vine", "smirk", "#2c6639"],
+  voidwalker: ["spiral", "void-marks", "fangs", "#282143"],
+  starlord: ["goggles", "crown-jewel", "grin", "#654222"],
+  timekeeper: ["monocle", "clock-marks", "smile", "#20485d"],
+};
+const FACE_EYES = {
+  round: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2.5"><ellipse cx="92" cy="58" rx="9" ry="11" fill="#fff"/><ellipse cx="118" cy="58" rx="9" ry="11" fill="#fff"/><circle cx="94" cy="59" r="4.5" fill="${pupil}"/><circle cx="120" cy="59" r="4.5" fill="${pupil}"/><path d="M102 57h5" fill="none" stroke="${accent}" stroke-width="4" stroke-linecap="round"/></g><circle cx="93" cy="56" r="2" fill="#fff"/><circle cx="119" cy="56" r="2" fill="#fff"/>`,
+  sleepy: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2.5"><ellipse cx="92" cy="60" rx="9" ry="8" fill="#fff"/><ellipse cx="118" cy="60" rx="9" ry="8" fill="#fff"/><circle cx="94" cy="61" r="4" fill="${pupil}"/><circle cx="120" cy="61" r="4" fill="${pupil}"/><path d="M83 57q9-8 18 0m8 0q9-8 18 0" fill="${accent}" stroke-linecap="round"/></g>`,
+  sparkle: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2"><ellipse cx="92" cy="58" rx="10" ry="12" fill="#fff"/><ellipse cx="118" cy="58" rx="10" ry="12" fill="#fff"/><path d="m92 52 2 4 4 2-4 2-2 4-2-4-4-2 4-2zm26 0 2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="${pupil}"/></g><circle cx="92" cy="58" r="1.5" fill="#fff"/><circle cx="118" cy="58" r="1.5" fill="#fff"/>`,
+  slit: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2.5"><ellipse cx="92" cy="58" rx="9" ry="10" fill="#fff"/><ellipse cx="118" cy="58" rx="9" ry="10" fill="#fff"/><ellipse cx="94" cy="59" rx="2.5" ry="7" fill="${pupil}"/><ellipse cx="120" cy="59" rx="2.5" ry="7" fill="${pupil}"/><path d="M84 49 91 45m21 4 7-4" stroke="${accent}" stroke-width="3" stroke-linecap="round"/></g>`,
+  heart: (accent, pupil) =>
+    `<path d="M92 68 82 59q-7-8 1-13 6-3 9 4 4-7 10-4 8 5 1 13zm26 0-10-9q-7-8 1-13 6-3 9 4 4-7 10-4 8 5 1 13z" fill="${pupil}" stroke="#3a1f0a" stroke-width="2"/><circle cx="90" cy="53" r="2" fill="#fff"/><circle cx="116" cy="53" r="2" fill="#fff"/>`,
+  cyclops: (accent, pupil) =>
+    `<ellipse cx="105" cy="57" rx="14" ry="17" fill="#fff" stroke="#3a1f0a" stroke-width="3"/><ellipse cx="108" cy="59" rx="6" ry="8" fill="${pupil}"/><circle cx="106" cy="55" r="3" fill="#fff"/><path d="M91 39q14-11 28 0" fill="none" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>`,
+  monocle: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2"><ellipse cx="92" cy="58" rx="8" ry="10" fill="#fff"/><ellipse cx="118" cy="58" rx="8" ry="10" fill="#fff"/><circle cx="94" cy="59" r="4" fill="${pupil}"/><circle cx="120" cy="59" r="4" fill="${pupil}"/></g><circle cx="118" cy="58" r="14" fill="none" stroke="#f8d67a" stroke-width="3"/><path d="m127 69 5 8" stroke="#f8d67a" stroke-width="2"/>`,
+  goggles: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2"><circle cx="92" cy="58" r="10" fill="#fff"/><circle cx="118" cy="58" r="10" fill="#fff"/><circle cx="94" cy="59" r="4.5" fill="${pupil}"/><circle cx="120" cy="59" r="4.5" fill="${pupil}"/></g><g fill="none" stroke="${accent}" stroke-width="4"><circle cx="92" cy="58" r="14"/><circle cx="118" cy="58" r="14"/><path d="M106 57h-2M78 56l-5-3m59 3 6-3"/></g>`,
+  lashes: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2.5"><ellipse cx="92" cy="58" rx="9" ry="11" fill="#fff"/><ellipse cx="118" cy="58" rx="9" ry="11" fill="#fff"/><circle cx="94" cy="60" r="4" fill="${pupil}"/><circle cx="120" cy="60" r="4" fill="${pupil}"/><path d="m85 49-4-5m9 3-1-6m13 8 4-5m9 0-1-6m9 7 4-5" fill="none" stroke="${accent}" stroke-width="3" stroke-linecap="round"/></g>`,
+  mask: (accent, pupil) =>
+    `<path d="M77 50q27-18 55 0l-4 22q-24-9-47 0z" fill="${accent}" opacity=".72"/><g stroke="#271e35" stroke-width="2"><ellipse cx="92" cy="58" rx="8" ry="7" fill="#fff"/><ellipse cx="118" cy="58" rx="8" ry="7" fill="#fff"/><circle cx="94" cy="59" r="4" fill="${pupil}"/><circle cx="120" cy="59" r="4" fill="${pupil}"/></g>`,
+  wink: (accent, pupil) =>
+    `<ellipse cx="92" cy="58" rx="9" ry="11" fill="#fff" stroke="#3a1f0a" stroke-width="2.5"/><circle cx="94" cy="60" r="4.5" fill="${pupil}"/><circle cx="118" cy="59" r="4" fill="${pupil}"/><path d="M108 57q10-8 20 0" fill="none" stroke="#3a1f0a" stroke-width="3.5" stroke-linecap="round"/><circle cx="92" cy="56" r="2" fill="#fff"/>`,
+  spiral: (accent, pupil) =>
+    `<g fill="#fff" stroke="#3a1f0a" stroke-width="2"><circle cx="92" cy="58" r="10"/><circle cx="118" cy="58" r="10"/></g><path d="M96 58q-4-6-8-1-4 7 4 8 7 1 7-6m15-1q-4-6-8-1-4 7 4 8 7 1 7-6" fill="none" stroke="${pupil}" stroke-width="3" stroke-linecap="round"/>`,
+  star: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2"><ellipse cx="92" cy="58" rx="10" ry="12" fill="#fff"/><ellipse cx="118" cy="58" rx="10" ry="12" fill="#fff"/></g><path d="m92 51 2 5 5 2-5 2-2 5-2-5-5-2 5-2zm26 0 2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${pupil}"/>`,
+  angry: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2.5"><ellipse cx="92" cy="60" rx="9" ry="8" fill="#fff"/><ellipse cx="118" cy="60" rx="9" ry="8" fill="#fff"/><circle cx="94" cy="61" r="4" fill="${pupil}"/><circle cx="120" cy="61" r="4" fill="${pupil}"/><path d="m82 48 20 7m27-7-20 7" fill="none" stroke="${accent}" stroke-width="5" stroke-linecap="round"/></g>`,
+  wide: (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2.5"><ellipse cx="92" cy="58" rx="11" ry="13" fill="#fff"/><ellipse cx="118" cy="58" rx="11" ry="13" fill="#fff"/><circle cx="94" cy="60" r="5" fill="${pupil}"/><circle cx="120" cy="60" r="5" fill="${pupil}"/></g><circle cx="92" cy="55" r="2.5" fill="#fff"/><circle cx="118" cy="55" r="2.5" fill="#fff"/>`,
+  "lightning-eyes": (accent, pupil) =>
+    `<g stroke="#3a1f0a" stroke-width="2"><ellipse cx="92" cy="58" rx="9" ry="11" fill="#fff"/><ellipse cx="118" cy="58" rx="9" ry="11" fill="#fff"/></g><path d="m94 51-5 8h5l-2 7 8-10h-5l3-5zm26 0-5 8h5l-2 7 8-10h-5l3-5z" fill="${pupil}" stroke="#fff3a0" stroke-width="1"/>`,
+};
+const FACE_MARKS = {
+  freckles: (accent) =>
+    `<g fill="${accent}"><circle cx="78" cy="72" r="2.5"/><circle cx="83" cy="78" r="2"/><circle cx="78" cy="83" r="1.5"/><circle cx="132" cy="72" r="2.5"/><circle cx="127" cy="78" r="2"/><circle cx="132" cy="83" r="1.5"/></g>`,
+  crescent: (accent) =>
+    `<path d="M79 72q8 8 15 0-2 13-13 9-6-3-2-9m42 0q8 8 15 0-2 13-13 9-6-3-2-9" fill="${accent}"/>`,
+  blush: (accent) =>
+    `<g fill="${accent}" opacity=".68"><ellipse cx="79" cy="75" rx="7" ry="4"/><ellipse cx="131" cy="75" rx="7" ry="4"/></g>`,
+  bubbles: (accent) =>
+    `<g fill="none" stroke="${accent}" stroke-width="2"><circle cx="78" cy="76" r="4"/><circle cx="84" cy="83" r="2"/><circle cx="132" cy="75" r="5"/><circle cx="126" cy="84" r="2"/></g>`,
+  lightning: (accent) =>
+    `<path d="m79 69 7-5-2 7 6-2-10 12 2-8-6 2zm52 0-7-5 2 7-6-2 10 12-2-8 6 2z" fill="${accent}"/>`,
+  diamonds: (accent) =>
+    `<path d="m78 75 4-6 4 6-4 6zm54 0 4-6 4 6-4 6z" fill="${accent}"/><circle cx="79" cy="84" r="2" fill="#fff"/>`,
+  leaf: (accent) =>
+    `<g fill="${accent}"><path d="M77 75q-2-10 10-12-1 11-10 12zm56 0q2-10-10-12 1 11 10 12z"/></g><path d="m78 75 6-8m48 8-6-8" stroke="#fff" stroke-width="1.5"/>`,
+  stars: (accent) =>
+    `<path d="m78 73 2-4 2 4 4 2-4 2-2 4-2-4-4-2zm54 0 2-4 2 4 4 2-4 2-2 4-2-4-4-2z" fill="${accent}"/>`,
+  dots: (accent) =>
+    `<g fill="${accent}"><circle cx="78" cy="72" r="3"/><circle cx="85" cy="78" r="2"/><circle cx="80" cy="84" r="2"/><circle cx="132" cy="72" r="3"/><circle cx="125" cy="78" r="2"/><circle cx="130" cy="84" r="2"/></g>`,
+  "cheek-stars": (accent) =>
+    `<path d="m80 72 2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1zm50 0 2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z" fill="${accent}"/>`,
+  scar: (accent) =>
+    `<path d="m77 70 11 12m-5-15-5 5m58-2-11 12m5-15 5 5" fill="none" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>`,
+  ice: (accent) =>
+    `<path d="m78 70 5 6-5 7-5-7zm54 0 5 6-5 7-5-7z" fill="${accent}" stroke="#fff" stroke-width="1.5"/>`,
+  scales: (accent) =>
+    `<g fill="none" stroke="${accent}" stroke-width="2"><path d="m75 73 6 5 6-5m-12 6 6 5 6-5m38-6 6 5 6-5m-12 6 6 5 6-5"/></g>`,
+  whiskers: (accent) =>
+    `<g fill="none" stroke="${accent}" stroke-width="2" stroke-linecap="round"><path d="m84 75-14-4m14 8-15 2m14 2-12 7m45-15 14-4m-14 8 15 2m-14 2 12 7"/></g>`,
+  blossoms: (accent) =>
+    `<g fill="${accent}"><circle cx="79" cy="73" r="3"/><circle cx="76" cy="70" r="3"/><circle cx="82" cy="70" r="3"/><circle cx="79" cy="67" r="3"/><circle cx="131" cy="73" r="3"/><circle cx="128" cy="70" r="3"/><circle cx="134" cy="70" r="3"/><circle cx="131" cy="67" r="3"/></g><circle cx="79" cy="70" r="1.5" fill="#ffe88f"/><circle cx="131" cy="70" r="1.5" fill="#ffe88f"/>`,
+  "crown-jewel": (accent) =>
+    `<path d="m105 77 5 6-5 7-5-7z" fill="${accent}" stroke="#fff2b6" stroke-width="1.5"/><circle cx="105" cy="84" r="2" fill="#fff"/>`,
+  runes: (accent) =>
+    `<g fill="none" stroke="${accent}" stroke-width="2"><path d="m78 70 6 8-6 7m4-15v15m46-15-6 8 6 7m-4-15v15"/></g>`,
+  "armor-marks": (accent) =>
+    `<path d="m77 70 10-4-3 12-8 5zm56 0-10-4 3 12 8 5z" fill="${accent}" stroke="#fff1d0" stroke-width="1.5"/>`,
+  teardrops: (accent) =>
+    `<path d="M79 69q-8 10 0 12 8-2 0-12m52 0q-8 10 0 12 8-2 0-12" fill="${accent}" opacity=".85"/>`,
+  aurora: (accent) =>
+    `<path d="M75 76q8-10 16 0m28 0q8-10 16 0" fill="none" stroke="${accent}" stroke-width="3" stroke-linecap="round"/><circle cx="80" cy="73" r="2" fill="#fff"/>`,
+  "flame-marks": (accent) =>
+    `<path d="M80 82q-7-7 1-14 0 5 4 6-1-5 4-8 4 9-1 15-4-4-8 1m44 0q7-7-1-14 0 5-4 6 1-5-4-8-4 9 1 15 4-4 8 1" fill="${accent}"/>`,
+  vine: (accent) =>
+    `<g fill="none" stroke="${accent}" stroke-width="2"><path d="M77 82q-7-13 5-16m-3 10 6-5m51 11q7-13-5-16m3 10-6-5"/></g><circle cx="82" cy="67" r="2" fill="${accent}"/><circle cx="128" cy="67" r="2" fill="${accent}"/>`,
+  "void-marks": (accent) =>
+    `<g fill="none" stroke="${accent}" stroke-width="2"><circle cx="80" cy="77" r="6"/><circle cx="130" cy="77" r="6"/><path d="m80 70 2 7-4 5m50-12-2 7 4 5"/></g>`,
+  "clock-marks": (accent) =>
+    `<g fill="none" stroke="${accent}" stroke-width="2"><circle cx="80" cy="77" r="7"/><path d="M80 72v5l4 2m46-2a7 7 0 1 1-14 0 7 7 0 0 1 14 0m-7-5v5l4 2"/></g>`,
+  constellation: (accent) =>
+    `<g fill="${accent}" stroke="${accent}" stroke-width="1.5"><path d="m78 74 2-4 2 4 4 2-4 2-2 4-2-4-4-2zm54 0 2-4 2 4 4 2-4 2-2 4-2-4-4-2z"/><path d="m80 76 8 7m48-7-8 7" fill="none"/></g>`,
+};
+const FACE_MOUTHS = {
+  smile: `<path d="M96 76q9 10 19 0" fill="none" stroke="#3a1f0a" stroke-width="3.5" stroke-linecap="round"/>`,
+  smirk: `<path d="M98 78q10 3 18-5" fill="none" stroke="#3a1f0a" stroke-width="3.5" stroke-linecap="round"/>`,
+  fangs: `<path d="M95 75q11 13 22 0v5l-4-3-3 7-4-7-4 4z" fill="#3a1f0a" stroke="#3a1f0a" stroke-width="2" stroke-linejoin="round"/><path d="m98 77 2 6 3-4m9-2-2 6-3-4" fill="#fff"/>`,
+  grin: `<path d="M94 74q12 16 25 0v7q-12 10-25 0z" fill="#3a1f0a"/><path d="m99 77 2 4 3-3 3 4 3-4 3 2" fill="none" stroke="#fff" stroke-width="2"/>`,
+  open: `<ellipse cx="106" cy="79" rx="7" ry="9" fill="#3a1f0a"/><path d="M101 84q5-4 10 0" fill="none" stroke="#f47784" stroke-width="3" stroke-linecap="round"/>`,
+  pout: `<path d="M99 78q7-7 14 0-7 7-14 0" fill="#7e3446" stroke="#3a1f0a" stroke-width="2"/>`,
+  tongue: `<path d="M96 75q10 12 21 0v6q-10 9-21 0z" fill="#3a1f0a"/><path d="M105 81q8-1 6 6-5 4-8-1" fill="#ff7891" stroke="#d94a6c" stroke-width="1.5"/>`,
+  beak: `<path d="m99 74 14 0-7 11z" fill="#ffd15c" stroke="#875328" stroke-width="2" stroke-linejoin="round"/>`,
+  buck: `<path d="M97 75q9 8 19 0" fill="none" stroke="#3a1f0a" stroke-width="3.5" stroke-linecap="round"/><path d="M103 76h7v7h-7z" fill="#fff" stroke="#3a1f0a" stroke-width="1"/>`,
+  zigzag: `<path d="m95 77 5-4 5 5 5-5 5 4" fill="none" stroke="#3a1f0a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`,
+  laugh: `<path d="M95 74q11 18 23 0v8q-12 12-23 0z" fill="#3a1f0a"/><path d="M99 77h15" stroke="#fff" stroke-width="2.5"/>`,
+  tiny: `<path d="M102 78q4 4 8 0" fill="none" stroke="#3a1f0a" stroke-width="3" stroke-linecap="round"/>`,
+};
+const SKIN_HELD_ITEM_TYPES = {
+  dragonling: "sword",
+  royalreader: "crystal",
+  starweaver: "wand",
+  shellguard: "hammer",
+  dreamwing: "staff",
+  aurora: "prism",
+  phoenix: "flameStaff",
+  celestial: "celestialOrb",
+  stormcaller: "thunderHammer",
+  verdantking: "vineBlade",
+  voidwalker: "voidScythe",
+  starlord: "starSpear",
+  timekeeper: "timeStaff",
+};
+const HELD_ITEM_ART = {
+  sword: (accent, shade) =>
+    `<g class="skin-held-item skin-float" stroke-linejoin="round"><path d="m8 31 27-27 4 4-27 27z" fill="#dff8ff" stroke="${shade}" stroke-width="2"/><path d="m6 31 8 8M4 35l8 8m-7-8 5 5" stroke="#754b36" stroke-width="4" stroke-linecap="round"/><path d="m6 30 8 8" stroke="${accent}" stroke-width="4" stroke-linecap="round"/><path d="m31 8 4-4 3 3-4 4" fill="#fff"/></g>`,
+  crystal: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m11 16 7-12 14 1 7 12-14 22z" fill="${accent}" stroke="${shade}" stroke-width="3"/><path d="m18 4 7 13 14 0m-14 0v21m-7-21 7 21" fill="none" stroke="#fff" stroke-width="2" opacity=".8"/><path d="m22 13 4-6 4 6-4 6z" fill="#fff7c2"/></g>`,
+  wand: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m8 39 22-31" stroke="#8c5638" stroke-width="6" stroke-linecap="round"/><path d="m30 8 1-6 3 5 6-1-4 5 2 5-6-2-4 4 1-6-5-3z" fill="${accent}" stroke="${shade}" stroke-width="2"/><circle cx="32" cy="8" r="2" fill="#fff"/></g>`,
+  hammer: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m10 38 20-22" stroke="#825237" stroke-width="6" stroke-linecap="round"/><path d="m17 14 8-9 20 17-8 9z" fill="${accent}" stroke="${shade}" stroke-width="3"/><path d="m24 8 6 5-8 9-6-5z" fill="#fff" opacity=".65"/></g>`,
+  staff: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m11 42 17-34" stroke="#7a5036" stroke-width="5" stroke-linecap="round"/><path d="M28 8q-12-8-5-14 7-3 10 4 8-7 13-1 3 9-7 13z" fill="${accent}" stroke="${shade}" stroke-width="2"/><path d="M31 4q4-6 8-2" fill="none" stroke="#fff" stroke-width="2"/></g>`,
+  prism: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m9 13 11-9 19 3 5 13-17 19-17-12z" fill="${accent}" stroke="${shade}" stroke-width="3"/><path d="m20 4 7 16 17 0m-17 0v19m-18-11 18-8 12-13" fill="none" stroke="#fff" stroke-width="2" opacity=".85"/><circle cx="27" cy="20" r="4" fill="#fff7c2"/></g>`,
+  flameStaff: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m10 42 17-34" stroke="#754537" stroke-width="5" stroke-linecap="round"/><path d="M27 8Q18 0 28-8q-1 7 5 8 0-9 8-11-3 11 6 15-4 10-15 10z" fill="${accent}" stroke="${shade}" stroke-width="2"/><path d="M31 7q-2-5 3-9 0 5 4 6l-4 6z" fill="#fff3a0"/></g>`,
+  celestialOrb: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m10 39 10-17" stroke="#84603b" stroke-width="5" stroke-linecap="round"/><circle cx="29" cy="15" r="14" fill="${accent}" stroke="${shade}" stroke-width="3"/><ellipse cx="29" cy="15" rx="20" ry="7" fill="none" stroke="#fff1b6" stroke-width="2" transform="rotate(-25 29 15)"/><path d="m29 5 2 7 7 3-7 2-2 7-2-7-7-2 7-3z" fill="#fff"/></g>`,
+  thunderHammer: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m10 41 22-23" stroke="#745139" stroke-width="6" stroke-linecap="round"/><path d="m15 11 8-8 24 11-7 11z" fill="${accent}" stroke="${shade}" stroke-width="3"/><path d="m31 4-5 9h6l-4 9 11-12h-7l4-6z" fill="#fff4a8"/></g>`,
+  vineBlade: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m9 40 23-25" stroke="#79533a" stroke-width="6" stroke-linecap="round"/><path d="M27 20Q16 7 30-3q4 11 11 5 5 7-3 15-6 6-11 3z" fill="${accent}" stroke="${shade}" stroke-width="2"/><path d="m28 16 11-12m-8 13 7 5" stroke="#eaff9c" stroke-width="2"/></g>`,
+  voidScythe: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m10 41 22-30" stroke="#67558b" stroke-width="5" stroke-linecap="round"/><path d="M29 13Q28-1 45-7q-3 11-12 18 13-6 18 1-9 5-19 4z" fill="${accent}" stroke="${shade}" stroke-width="2"/><circle cx="34" cy="9" r="3" fill="#fff"/></g>`,
+  starSpear: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m8 42 29-39" stroke="#855e39" stroke-width="5" stroke-linecap="round"/><path d="m38 0 8-5-1 10 7 6-10 1-5 8-2-9-8-5 10-1z" fill="${accent}" stroke="${shade}" stroke-width="2"/><path d="m12 35 6 4" stroke="#f6dc94" stroke-width="2"/></g>`,
+  timeStaff: (accent, shade) =>
+    `<g class="skin-held-item skin-float"><path d="m11 42 17-33" stroke="#795638" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="8" r="13" fill="${accent}" stroke="${shade}" stroke-width="3"/><circle cx="32" cy="8" r="9" fill="none" stroke="#fff4be" stroke-width="1.5"/><path d="M32 2v7l5 3m-17-4h3m22 0h3m-16-13v3m0 22v3" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></g>`,
+};
+function makeSkin(
+  [id, name, price, head, body, tail, shade],
+  rarity,
+  accessory,
+  effect,
+) {
+  return {
+    id,
+    name,
+    price,
+    rarity,
+    accessory,
+    effect,
+    face: SKIN_FACE_CONFIG[id],
+    heldItem: SKIN_HELD_ITEM_TYPES[id] || null,
+    accent: head,
+    shade,
+    colors: {
+      "#7bd35c": tail,
+      "#8fe06c": body,
+      "#a4ee7a": body,
+      "#b9f78d": head,
+      "#5aa83c": shade,
+    },
+  };
+}
+const SKINS = [
+  ...SKIN_PALETTES.map((palette) => makeSkin(palette, "normal")),
+  ...RARE_SKINS.map((skin) => makeSkin(skin, "rare", skin[7])),
+  ...EPIC_SKINS.map((skin) => makeSkin(skin, "epic", skin[7])),
+  ...LEGENDARY_SKINS.map((skin) =>
+    makeSkin(skin, "legendary", skin[7], skin[8]),
+  ),
+];
+const SKIN_RARITIES = [
+  ["all", "All", 33],
+  ["normal", "Normal", 12],
+  ["rare", "Rare", 8],
+  ["epic", "Epic", 6],
+  ["legendary", "Legendary", 7],
+];
+let activeSkinRarity = "all";
+const STORE_KEY = "wormwood-library-player";
+const DEFAULT_STORE = {
+  coins: 0,
+  ownedSkins: ["garden"],
+  equippedSkin: "garden",
+};
+function loadStore() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    if (!saved || typeof saved !== "object") return { ...DEFAULT_STORE };
+    const ownedSkins = Array.isArray(saved.ownedSkins)
+      ? [
+          ...new Set(
+            saved.ownedSkins.filter((id) =>
+              SKINS.some((skin) => skin.id === id),
+            ),
+          ),
+        ]
+      : ["garden"];
+    if (!ownedSkins.includes("garden")) ownedSkins.push("garden");
+    return {
+      coins: Number.isFinite(saved.coins)
+        ? Math.max(0, Math.floor(saved.coins))
+        : 0,
+      ownedSkins,
+      equippedSkin: ownedSkins.includes(saved.equippedSkin)
+        ? saved.equippedSkin
+        : "garden",
+    };
+  } catch (error) {
+    console.error("Could not load saved marketplace data:", error);
+    return { ...DEFAULT_STORE };
+  }
+}
+let STORE = loadStore();
+function saveStore() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(STORE));
+    return true;
+  } catch (error) {
+    console.error("Could not save marketplace data:", error);
+    const message = $("shopMessage");
+    if (message)
+      message.textContent =
+        "Could not save your coins or skin in this browser.";
+    return false;
+  }
+}
+function getSkin(id = STORE.equippedSkin) {
+  return SKINS.find((skin) => skin.id === id) || SKINS[0];
+}
+function wormSvg(skin = getSkin()) {
+  const coloredSvg = Object.entries(skin.colors).reduce(
+    (svg, [original, color]) => svg.replaceAll(original, color),
+    hero,
+  );
+  const accessory = SKIN_ACCESSORIES[skin.accessory];
+  const face = skin.face || ["round", "freckles", "smile", "#315e32"];
+  const eyes = FACE_EYES[face[0]];
+  const marks = FACE_MARKS[face[1]];
+  const mouth = FACE_MOUTHS[face[2]];
+  const faceArt = `<g class="skin-face">${eyes(skin.accent, face[3])}${marks(skin.accent)}${mouth}</g>`;
+  const itemArt = skin.heldItem
+    ? `<g class="skin-item-hand" fill="none" stroke="${skin.shade}" stroke-width="7" stroke-linecap="round"><path d="M79 112Q67 110 64 125"/></g><circle cx="64" cy="125" r="5" fill="${skin.colors["#8fe06c"]}"/><g transform="translate(53 91)">${HELD_ITEM_ART[skin.heldItem](skin.accent, skin.shade)}</g>`
+    : `<g class="skin-book"><rect x="66" y="96" width="38" height="28" rx="4" fill="#b8352f" transform="rotate(-10 85 110)"/><rect x="70" y="100" width="30" height="20" rx="2" fill="#f6ecd2" transform="rotate(-10 85 110)"/><path d="m76 106 18-3m-17 7 16-3" stroke="#b69565" stroke-width="1.5"/></g>`;
+  let svg = coloredSvg
+    .replace("<!--skin-item-->", itemArt)
+    .replace("<!--skin-face-->", faceArt);
+  if (accessory) {
+    svg = svg.replace(
+      "</svg>",
+      `<g class="skin-overlay" style="--skin-accent:${skin.accent}">${accessory.replaceAll("${accent}", skin.accent)}</g></svg>`,
+    );
+  }
+  return svg;
+}
+function clearSkinAnimations() {
+  const gsap = window.gsap;
+  if (!gsap) return;
+  gsap.killTweensOf(
+    $("hero").querySelectorAll(".skin-float, .skin-wings, .skin-flame"),
+  );
+}
+function animateEquippedSkin(skin = getSkin()) {
+  const worm = $("hero");
+  worm.classList.remove(
+    "skin-normal",
+    "skin-rare",
+    "skin-epic",
+    "skin-legendary",
+  );
+  worm.classList.add(`skin-${skin.rarity}`);
+  worm.style.setProperty("--skin-accent", skin.accent);
+  const gsap = window.gsap;
+  if (
+    !gsap ||
+    !skin.accessory ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+    return;
+
+  gsap.killTweensOf(
+    worm.querySelectorAll(".skin-float, .skin-wings, .skin-flame"),
+  );
+  const floaters = worm.querySelectorAll(".skin-float");
+  const wings = worm.querySelectorAll(".skin-wings");
+  const flames = worm.querySelectorAll(".skin-flame");
+  if (floaters.length)
+    gsap.fromTo(
+      floaters,
+      { y: 0, rotation: -2 },
+      {
+        y: -6,
+        rotation: 2,
+        duration: 1.15,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        stagger: 0.1,
+        transformOrigin: "center",
+      },
+    );
+  if (wings.length)
+    gsap.fromTo(
+      wings,
+      { scaleY: 0.8 },
+      {
+        scaleY: 1.08,
+        duration: 0.24,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        transformOrigin: "center",
+      },
+    );
+  if (flames.length)
+    gsap.fromTo(
+      flames,
+      { scale: 0.94, opacity: 0.78 },
+      {
+        scale: 1.06,
+        opacity: 1,
+        duration: 0.34,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        transformOrigin: "center bottom",
+      },
+    );
+}
+function playLegendaryAttack(skin, x, y) {
+  if (skin.rarity !== "legendary") return Promise.resolve();
+
+  const effect = document.createElement("div");
+  effect.className = `legendary-vfx vfx-${skin.effect}`;
+  effect.style.left = `${x}px`;
+  effect.style.top = `${y}px`;
+  effect.style.setProperty("--vfx-color", skin.accent);
+  effect.innerHTML =
+    '<span class="vfx-ring"></span><span class="vfx-ring"></span><span class="vfx-ring"></span><span class="vfx-core"></span><span class="vfx-spark"></span><span class="vfx-spark"></span><span class="vfx-spark"></span><span class="vfx-spark"></span>';
+  document.body.appendChild(effect);
+
+  const gsap = window.gsap;
+  if (!gsap || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const animation = effect.animate(
+      [
+        {
+          opacity: 0,
+          transform: "translate(-50%, -50%) scale(.2) rotate(-35deg)",
+        },
+        {
+          opacity: 1,
+          transform: "translate(-50%, -50%) scale(1.15) rotate(0deg)",
+          offset: 0.55,
+        },
+        {
+          opacity: 0,
+          transform: "translate(-50%, -50%) scale(1.65) rotate(35deg)",
+        },
+      ],
+      {
+        duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? 100
+          : 780,
+        easing: "cubic-bezier(.15,.75,.3,1)",
+      },
+    );
+    return animation.finished.then(() => effect.remove());
+  }
+
+  return new Promise((resolve) => {
+    const rings = effect.querySelectorAll(".vfx-ring");
+    const sparks = effect.querySelectorAll(".vfx-spark");
+    gsap.set(effect, { xPercent: -50, yPercent: -50, scale: 0.18, opacity: 0 });
+    gsap.set(rings, { scale: 0.4, opacity: 0, rotation: -30 });
+    gsap.set(sparks, { scale: 0, opacity: 0 });
+    gsap
+      .timeline({
+        onComplete: () => {
+          effect.remove();
+          resolve();
+        },
+      })
+      .to(effect, {
+        scale: 1.08,
+        opacity: 1,
+        duration: 0.2,
+        ease: "back.out(2)",
+      })
+      .to(
+        rings,
+        {
+          scale: 1,
+          opacity: 0.9,
+          rotation: 180,
+          duration: 0.52,
+          stagger: 0.035,
+          ease: "power2.out",
+        },
+        0,
+      )
+      .to(
+        rings,
+        { rotation: "+=120", opacity: 0, duration: 0.3, stagger: 0.025 },
+        0.48,
+      )
+      .to(
+        effect,
+        { scale: 1.45, opacity: 0, duration: 0.35, ease: "power2.in" },
+        0.4,
+      )
+      .to(
+        sparks,
+        { scale: 1, opacity: 1, duration: 0.12, stagger: 0.035 },
+        0.08,
+      )
+      .to(
+        sparks,
+        {
+          y: (index) => (index % 2 ? 55 : -55),
+          x: (index) => (index < 2 ? -45 : 45),
+          opacity: 0,
+          duration: 0.45,
+          stagger: 0.025,
+        },
+        0.2,
+      );
+  });
+}
+const FOES = [
+  {
+    n: "Inkblot",
+    hp: 30,
+    atk: 8,
+    words: ["ink", "blot", "stain", "smudge", "splat"],
+    c: "#5b3fa8",
+    svg: (c) =>
+      `<svg viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="55" ry="6" fill="#0006"/><path d="M20 130Q8 60 50 40Q80 10 115 40Q155 65 140 130Q80 145 20 130Z" fill="${c}"/><path d="M30 120q-14 12-6 24M130 125q16 10 8 22M80 140q0 12 8 14" stroke="${c}" stroke-width="10" stroke-linecap="round" fill="none"/><circle cx="58" cy="78" r="14" fill="#fff"/><circle cx="102" cy="78" r="14" fill="#fff"/><circle cx="62" cy="80" r="6" fill="#111"/><circle cx="98" cy="80" r="6" fill="#111"/><path d="M45 62l28 8M115 62l-28 8" stroke="#111" stroke-width="6" stroke-linecap="round"/><path d="M55 105q25 18 50 0" stroke="#111" stroke-width="5" fill="#111"/></svg>`,
+  },
+  {
+    n: "Page Bat",
+    hp: 50,
+    atk: 11,
+    words: ["bat", "bite", "fang", "wing", "swoop"],
+    c: "#a33b52",
+    svg: (c) =>
+      `<svg viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="45" ry="5" fill="#0006"/><g style="transform-origin:80px 70px;animation:wig .5s infinite"><path d="M80 70Q40 0 4 30Q18 50 14 76Q40 62 54 92Q66 80 80 90Z" fill="#7d2438"/><path d="M80 70Q120 0 156 30Q142 50 146 76Q120 62 106 92Q94 80 80 90Z" fill="#7d2438"/></g><ellipse cx="80" cy="85" rx="32" ry="38" fill="${c}"/><path d="M58 58l-6-28 22 16zM102 58l6-28-22 16z" fill="${c}"/><circle cx="68" cy="78" r="9" fill="#ffe14d"/><circle cx="92" cy="78" r="9" fill="#ffe14d"/><circle cx="68" cy="79" r="4" fill="#111"/><circle cx="92" cy="79" r="4" fill="#111"/><path d="M68 100l5 10 7-8 7 8 5-10z" fill="#fff"/></svg>`,
+  },
+  {
+    n: "Dust Golem",
+    hp: 70,
+    atk: 14,
+    words: ["dust", "grit", "sand", "stone", "rubble"],
+    c: "#8a8a7a",
+    svg: (c) =>
+      `<svg viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="60" ry="6" fill="#0006"/><rect x="38" y="36" width="84" height="80" rx="30" fill="${c}"/><rect x="14" y="60" width="30" height="50" rx="14" fill="${c}"/><rect x="116" y="60" width="30" height="50" rx="14" fill="${c}"/><rect x="48" y="112" width="26" height="30" rx="10" fill="${c}"/><rect x="86" y="112" width="26" height="30" rx="10" fill="${c}"/><circle cx="62" cy="68" r="9" fill="#ff7b3a"/><circle cx="98" cy="68" r="9" fill="#ff7b3a"/><path d="M58 94h44" stroke="#333" stroke-width="7" stroke-linecap="round" stroke-dasharray="8 6"/><path d="M56 36q-4-16 6-24M80 34q0-18 8-22M104 36q6-14 0-22" stroke="#bbb" stroke-width="6" stroke-linecap="round" fill="none"/></svg>`,
+  },
+  {
+    n: "Lord Overdue",
+    hp: 100,
+    atk: 18,
+    words: ["doom", "curse", "spell", "tome", "late"],
+    c: "#c0392b",
+    svg: (c) =>
+      `<svg viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="60" ry="6" fill="#0006"/><path d="M20 120Q10 50 50 36L40 6 66 26Q80 20 94 26L120 6 110 36Q150 50 140 120Q80 140 20 120Z" fill="${c}"/><path d="M0 70q20-30 40-10M160 70q-20-30-40-10" stroke="${c}" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M50 72l28 8M110 72l-28 8" stroke="#111" stroke-width="7" stroke-linecap="round"/><circle cx="62" cy="86" r="9" fill="#ffe14d"/><circle cx="98" cy="86" r="9" fill="#ffe14d"/><path d="M52 108l10 12 9-10 9 10 9-10 10 12 10-14" fill="#fff" stroke="#111" stroke-width="3"/><rect x="60" y="2" width="40" height="14" rx="3" fill="#ffd23f"/></svg>`,
+  },
+];
+const $ = (id) => document.getElementById(id);
+const BIG = new Set();
+function addWords(words) {
+  if (!Array.isArray(words)) return;
+  words.forEach((word) => {
+    if (typeof word !== "string") return;
+    const normalized = word.trim().toLowerCase();
+    if (/^[a-z]+$/.test(normalized)) BIG.add(normalized);
+  });
+}
+addWords(window.dictionary);
+const has = (w) => WORDS.has(w) || BIG.has(w);
+async function loadDictionary() {
+  const response = await fetch(
+    "https://cdn.jsdelivr.net/npm/an-array-of-english-words@2.0.0/index.json",
+  );
+  if (!response.ok) {
+    throw new Error(`Dictionary request failed with status ${response.status}`);
+  }
+  const words = await response.json();
+  if (!Array.isArray(words)) {
+    throw new TypeError("Dictionary response must be an array of words");
+  }
+  addWords(words);
+}
+function valid(w) {
+  if (has(w)) return true;
+  const n = w.length;
+  if (n <= 3) return false;
+  if (/s$/.test(w) && has(w.slice(0, -1))) return true;
+  if (/es$/.test(w) && has(w.slice(0, -2))) return true;
+  if (/ies$/.test(w) && has(w.slice(0, -3) + "y")) return true;
+  if (
+    /ed$/.test(w) &&
+    (has(w.slice(0, -2)) ||
+      has(w.slice(0, -1)) ||
+      (w[n - 3] === w[n - 4] && has(w.slice(0, -3))))
+  )
+    return true;
+  if (
+    /ing$/.test(w) &&
+    (has(w.slice(0, -3)) ||
+      has(w.slice(0, -3) + "e") ||
+      (w[n - 4] === w[n - 5] && has(w.slice(0, -4))))
+  )
+    return true;
+  if (/er$/.test(w) && (has(w.slice(0, -2)) || has(w.slice(0, -1))))
+    return true;
+  if (/ly$/.test(w) && has(w.slice(0, -2))) return true;
+  return false;
+}
+let S;
+function rl() {
+  return BAG[(Math.random() * BAG.length) | 0];
+}
+function mk() {
+  const l = rl();
+  return {
+    l,
+    gem: Math.random() < 0.1,
+    id: Math.random(),
+  };
+}
+function fixVowels() {
+  let v = S.t.filter((x) => VOW.includes(x.l)).length;
+  while (v < 5) {
+    const i = S.t.findIndex(
+      (x) => !VOW.includes(x.l) && !S.sel.includes(S.t.indexOf(x)),
+    );
+    S.t[i] = {
+      l: VOW[(Math.random() * 5) | 0],
+      gem: false,
+      id: Math.random(),
+    };
+    v++;
+  }
+}
+function start() {
+  S = {
+    lv: 0,
+    score: 0,
+    php: 100,
+    t: Array.from(
+      {
+        length: 16,
+      },
+      mk,
+    ),
+    sel: [],
+    used: new Set(),
+    busy: false,
+    turn: "player",
+    playerStunned: false,
+    enemyStunned: false,
+  };
+  fixVowels();
+  $("over").style.display = "none";
+  clearSkinAnimations();
+  $("hero").innerHTML = wormSvg();
+  animateEquippedSkin();
+  load();
+  render();
+}
+function load() {
+  const f = FOES[S.lv];
+  S.ehp = f.hp;
+  S.emax = f.hp;
+  S.turn = "player";
+  S.playerStunned = false;
+  S.enemyStunned = false;
+  $("ename").textContent = f.n;
+  $("lvl").textContent = S.lv + 1;
+  const e = $("foe");
+  e.getAnimations().forEach((animation) => animation.cancel());
+  e.className = "bob w-32 sm:w-40";
+  e.style.animationDelay = ".7s";
+  e.innerHTML = f.svg(f.c);
+  e.animate(
+    [
+      {
+        transform: "translateX(300px) scale(.4)",
+        opacity: 0,
+      },
+      {
+        transform: "none",
+        opacity: 1,
+      },
+    ],
+    {
+      duration: 700,
+      easing: "cubic-bezier(.2,1.3,.4,1)",
+    },
+  );
+  hud();
+}
+function hud() {
+  $("pbar").style.width = Math.max(0, S.php) + "%";
+  $("php").textContent = Math.max(0, S.php);
+  $("ebar").style.width = Math.max(0, (S.ehp / S.emax) * 100) + "%";
+  $("ehp").textContent = Math.max(0, S.ehp);
+  $("score").textContent = S.score;
+  $("coins").textContent = STORE.coins;
+  $("turn").textContent = S.turn === "player" ? "Wilbur" : FOES[S.lv].n;
+}
+function render() {
+  const b = $("board");
+  b.innerHTML = "";
+  S.t.forEach((t, i) => {
+    const e = document.createElement("button");
+    e.className =
+      "tile" + (t.gem ? " gem" : "") + (S.sel.includes(i) ? " sel" : "");
+    e.style.animationDelay = (t.fresh ? 0 : i * 25) + "ms";
+    e.innerHTML = t.l + `<small>${PTS[t.l]}</small>`;
+    e.onclick = () => pick(i);
+    t.fresh = false;
+    b.appendChild(e);
+  });
+  word();
+}
+function updSel() {
+  [...$("board").children].forEach((e, i) =>
+    e.classList.toggle("sel", S.sel.includes(i)),
+  );
+  word();
+}
+function word() {
+  const w = $("word");
+  w.innerHTML =
+    S.sel
+      .map(
+        (i) =>
+          `<span class="toast serif grid h-11 w-9 place-items-center rounded-lg bg-[#f3e3bd] text-2xl font-bold text-[#3a1f0a] shadow-lg">${S.t[i].l}</span>`,
+      )
+      .join("") || '<span class="serif opacity-50">Spell a word…</span>';
+}
+function pick(i) {
+  if (S.busy) return;
+  const k = S.sel.indexOf(i);
+  if (k > -1) S.sel.splice(k, 1);
+  else S.sel.push(i);
+  blip(300 + S.sel.length * 60);
+  updSel();
+}
+function say(t, c) {
+  $("msg").textContent = t;
+  $("msg").style.color = c || "";
+}
+function renderShop() {
+  $("shopCoins").textContent = STORE.coins;
+  $("skinFilters").innerHTML = SKIN_RARITIES.map(
+    ([rarity, label, count]) =>
+      `<button class="rarity-filter rarity-${rarity}${activeSkinRarity === rarity ? " is-active" : ""}" type="button" data-rarity="${rarity}" aria-pressed="${activeSkinRarity === rarity}">${label}<span>${count}</span></button>`,
+  ).join("");
+  const visibleSkins =
+    activeSkinRarity === "all"
+      ? SKINS
+      : SKINS.filter((skin) => skin.rarity === activeSkinRarity);
+  $("skinGrid").innerHTML = visibleSkins
+    .map((skin) => {
+      const owned = STORE.ownedSkins.includes(skin.id);
+      const equipped = STORE.equippedSkin === skin.id;
+      const price = skin.price === 0 ? "Free" : `${skin.price} ✦`;
+      const label = equipped ? "Equipped" : owned ? "Equip" : `Buy · ${price}`;
+      const action = equipped ? "equipped" : owned ? "equip" : "buy";
+
+      return `<article class="skin-card rarity-${skin.rarity}${equipped ? " is-equipped" : ""}">
+        <div class="skin-preview" aria-hidden="true">${wormSvg(skin)}</div>
+        <div class="skin-info">
+          <span class="rarity-label">${skin.rarity}</span>
+          <h3>${skin.name}</h3>
+          <p>${owned ? (equipped ? "Currently wearing" : "Owned") : price}</p>
+        </div>
+        <button class="skin-action" type="button" data-skin-id="${skin.id}" data-skin-action="${action}" ${equipped ? "disabled" : ""}>${label}</button>
+      </article>`;
+    })
+    .join("");
+}
+function openShop() {
+  renderShop();
+  $("shop").hidden = false;
+  document.body.classList.add("shop-open");
+  $("bShopClose").focus();
+}
+function closeShop() {
+  $("shop").hidden = true;
+  document.body.classList.remove("shop-open");
+  $("bShop").focus();
+}
+function handleSkinAction(event) {
+  const button = event.target.closest("[data-skin-action]");
+  if (!button || button.disabled) return;
+
+  const skin = getSkin(button.dataset.skinId);
+  const previous = STORE;
+  if (button.dataset.skinAction === "buy") {
+    if (STORE.coins < skin.price) {
+      $("shopMessage").textContent =
+        `You need ${skin.price - STORE.coins} more coins for ${skin.name}.`;
+      return;
+    }
+    STORE = {
+      ...STORE,
+      coins: STORE.coins - skin.price,
+      ownedSkins: [...STORE.ownedSkins, skin.id],
+      equippedSkin: skin.id,
+    };
+  } else {
+    STORE = { ...STORE, equippedSkin: skin.id };
+  }
+
+  if (!saveStore()) {
+    STORE = previous;
+    return;
+  }
+
+  clearSkinAnimations();
+  $("hero").innerHTML = wormSvg();
+  animateEquippedSkin(skin);
+  $("shopMessage").textContent =
+    `${skin.name} skin equipped! Keep battling to earn more coins.`;
+  hud();
+  renderShop();
+}
+function bad(t) {
+  say(t, "#ff8a8a");
+  $("word").classList.remove("shake");
+  void $("word").offsetWidth;
+  $("word").classList.add("shake");
+  blip(120, 0.2, "sawtooth");
+}
+async function go() {
+  if (S.busy || S.turn !== "player" || !S.sel.length) return;
+  const w = S.sel
+    .map((i) => S.t[i].l)
+    .join("")
+    .toLowerCase();
+  if (w.length < 2) return bad("Words need 2 or more letters");
+  if (S.used.has(w)) return bad("You already used that word");
+  if (!valid(w)) return bad(`"${w}" isn't a valid word`);
+  S.busy = true;
+  S.turn = "enemy";
+  hud();
+  S.used.add(w);
+  const idx = [...S.sel];
+  const gems = idx.filter((i) => S.t[i].gem).length;
+  const playerSkin = getSkin();
+  let dmg = idx.reduce((a, i) => a + PTS[S.t[i].l], 0);
+  dmg = Math.round(dmg * (1 + (w.length - 3) * 0.4) * (gems ? 2 : 1));
+  const foe = $("foe").getBoundingClientRect(),
+    els = [...$("board").children];
+  const fl = idx.map((i, n) => {
+    const r = els[i].getBoundingClientRect();
+    const a = els[i].animate(
+      [
+        {
+          transform: "none",
+          opacity: 1,
+        },
+        {
+          transform: `translate(${foe.left + foe.width / 2 - r.left - r.width / 2}px,${foe.top + foe.height / 2 - r.top - r.height / 2}px) rotate(${720 + n * 90}deg) scale(.3)`,
+          opacity: 0.9,
+        },
+      ],
+      {
+        duration: 650,
+        delay: n * 70,
+        easing: "cubic-bezier(.5,-.3,.6,1)",
+        fill: "forwards",
+      },
+    );
+    return a.finished;
+  });
+  $("hero").classList.remove("bob");
+  $("hero").classList.add("lungeL");
+  sweep(dmg >= 20);
+  await Promise.all(fl);
+  burst(
+    foe.left + foe.width / 2,
+    foe.top + foe.height / 2,
+    Math.min(70, 20 + dmg),
+    playerSkin.rarity === "legendary"
+      ? playerSkin.accent
+      : gems
+        ? "#ffd23f"
+        : "#ff8a3d",
+  );
+  await playLegendaryAttack(
+    playerSkin,
+    foe.left + foe.width / 2,
+    foe.top + foe.height / 2,
+  );
+  shakeScreen(dmg);
+  blip(180, 0.3, "square");
+  $("foe").classList.add("hit");
+  setTimeout(() => $("foe").classList.remove("hit"), 400);
+  num(foe.left + foe.width / 2, foe.top, "-" + dmg);
+  S.ehp -= dmg;
+  S.score += dmg * 10;
+  const earnedCoins = Math.max(1, Math.floor(dmg / 5));
+  STORE.coins += earnedCoins;
+  saveStore();
+  S.sel = [];
+  S.enemyStunned = w.length > 5;
+  say(
+    `${w.toUpperCase()}${dmg >= 25 ? "! Critical hit!" : ` deals ${dmg}`}${S.enemyStunned ? ` ${FOES[S.lv].n} is stunned!` : ""} +${earnedCoins} coins`,
+    "#ffe08a",
+  );
+  idx.forEach((i) => {
+    S.t[i] = {
+      ...mk(),
+      fresh: true,
+    };
+  });
+  fixVowels();
+  hud();
+  render();
+  $("hero").classList.remove("lungeL");
+  $("hero").classList.add("bob");
+  await sleep(500);
+  if (S.ehp <= 0) return win();
+  if (S.enemyStunned) {
+    S.enemyStunned = false;
+    say(`${FOES[S.lv].n} is stunned and misses its turn!`, "#b6f27a");
+    await sleep(500);
+  } else {
+    await foeAttack();
+  }
+  while (S.playerStunned && S.php > 0) {
+    S.playerStunned = false;
+    S.turn = "enemy";
+    say("Wilbur is stunned and misses his turn!", "#ff8a8a");
+    hud();
+    await sleep(500);
+    await foeAttack();
+  }
+  if (S.php <= 0) return;
+  S.turn = "player";
+  hud();
+  S.busy = false;
+}
+async function foeAttack() {
+  const f = FOES[S.lv],
+    e = $("foe");
+  const attackWords = f.words.filter(has);
+  const fallbackWords = Array.from(WORDS).filter((entry) => entry.length >= 2);
+  const words = attackWords.length ? attackWords : fallbackWords;
+  const word = words[(Math.random() * words.length) | 0];
+  S.turn = "enemy";
+  hud();
+  e.classList.remove("bob");
+  e.classList.add("lunge");
+  await sleep(300);
+  const h = $("hero").getBoundingClientRect();
+  S.php -= f.atk;
+  burst(h.left + h.width / 2, h.top + h.height / 2, 30, "#ff4d4d");
+  shakeScreen(f.atk * 2);
+  blip(90, 0.3, "sawtooth");
+  $("hero").classList.add("hit");
+  num(h.left + 60, h.top, "-" + f.atk);
+  S.playerStunned = word.length > 5;
+  say(
+    `${f.n} attacks with "${word.toUpperCase()}" for ${f.atk} damage!${S.playerStunned ? " Wilbur is stunned!" : ""}`,
+    "#ff8a8a",
+  );
+  hud();
+  await sleep(400);
+  $("hero").classList.remove("hit");
+  e.classList.remove("lunge");
+  e.classList.add("bob");
+  if (S.php <= 0) end(false);
+}
+async function win() {
+  const f = $("foe").getBoundingClientRect();
+  burst(f.left + f.width / 2, f.top + f.height / 2, 120, "#ffd23f");
+  await $("foe").animate(
+    [
+      {
+        transform: "scale(1) rotate(0)",
+        opacity: 1,
+      },
+      {
+        transform: "scale(0) rotate(540deg)",
+        opacity: 0,
+      },
+    ],
+    {
+      duration: 700,
+      fill: "forwards",
+    },
+  ).finished;
+  blip(520, 0.3);
+  setTimeout(() => blip(780, 0.3), 150);
+  S.score += 500;
+  S.php = Math.min(100, S.php + 25);
+  STORE.coins += 10;
+  saveStore();
+  if (++S.lv >= FOES.length) {
+    hud();
+    return end(true);
+  }
+  say("Foe defeated! +25 health", "#b6f27a");
+  load();
+  S.busy = false;
+}
+function end(v) {
+  S.busy = true;
+  $("ot").textContent = v ? "Library saved!" : "Story over";
+  $("os").textContent =
+    (v ? "Wilbur defeated every monster. " : "Wilbur got bookmarked. ") +
+    "Final score: " +
+    S.score;
+  $("over").style.display = "flex";
+}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function num(x, y, t) {
+  const d = document.createElement("div");
+  d.className = "dmg";
+  d.textContent = t;
+  d.style.left = x - 20 + "px";
+  d.style.top = y + "px";
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 1000);
+}
+function shakeScreen(n) {
+  const a = $("arena");
+  a.classList.remove("shake");
+  void a.offsetWidth;
+  a.classList.add("shake");
+}
+function sweep() {}
+// particles + ambient fireflies
+const cv = $("fx"),
+  cx = cv.getContext("2d");
+let P = [],
+  FF = [];
+function rs() {
+  cv.width = innerWidth;
+  cv.height = innerHeight;
+}
+rs();
+addEventListener("resize", rs);
+for (let i = 0; i < 40; i++)
+  FF.push({
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight,
+    a: Math.random() * 6,
+    s: 0.2 + Math.random() * 0.5,
+  });
+function burst(x, y, n, c) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * 6.28,
+      v = 2 + Math.random() * 7;
+    P.push({
+      x,
+      y,
+      vx: Math.cos(a) * v,
+      vy: Math.sin(a) * v - 3,
+      l: 1,
+      r: 2 + Math.random() * 5,
+      c,
+      star: Math.random() < 0.3,
+    });
+  }
+}
+function loop() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  FF.forEach((f) => {
+    f.a += 0.02;
+    f.x += Math.cos(f.a) * f.s;
+    f.y += Math.sin(f.a * 0.8) * f.s - 0.1;
+    if (f.y < -10) f.y = cv.height + 10;
+    cx.globalAlpha = 0.4 + 0.4 * Math.sin(f.a * 3);
+    cx.fillStyle = "#fff3a8";
+    cx.shadowBlur = 12;
+    cx.shadowColor = "#ffe14d";
+    cx.beginPath();
+    cx.arc(f.x, f.y, 2, 0, 6.28);
+    cx.fill();
+  });
+  cx.shadowBlur = 0;
+  P = P.filter((p) => p.l > 0);
+  P.forEach((p) => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.25;
+    p.l -= 0.02;
+    cx.globalAlpha = Math.max(0, p.l);
+    cx.fillStyle = p.c;
+    cx.beginPath();
+    if (p.star) {
+      cx.save();
+      cx.translate(p.x, p.y);
+      cx.rotate(p.l * 8);
+      cx.fillRect(-p.r, -p.r, p.r * 2, p.r * 2);
+      cx.restore();
+    } else {
+      cx.arc(p.x, p.y, p.r * p.l + 1, 0, 6.28);
+      cx.fill();
+    }
+  });
+  cx.globalAlpha = 1;
+  requestAnimationFrame(loop);
+}
+loop();
+// sound
+let AC;
+let musicTimer = null;
+let musicStarting = false;
+let musicBus = null;
+let musicStep = 0;
+let nextMusicTime = 0;
+let noiseBuffer = null;
+const MUSIC_STEP = 60 / 116 / 2;
+const MUSIC_ROOTS = [50, 46, 48, 45];
+const MUSIC_MELODY = [12, null, 7, null, 10, null, 7, 5];
+const MUSIC_LOOP_STEPS = MUSIC_ROOTS.length * MUSIC_MELODY.length;
+
+function blip(f, d = 0.15, t = "triangle") {
+  try {
+    AC = AC || new AudioContext();
+    const o = AC.createOscillator(),
+      g = AC.createGain();
+    o.type = t;
+    o.frequency.value = f;
+    g.gain.setValueAtTime(0.08, AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + d);
+    o.connect(g).connect(AC.destination);
+    o.start();
+    o.stop(AC.currentTime + d);
+  } catch (e) {}
+}
+
+function musicFrequency(note) {
+  return 440 * 2 ** ((note - 69) / 12);
+}
+
+function playMusicTone(note, time, duration, volume, type, cutoff) {
+  const oscillator = AC.createOscillator();
+  const gain = AC.createGain();
+  const filter = AC.createBiquadFilter();
+  oscillator.type = type;
+  oscillator.frequency.value = musicFrequency(note);
+  filter.type = "lowpass";
+  filter.frequency.value = cutoff;
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(volume, time + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+  oscillator.connect(filter).connect(gain).connect(musicBus);
+  oscillator.start(time);
+  oscillator.stop(time + duration + 0.02);
+}
+
+function playBattleKick(time) {
+  const oscillator = AC.createOscillator();
+  const gain = AC.createGain();
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(135, time);
+  oscillator.frequency.exponentialRampToValueAtTime(42, time + 0.16);
+  gain.gain.setValueAtTime(0.7, time);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.18);
+  oscillator.connect(gain).connect(musicBus);
+  oscillator.start(time);
+  oscillator.stop(time + 0.2);
+}
+
+function playBattleSnare(time) {
+  const noise = AC.createBufferSource();
+  const filter = AC.createBiquadFilter();
+  const gain = AC.createGain();
+  noise.buffer = noiseBuffer;
+  filter.type = "highpass";
+  filter.frequency.value = 1400;
+  gain.gain.setValueAtTime(0.28, time);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.12);
+  noise.connect(filter).connect(gain).connect(musicBus);
+  noise.start(time);
+  noise.stop(time + 0.13);
+}
+
+function scheduleBattleMusic() {
+  while (nextMusicTime < AC.currentTime + 0.12) {
+    const step = musicStep;
+    const beat = step % 8;
+    const root = MUSIC_ROOTS[Math.floor(step / 8)];
+    const time = nextMusicTime;
+    const melody = MUSIC_MELODY[beat];
+
+    playMusicTone(
+      root - 12 + (beat % 2 ? 7 : 0),
+      time,
+      0.2,
+      0.38,
+      "sawtooth",
+      260,
+    );
+    if (beat === 0 || beat === 4) playBattleKick(time);
+    if (beat === 2 || beat === 6) playBattleSnare(time);
+    if (melody !== null) {
+      playMusicTone(root + melody, time, 0.22, 0.16, "square", 1500);
+    }
+
+    musicStep = (musicStep + 1) % MUSIC_LOOP_STEPS;
+    nextMusicTime += MUSIC_STEP;
+  }
+}
+
+async function startBattleMusic() {
+  AC = AC || new AudioContext();
+  await AC.resume();
+  musicBus = AC.createGain();
+  musicBus.gain.setValueAtTime(0, AC.currentTime);
+  musicBus.gain.linearRampToValueAtTime(0.3, AC.currentTime + 0.6);
+  musicBus.connect(AC.destination);
+
+  noiseBuffer = AC.createBuffer(1, AC.sampleRate * 0.15, AC.sampleRate);
+  const noiseData = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < noiseData.length; i++) {
+    noiseData[i] = Math.random() * 2 - 1;
+  }
+
+  musicStep = 0;
+  nextMusicTime = AC.currentTime + 0.05;
+  musicTimer = setInterval(scheduleBattleMusic, 50);
+  $("bMusic").setAttribute("aria-pressed", "true");
+  $("musicLabel").textContent = "Pause battle music";
+}
+
+function stopBattleMusic() {
+  clearInterval(musicTimer);
+  musicTimer = null;
+  if (musicBus) {
+    const bus = musicBus;
+    bus.gain.setTargetAtTime(0, AC.currentTime, 0.05);
+    setTimeout(() => bus.disconnect(), 250);
+    musicBus = null;
+  }
+  $("bMusic").setAttribute("aria-pressed", "false");
+  $("musicLabel").textContent = "Play battle music";
+}
+
+async function toggleBattleMusic() {
+  if (musicTimer !== null) {
+    stopBattleMusic();
+    return;
+  }
+  if (musicStarting) return;
+  musicStarting = true;
+  try {
+    await startBattleMusic();
+  } finally {
+    musicStarting = false;
+  }
+}
+
+// controls
+$("bShop").onclick = openShop;
+$("bShopClose").onclick = closeShop;
+$("skinFilters").addEventListener("click", (event) => {
+  const filter = event.target.closest("[data-rarity]");
+  if (!filter) return;
+  activeSkinRarity = filter.dataset.rarity;
+  renderShop();
+});
+$("skinGrid").addEventListener("click", handleSkinAction);
+$("shop").addEventListener("click", (event) => {
+  if (event.target === $("shop")) closeShop();
+});
+addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !$("shop").hidden) closeShop();
+});
+$("bMusic").onclick = async () => {
+  try {
+    await toggleBattleMusic();
+  } catch (error) {
+    console.error("Could not toggle battle music:", error);
+    say("Battle music could not start in this browser.", "#ff8a8a");
+  }
+};
+$("bGo").onclick = go;
+$("bClear").onclick = () => {
+  if (!S.busy) {
+    S.sel = [];
+    updSel();
+  }
+};
+$("bShuf").onclick = () => {
+  if (S.busy) return;
+  S.t = S.t
+    .map((t) => ({
+      ...t,
+      fresh: false,
+    }))
+    .sort(() => Math.random() - 0.5);
+  S.sel = [];
+  fixVowels();
+  render();
+  blip(220, 0.2);
+};
+$("bAgain").onclick = start;
+addEventListener("keydown", (e) => {
+  if (S.busy) return;
+  if (e.key === "Enter") return go();
+  if (e.key === "Backspace") {
+    S.sel.pop();
+    return updSel();
+  }
+  if (/^[a-z]$/i.test(e.key)) {
+    const L = e.key.toUpperCase(),
+      i = S.t.findIndex((t, k) => t.l === L && !S.sel.includes(k));
+    if (i > -1) pick(i);
+  }
+});
+function startRequestedMode() {
+  start();
+  if (new URLSearchParams(location.search).get("mode") === "shop") openShop();
+}
+
+loadDictionary()
+  .then(() => {
+    console.info("Dictionary words loaded:", BIG.size + WORDS.size);
+    startRequestedMode();
+  })
+  .catch((error) => {
+    console.error("Could not load the expanded dictionary:", error);
+    startRequestedMode();
+    say(
+      "Expanded dictionary unavailable; some words may not validate.",
+      "#ff8a8a",
+    );
+  });

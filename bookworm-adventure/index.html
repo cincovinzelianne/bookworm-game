@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Enter Wormwood Library, a cozy word-battle adventure where clever words protect a magical library."
+    />
+    <title>Wormwood Library – A Word-Battle Adventure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Lora:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="landing-page">
+    <div class="shelf" aria-hidden="true"></div>
+    <main class="landing">
+      <header class="landing-nav">
+        <a
+          class="brand-badge"
+          href="index.html"
+          aria-label="Wormwood Library home"
+        >
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span class="serif brand-name">Wormwood Library</span>
+        </a>
+        <a class="landing-nav-link" href="#how-to-play">How to play</a>
+      </header>
+
+      <section class="landing-hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span aria-hidden="true">✦</span> A cozy word-battle adventure
+          </p>
+          <h1 id="hero-title" class="serif">
+            Every word tells
+            <span> a story.</span>
+          </h1>
+          <p class="hero-description">
+            The library needs a hero. Join Wilbur, spell clever words, and
+            outwit the monsters roaming the stacks.
+          </p>
+          <button
+            class="landing-cta"
+            id="open-mode-picker"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="mode-picker"
+          >
+            Enter the library <span aria-hidden="true">→</span>
+          </button>
+          <p class="cta-note">
+            Four chapters. A shelf full of monsters. Your move.
+          </p>
+        </div>
+
+        <div
+          class="hero-art"
+          aria-label="Wilbur the bookworm guarding a magical book"
+        >
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <span class="spark spark-one" aria-hidden="true">✦</span>
+          <span class="spark spark-two" aria-hidden="true">✧</span>
+          <span class="spark spark-three" aria-hidden="true">✦</span>
+          <svg
+            class="wilbur-art"
+            viewBox="0 0 260 250"
+            role="img"
+            aria-labelledby="wilbur-title"
+          >
+            <title id="wilbur-title">Wilbur the cheerful bookworm</title>
+            <ellipse
+              cx="130"
+              cy="226"
+              rx="98"
+              ry="13"
+              fill="#060d17"
+              opacity=".55"
+            />
+            <circle cx="70" cy="183" r="37" fill="#70c84e" />
+            <circle cx="112" cy="177" r="41" fill="#8fe06c" />
+            <circle cx="158" cy="151" r="49" fill="#a4ee7a" />
+            <circle cx="163" cy="84" r="56" fill="#b9f78d" />
+            <path
+              d="M149 27q-10-25 7-35m19 36q8-23 27-21"
+              fill="none"
+              stroke="#5aa83c"
+              stroke-linecap="round"
+              stroke-width="8"
+            />
+            <circle cx="156" cy="-7" r="7" fill="#ffd23f" />
+            <circle cx="203" cy="7" r="7" fill="#ffd23f" />
+            <circle
+              cx="146"
+              cy="80"
+              r="17"
+              fill="#fff"
+              stroke="#3a1f0a"
+              stroke-width="6"
+            />
+            <circle
+              cx="181"
+              cy="80"
+              r="17"
+              fill="#fff"
+              stroke="#3a1f0a"
+              stroke-width="6"
+            />
+            <circle cx="149" cy="82" r="7" fill="#222" />
+            <circle cx="184" cy="82" r="7" fill="#222" />
+            <path
+              d="M151 108q16 16 34 0"
+              fill="none"
+              stroke="#3a1f0a"
+              stroke-linecap="round"
+              stroke-width="6"
+            />
+            <g transform="rotate(-10 133 178)">
+              <rect
+                x="101"
+                y="156"
+                width="65"
+                height="48"
+                rx="8"
+                fill="#b8352f"
+              />
+              <rect
+                x="109"
+                y="163"
+                width="49"
+                height="34"
+                rx="4"
+                fill="#f6ecd2"
+              />
+              <path d="M133 163v34" stroke="#d6c6a5" stroke-width="3" />
+            </g>
+          </svg>
+          <div class="art-caption">
+            <span></span> Wilbur is ready for an adventure
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="adventure-details"
+        id="how-to-play"
+        aria-labelledby="details-title"
+      >
+        <div class="details-heading">
+          <p class="eyebrow">A little magic, a lot of wordplay</p>
+          <h2 id="details-title" class="serif">
+            The library is counting on you.
+          </h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <span class="feature-icon" aria-hidden="true">Aa</span>
+            <h3>Spell to strike</h3>
+            <p>
+              Build words from letter tiles to battle the creatures hiding in
+              the stacks.
+            </p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon feature-icon-gold" aria-hidden="true"
+              >✦</span
+            >
+            <h3>Take turns</h3>
+            <p>
+              You attack first, then the monster answers. Long words can stun
+              your opponent.
+            </p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon feature-icon-green" aria-hidden="true"
+              >✿</span
+            >
+            <h3>Save the stories</h3>
+            <p>
+              Face four curious foes and help Wilbur bring the library back to
+              life.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="landing-footer">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>Wormwood Library</span>
+        <span class="footer-divider" aria-hidden="true">·</span>
+        <span>A word can change the story.</span>
+      </footer>
+    </main>
+    <div
+      class="mode-backdrop"
+      id="mode-picker"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mode-title"
+    >
+      <section class="mode-panel">
+        <header class="mode-header">
+          <div>
+            <p class="eyebrow">Choose your adventure</p>
+            <h2 class="serif" id="mode-title">Where will you play?</h2>
+          </div>
+          <button
+            class="mode-close"
+            id="close-mode-picker"
+            type="button"
+            aria-label="Close mode selection"
+          >
+            ×
+          </button>
+        </header>
+        <div class="mode-options">
+          <button
+            class="mode-card mode-card-disabled"
+            type="button"
+            disabled
+            aria-describedby="arena-coming-soon"
+          >
+            <span class="mode-icon mode-icon-arena" aria-hidden="true">⚔</span>
+            <span class="mode-card-copy">
+              <strong>Arena / Multiplayer</strong>
+              <span id="arena-coming-soon"
+                >Online battles are coming soon.</span
+              >
+            </span>
+            <span class="mode-status">Coming soon</span>
+          </button>
+          <a class="mode-card" href="game.html?mode=adventure">
+            <span class="mode-icon mode-icon-adventure" aria-hidden="true"
+              >✦</span
+            >
+            <span class="mode-card-copy">
+              <strong>Adventure</strong>
+              <span>Battle through four chapters and save the library.</span>
+            </span>
+            <span class="mode-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="mode-card" href="game.html?mode=shop">
+            <span class="mode-icon mode-icon-shop" aria-hidden="true">◇</span>
+            <span class="mode-card-copy">
+              <strong>Shop</strong>
+              <span>Browse worm skins and premium looks.</span>
+            </span>
+            <span class="mode-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+        <p class="mode-note">
+          Multiplayer will be available when online battles are ready.
+        </p>
+      </section>
+    </div>
+    <script src="js/landing.js"></script>
+  </body>
+</html>

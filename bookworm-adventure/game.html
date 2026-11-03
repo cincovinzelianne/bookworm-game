@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Wormwood Library – Word Battle</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Lora:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/en-dictionary-array@1.0.0/index.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="game-page">
+    <div class="shelf"></div>
+    <canvas id="fx"></canvas>
+    <main
+      class="relative z-10 mx-auto flex min-h-full max-w-xl flex-col gap-3 px-3 py-3"
+    >
+      <header class="topbar">
+        <a
+          class="brand-badge"
+          href="index.html"
+          aria-label="Back to Wormwood Library home"
+        >
+          <span class="brand-mark">✦</span>
+          <h1 class="serif text-xl font-bold leading-none">Wormwood Library</h1>
+        </a>
+        <div class="game-header-actions">
+          <div class="score-pill">
+            Chapter <b id="lvl">1</b>/4 · Score <b id="score">0</b> ·
+            <span aria-label="Coins">✦ <b id="coins">0</b></span>
+          </div>
+          <details class="game-menu">
+            <summary
+              class="menu-icon"
+              aria-label="Open game menu"
+              title="Game menu"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </summary>
+            <nav class="game-menu-panel" aria-label="Game menu">
+              <a href="index.html">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"
+                  />
+                </svg>
+                Back to landing page
+              </a>
+              <button id="bShop" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 9h18l-1.5 12h-15zM5 9l2-6h10l2 6M9 13v4m6-4v4" />
+                </svg>
+                Worm skin marketplace
+              </button>
+              <button id="bMusic" type="button" aria-pressed="false">
+                <svg class="music-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 18V5l12-2v13" />
+                  <circle cx="6" cy="18" r="3" />
+                  <circle cx="18" cy="16" r="3" />
+                </svg>
+                <span id="musicLabel">Play battle music</span>
+              </button>
+            </nav>
+          </details>
+        </div>
+      </header>
+
+      <section
+        id="arena"
+        class="relative rounded-3xl border border-white/10 bg-black/25 px-3 pt-3 pb-2 backdrop-blur"
+      >
+        <div class="grid grid-cols-2 gap-3 text-xs font-bold">
+          <div>
+            <div class="mb-1 flex justify-between">
+              <span>Wilbur</span><span id="php"></span>
+            </div>
+            <div class="h-3 overflow-hidden rounded-full bg-black/50">
+              <div
+                id="pbar"
+                class="bar h-full w-full rounded-full bg-gradient-to-r from-lime-400 to-emerald-500"
+              ></div>
+            </div>
+          </div>
+          <div>
+            <div class="mb-1 flex justify-between">
+              <span id="ename"></span><span id="ehp"></span>
+            </div>
+            <div class="h-3 overflow-hidden rounded-full bg-black/50">
+              <div
+                id="ebar"
+                class="bar h-full w-full rounded-full bg-gradient-to-r from-rose-500 to-orange-400"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="relative mt-2 flex h-44 items-end justify-between px-2 sm:h-52"
+        >
+          <div id="hero" class="bob w-32 sm:w-40"></div>
+          <div id="foe" class="w-32 sm:w-40"></div>
+        </div>
+        <div class="flex items-center justify-end gap-2 pb-1 text-xs">
+          Turn: <span id="turn" class="font-bold"></span>
+        </div>
+      </section>
+
+      <section
+        class="flex min-h-[3.4rem] items-center justify-center gap-1"
+        id="word"
+        aria-live="polite"
+      ></section>
+      <p id="msg" class="serif -mt-2 h-5 text-center text-sm opacity-90"></p>
+
+      <section
+        id="board"
+        class="mx-auto grid w-full max-w-sm grid-cols-4 gap-2.5"
+      ></section>
+
+      <section class="flex justify-center gap-2">
+        <button id="bClear" class="btn bg-slate-600">Clear</button>
+        <button id="bShuf" class="btn bg-indigo-500">Shuffle</button>
+        <button
+          id="bGo"
+          class="btn bg-gradient-to-b from-lime-400 to-emerald-600 px-8 text-emerald-950"
+        >
+          Attack!
+        </button>
+      </section>
+      <p class="serif text-center text-xs opacity-60">
+        Tap or type letters, Enter to attack. Longer words and gold gems hit
+        harder.
+      </p>
+    </main>
+
+    <div
+      id="over"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-6"
+    >
+      <div
+        class="toast serif w-full max-w-xs rounded-3xl bg-[#f3e3bd] p-6 text-center text-[#3a1f0a] shadow-2xl"
+      >
+        <h2 id="ot" class="text-3xl font-bold"></h2>
+        <p id="os" class="my-3"></p>
+        <button id="bAgain" class="btn bg-emerald-600 text-white">
+          Play again
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="shop"
+      class="shop-backdrop"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="shop-title"
+    >
+      <section class="shop-panel">
+        <header class="shop-header">
+          <div>
+            <p class="shop-kicker">A little color goes a long way</p>
+            <h2 id="shop-title" class="serif">Worm wardrobe</h2>
+          </div>
+          <button
+            id="bShopClose"
+            class="shop-close"
+            type="button"
+            aria-label="Close marketplace"
+          >
+            ×
+          </button>
+        </header>
+        <p class="shop-wallet">
+          Your coins: <strong id="shopCoins">0</strong> ✦
+        </p>
+        <p id="shopMessage" class="shop-message" aria-live="polite">
+          Earn coins by attacking monsters and winning battles.
+        </p>
+        <div
+          id="skinFilters"
+          class="skin-filters"
+          aria-label="Filter skins by rarity"
+        ></div>
+        <div id="skinGrid" class="skin-grid"></div>
+      </section>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
