@@ -2674,19 +2674,19 @@ a.mode-card:hover .mode-arrow {
 }
 
 .hero-visual:not(.motion-ready) .worm-eyelid {
-  animation: worm-blink 6.4s ease-in-out infinite;
+  animation: worm-blink 7.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 .hero-visual:not(.motion-ready) [data-worm-eye="right"] .worm-eyelid {
-  animation-delay: 0.025s;
+  animation-delay: 0.04s;
 }
 
 .hero-visual:not(.motion-ready) .worm-lash {
-  animation: worm-lash 6.4s ease-in-out infinite;
+  animation: worm-lash 7.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 .hero-visual:not(.motion-ready) [data-worm-eye="right"] .worm-lash {
-  animation-delay: 0.025s;
+  animation-delay: 0.04s;
 }
 
 @keyframes landing-character-float {
@@ -2704,31 +2704,25 @@ a.mode-card:hover .mode-arrow {
 
 @keyframes worm-blink {
   0%,
-  44%,
-  48%,
-  79%,
-  83%,
+  69%,
+  74%,
   100% {
     transform: scaleY(0);
   }
-  46%,
-  81% {
-    transform: scaleY(1);
+  71% {
+    transform: scaleY(0.94);
   }
 }
 
 @keyframes worm-lash {
   0%,
-  44%,
-  48%,
-  79%,
-  83%,
+  69%,
+  74%,
   100% {
     opacity: 0;
   }
-  46%,
-  81% {
-    opacity: 1;
+  71% {
+    opacity: 0.7;
   }
 }
 

@@ -179,39 +179,34 @@ function animateWilbur() {
   let blinkTimer;
   const blink = () => {
     if (document.hidden || reduceMotion.matches) {
-      blinkTimer = window.setTimeout(blink, 1000);
+      blinkTimer = window.setTimeout(blink, 1200);
       return;
     }
 
-    gsap.to(eyelids, {
-      scaleY: 1,
-      duration: 0.085,
-      stagger: 0.025,
-      ease: "power2.in",
+    const blinkMotion = gsap.timeline({
       onComplete: () => {
-        gsap.to(eyelids, {
-          scaleY: 0,
-          duration: 0.12,
-          stagger: 0.025,
-          ease: "power2.out",
-        });
+        blinkTimer = window.setTimeout(blink, 4300 + Math.random() * 2500);
       },
     });
-    gsap.fromTo(
-      lashes,
-      { opacity: 0 },
-      {
-        opacity: 1,
-        duration: 0.075,
-        stagger: 0.025,
-        repeat: 1,
-        yoyo: true,
-      },
-    );
-    blinkTimer = window.setTimeout(blink, 2300 + Math.random() * 2600);
+    blinkMotion
+      .to(eyelids, {
+        scaleY: 0.94,
+        duration: 0.15,
+        stagger: 0.035,
+        ease: "sine.inOut",
+      })
+      .to(lashes, { opacity: 0.7, duration: 0.1, stagger: 0.035 }, "<")
+      .to({}, { duration: 0.035 })
+      .to(eyelids, {
+        scaleY: 0,
+        duration: 0.24,
+        stagger: 0.035,
+        ease: "sine.out",
+      })
+      .to(lashes, { opacity: 0, duration: 0.2, stagger: 0.035 }, "<");
   };
 
-  blinkTimer = window.setTimeout(blink, 900);
+  blinkTimer = window.setTimeout(blink, 1700 + Math.random() * 900);
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       window.clearTimeout(blinkTimer);
