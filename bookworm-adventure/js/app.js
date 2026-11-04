@@ -35,7 +35,7 @@ const PTS = {
 const BAG =
   "EEEEEEEEEEEEAAAAAAAAAIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXZ";
 const VOW = "AEIOU";
-const hero = `<svg viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="60" ry="6" fill="#0006"/>
+const hero = `<svg class="skin-character" viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="60" ry="6" fill="#0006"/>
 <g class="seg" style="animation-delay:.6s"><circle cx="28" cy="122" r="22" fill="#7bd35c"/></g><g class="seg" style="animation-delay:.4s"><circle cx="58" cy="118" r="25" fill="#8fe06c"/></g><g class="seg" style="animation-delay:.2s"><circle cx="92" cy="104" r="30" fill="#a4ee7a"/></g>
 <g class="seg"><circle cx="104" cy="62" r="36" fill="#b9f78d"/>
 <path d="M92 28q-6-18 8-20M112 28q4-16 18-14" stroke="#5aa83c" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="100" cy="8" r="5" fill="#ffd23f"/><circle cx="130" cy="14" r="5" fill="#ffd23f"/></g>
@@ -1452,12 +1452,15 @@ function wormSvg(skin = getSkin()) {
   }
   return svg;
 }
+const skinMotionPreference = window.matchMedia(
+  "(prefers-reduced-motion: reduce)",
+);
 function clearSkinAnimations() {
   const gsap = window.gsap;
   if (!gsap) return;
   gsap.killTweensOf(
     $("hero").querySelectorAll(
-      ".skin-float, .skin-wings, .skin-flame, .mythic-wings, .mythic-aura-field, .mythic-aura-ring, .mythic-aura-sigils",
+      "svg, .seg, .skin-float, .skin-wings, .skin-flame, .mythic-creature, .mythic-wings, .mythic-aura-field, .mythic-aura-ring, .mythic-aura-sigils",
     ),
   );
 }
@@ -1473,24 +1476,67 @@ function animateEquippedSkin(skin = getSkin()) {
   worm.classList.add(`skin-${skin.rarity}`);
   worm.style.setProperty("--skin-accent", skin.accent);
   const gsap = window.gsap;
-  if (
-    !gsap ||
-    !skin.accessory ||
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  )
+  const reducedMotion = skinMotionPreference.matches;
+  document.body.classList.toggle(
+    "gsap-skin-motion",
+    Boolean(gsap) && !reducedMotion,
+  );
+  if (gsap) clearSkinAnimations();
+  if (!gsap || reducedMotion)
     return;
 
-  gsap.killTweensOf(
-    worm.querySelectorAll(
-      ".skin-float, .skin-wings, .skin-flame, .mythic-aura-field, .mythic-aura-ring, .mythic-aura-sigils",
-    ),
-  );
+  const character = worm.querySelector("svg");
+  const segments = worm.querySelectorAll(".seg");
+  const creature = worm.querySelector(".mythic-creature");
   const floaters = worm.querySelectorAll(".skin-float");
-  const wings = worm.querySelectorAll(".skin-wings");
+  const wings = worm.querySelectorAll(".skin-wings, .mythic-wings");
   const flames = worm.querySelectorAll(".skin-flame");
   const auraField = worm.querySelector(".mythic-aura-field");
   const auraRings = worm.querySelectorAll(".mythic-aura-ring");
   const auraSigils = worm.querySelectorAll(".mythic-aura-sigils");
+  if (character)
+    gsap.fromTo(
+      character,
+      { y: 1, rotation: -1, scaleY: 0.985 },
+      {
+        y: -3,
+        rotation: 1,
+        scaleY: 1,
+        duration: 2.2,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        transformOrigin: "50% 75%",
+      },
+    );
+  if (segments.length)
+    gsap.fromTo(
+      segments,
+      { x: 1.5, rotation: -1.5 },
+      {
+        x: -1.5,
+        rotation: 1.5,
+        duration: 0.9,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        stagger: 0.12,
+        transformOrigin: "center",
+      },
+    );
+  if (creature)
+    gsap.fromTo(
+      creature,
+      { scaleY: 0.98 },
+      {
+        scaleY: 1.02,
+        duration: 1.5,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        transformOrigin: "50% 90%",
+      },
+    );
   if (auraField)
     gsap.fromTo(
       auraField,
@@ -1541,10 +1587,11 @@ function animateEquippedSkin(skin = getSkin()) {
   if (wings.length)
     gsap.fromTo(
       wings,
-      { scaleY: 0.8 },
+      { scaleY: 0.96, rotation: -1.5 },
       {
-        scaleY: 1.08,
-        duration: 0.24,
+        scaleY: 1.04,
+        rotation: 1.5,
+        duration: skin.rarity === "mythic" ? 0.72 : 1.25,
         ease: "sine.inOut",
         repeat: -1,
         yoyo: true,
@@ -1566,6 +1613,14 @@ function animateEquippedSkin(skin = getSkin()) {
       },
     );
 }
+skinMotionPreference.addEventListener("change", () => {
+  if (skinMotionPreference.matches) {
+    document.body.classList.remove("gsap-skin-motion");
+    clearSkinAnimations();
+    return;
+  }
+  animateEquippedSkin();
+});
 function playLegendaryAttack(skin, x, y) {
   if (skin.rarity !== "legendary" && skin.rarity !== "mythic")
     return Promise.resolve();
