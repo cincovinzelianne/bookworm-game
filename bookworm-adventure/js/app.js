@@ -53,6 +53,10 @@ const SKIN_PALETTES = [
   ["sky", "Sky", 55, "#c2eeff", "#7dd3ef", "#3d9fc6", "#287596"],
   ["lemon", "Lemon", 60, "#fff39b", "#e9d45d", "#baa537", "#87782b"],
   ["lilac", "Lilac", 65, "#f2c5ff", "#d393ec", "#a553bd", "#793a91"],
+  ["pebble", "Pebble", 70, "#d5d6ca", "#b4b8aa", "#858c81", "#5d655e"],
+  ["peach", "Peach", 75, "#ffe0bd", "#f7b98e", "#d98a68", "#a9614e"],
+  ["bluebell", "Bluebell", 80, "#d3d9ff", "#a8b2f3", "#7783cb", "#535b98"],
+  ["sprout", "Sprout", 85, "#d6f5a1", "#a7d66c", "#75a849", "#4d793c"],
 ];
 const RARE_SKINS = [
   [
@@ -135,6 +139,46 @@ const RARE_SKINS = [
     "#246c63",
     "bubbles",
   ],
+  [
+    "emberfox",
+    "Emberfox",
+    255,
+    "#ffd09a",
+    "#ed9a65",
+    "#bd6549",
+    "#85443b",
+    "phoenix",
+  ],
+  [
+    "glacier",
+    "Glacier",
+    275,
+    "#e2fbff",
+    "#9bdde9",
+    "#64a9c5",
+    "#3f718f",
+    "ice",
+  ],
+  [
+    "sunpetal",
+    "Sunpetal",
+    295,
+    "#fff1a8",
+    "#f3ce68",
+    "#cb9445",
+    "#8f6534",
+    "blossoms",
+  ],
+  [
+    "twilight",
+    "Twilight",
+    315,
+    "#e4c9ff",
+    "#ae8ad7",
+    "#7859ad",
+    "#514078",
+    "stars",
+  ],
 ];
 const EPIC_SKINS = [
   [
@@ -196,6 +240,66 @@ const EPIC_SKINS = [
     "#439b96",
     "#2b6b72",
     "aurora",
+  ],
+  [
+    "runekeeper",
+    "Runekeeper",
+    540,
+    "#c5eaff",
+    "#7ab9e2",
+    "#4c7fb4",
+    "#315781",
+    "wizard",
+  ],
+  [
+    "coralwarden",
+    "Coral Warden",
+    575,
+    "#ffe0d2",
+    "#e89884",
+    "#b7656d",
+    "#7c4257",
+    "armor",
+  ],
+  [
+    "thunderbud",
+    "Thunderbud",
+    610,
+    "#e0f9ff",
+    "#9cd9ed",
+    "#5ca5ce",
+    "#3d699e",
+    "storm",
+  ],
+  [
+    "honeycomet",
+    "Honey Comet",
+    650,
+    "#fff0a5",
+    "#f2c65f",
+    "#d18b3f",
+    "#8c5734",
+    "celestial",
+  ],
+  [
+    "shadowbloom",
+    "Shadowbloom",
+    690,
+    "#efceff",
+    "#bd89d8",
+    "#80519e",
+    "#55366f",
+    "void",
+  ],
+  [
+    "crystalknight",
+    "Crystal Knight",
+    740,
+    "#d9fff6",
+    "#91daca",
+    "#539f9c",
+    "#35666f",
+    "armor",
   ],
 ];
 const LEGENDARY_SKINS = [
@@ -276,6 +380,129 @@ const LEGENDARY_SKINS = [
     "timekeeper",
     "chronosphere",
   ],
+  [
+    "dawnempress",
+    "Dawn Empress",
+    2100,
+    "#fff4c2",
+    "#f0c875",
+    "#c77b58",
+    "#80505a",
+    "crown",
+    "nova",
+  ],
+  [
+    "deeporacle",
+    "Deep Oracle",
+    2300,
+    "#c9fff3",
+    "#68cdbd",
+    "#347e91",
+    "#254964",
+    "celestial",
+    "tide",
+  ],
+  [
+    "emberknight",
+    "Ember Knight",
+    2500,
+    "#ffe2a1",
+    "#e88851",
+    "#a94c49",
+    "#672e46",
+    "armor",
+    "inferno",
+  ],
+  [
+    "frostoracle",
+    "Frost Oracle",
+    2750,
+    "#edffff",
+    "#a8ddf1",
+    "#6c9dcc",
+    "#465b9a",
+    "ice",
+    "nova",
+  ],
+  [
+    "wildsovereign",
+    "Wild Sovereign",
+    3000,
+    "#efffa9",
+    "#a6d66b",
+    "#5a9a54",
+    "#34634b",
+    "verdant",
+    "vine",
+  ],
+  [
+    "eclipsemonarch",
+    "Eclipse Monarch",
+    3300,
+    "#f4d8ff",
+    "#a98bd1",
+    "#63548f",
+    "#382f62",
+    "void",
+    "rift",
+  ],
+];
+const MYTHIC_SKINS = [
+  [
+    "mythic-astral-dragon",
+    "Astral Dragon",
+    5000,
+    "#c5ffff",
+    "#73d9e8",
+    "#398bc4",
+    "#33447e",
+    "astral",
+    "mythic-dragon",
+  ],
+  [
+    "mythic-solar-phoenix",
+    "Solar Phoenix",
+    5500,
+    "#fff0a4",
+    "#ff9f45",
+    "#eb4c54",
+    "#852b67",
+    "solar",
+    "mythic-phoenix",
+  ],
+  [
+    "mythic-prism-butterfly",
+    "Prism Butterfly",
+    6000,
+    "#ffe0fa",
+    "#df91ee",
+    "#8a7ae5",
+    "#4953a3",
+    "prism",
+    "mythic-butterfly",
+  ],
+  [
+    "mythic-moonstag",
+    "Moonlit Stag",
+    6500,
+    "#e4e8ff",
+    "#9da8ec",
+    "#5f70bc",
+    "#394779",
+    "moon",
+    "mythic-stag",
+  ],
+  [
+    "mythic-tide-serpent",
+    "Tide Serpent",
+    7000,
+    "#bdfff0",
+    "#55d2c2",
+    "#238aa4",
+    "#285272",
+    "tide",
+    "mythic-serpent",
+  ],
 ];
 const SKIN_ACCESSORIES = {
   stars: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="m75 60 4 9 10 1-8 7 2 10-8-5-8 5 2-10-8-7 10-1z"/><path d="m133 88 3 6 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z"/></g>`,
@@ -299,6 +526,131 @@ const SKIN_ACCESSORIES = {
   void: `<g class="skin-accessory skin-float" fill="none" stroke="${"${accent}"}" stroke-width="4"><circle cx="105" cy="62" r="62"/><circle cx="105" cy="62" r="51" stroke-dasharray="3 8"/><path d="m104 5 7 14-7 14-7-14z" fill="#fff"/></g>`,
   starlord: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="M76 42 91 5l13 31 25-28-4 39q-25-9-49-5z"/><path d="m147 85 5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2z"/><circle cx="77" cy="89" r="5"/></g>`,
   timekeeper: `<g class="skin-accessory skin-float" fill="none" stroke="${"${accent}"}" stroke-width="4"><circle cx="105" cy="62" r="58"/><circle cx="105" cy="62" r="46"/><path d="M105 30v33l23 13M74 24l-8-8m72 8 8-8"/></g>`,
+};
+const MYTHIC_SKIN_ART = {
+  "mythic-dragon": (skin) => {
+    const id = skin.id;
+    return `<svg class="mythic-character mythic-dragon" viewBox="0 0 200 160" role="img" aria-label="${skin.name}">
+      <defs>
+        <linearGradient id="${id}-body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${skin.accent}"/><stop offset=".52" stop-color="${skin.colors["#8fe06c"]}"/><stop offset="1" stop-color="${skin.shade}"/></linearGradient>
+        <linearGradient id="${id}-wing" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${skin.accent}" stop-opacity=".95"/><stop offset="1" stop-color="${skin.colors["#7bd35c"]}" stop-opacity=".55"/></linearGradient>
+        <radialGradient id="${id}-core"><stop stop-color="#fff"/><stop offset=".3" stop-color="${skin.accent}"/><stop offset="1" stop-color="${skin.accent}" stop-opacity="0"/></radialGradient>
+        <filter id="${id}-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <ellipse cx="101" cy="148" rx="70" ry="7" fill="#080d20" opacity=".55"/>
+      <circle cx="103" cy="76" r="68" fill="url(#${id}-core)" opacity=".34"/>
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round">
+        <path d="M92 84Q53 5 10 17l23 35-22-5 28 40-23 5 48 26 34-18z" fill="url(#${id}-wing)"/>
+        <path d="m88 88-49-36m49 39L39 92m49-1-26 20M104 84q43-79 86-67l-23 35 22-5-28 40 23 5-48 26-34-18z" fill="url(#${id}-wing)"/>
+        <path d="m110 88 49-36m-49 39 49 1m-49-1 26 20" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>
+      </g>
+      <path d="M52 119q24 22 53 5 23-14 40-22l13 8q-30 6-46 26-29 19-62-5z" fill="url(#${id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="M62 128q-20 1-27-13l18 1-10-12 24 11m57-4 18 18-21-5 4 14-18-15" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M76 119q20 13 40 3m-29 0 2 7m10-4 2 6m39-17q17 8 31 5" fill="none" stroke="#fff5c8" stroke-opacity=".8" stroke-width="3"/>
+      <path d="M129 77q12-25 34-14l18 17-11 20-29 2-17-12z" fill="url(#${id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m145 69 1-20 14 17m7 1 11-17 1 24" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="4" stroke-linejoin="round"/>
+      <path d="m157 85 17 2-14 7" fill="#fff1d3" stroke="${skin.shade}" stroke-width="2"/>
+      <ellipse cx="151" cy="78" rx="7" ry="5" fill="#fff7cf"/><ellipse cx="153" cy="78" rx="2" ry="4" fill="${skin.shade}"/>
+      <path d="M111 98q10 10 18 7m-53 16 12 7m31-19 10 7" fill="none" stroke="${skin.accent}" stroke-width="5" stroke-linecap="round"/>
+      <circle class="skin-float" cx="105" cy="40" r="12" fill="${skin.accent}" opacity=".72" filter="url(#${id}-glow)"/>
+      <path d="m105 32 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fffbe0"/>
+    </svg>`;
+  },
+  "mythic-phoenix": (skin) => {
+    const id = skin.id;
+    return `<svg class="mythic-character mythic-phoenix" viewBox="0 0 200 160" role="img" aria-label="${skin.name}">
+      <defs>
+        <linearGradient id="${id}-feather" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff5b0"/><stop offset=".38" stop-color="${skin.accent}"/><stop offset="1" stop-color="${skin.colors["#7bd35c"]}"/></linearGradient>
+        <linearGradient id="${id}-body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff2b1"/><stop offset=".5" stop-color="${skin.colors["#8fe06c"]}"/><stop offset="1" stop-color="${skin.shade}"/></linearGradient>
+        <radialGradient id="${id}-aura"><stop stop-color="${skin.accent}" stop-opacity=".6"/><stop offset="1" stop-color="${skin.accent}" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="100" cy="148" rx="58" ry="7" fill="#160c25" opacity=".52"/>
+      <circle cx="100" cy="76" r="73" fill="url(#${id}-aura)"/>
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="2.5" stroke-linejoin="round">
+        <path d="M91 96Q49 21 9 31q22 15 18 38L7 60q13 30 39 39L22 95q22 31 59 31z" fill="url(#${id}-feather)"/>
+        <path d="M109 96q42-75 82-65-22 15-18 38l20-9q-13 30-39 39l24-4q-22 31-59 31z" fill="url(#${id}-feather)"/>
+        <path d="M88 102Q55 64 29 47m40 64L28 96m84 6q33-38 59-55m-40 66 41-15" fill="none" stroke="#fff9dc" stroke-opacity=".75" stroke-width="3"/>
+      </g>
+      <path d="M72 120q-12 22-37 18 20-11 14-27 21 10 28-4m51 13q12 22 37 18-20-11-14-27-21 10-28-4" fill="url(#${id}-feather)" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M78 105q-2-29 22-37 24 8 22 37l-9 24H87z" fill="url(#${id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="M88 89q12 10 24 0m-17 16q5 4 10 0" fill="none" stroke="#fff5cb" stroke-width="3" stroke-linecap="round"/>
+      <path d="M86 74q-17-25-3-44 1 16 12 19-2-27 12-39 0 27 17 36 11 6 2 25l-13 9z" fill="url(#${id}-feather)" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="m119 76 18 5-17 8" fill="#fff4b1" stroke="${skin.shade}" stroke-width="2"/>
+      <circle cx="113" cy="69" r="4" fill="#fff"/><circle cx="114" cy="69" r="2" fill="${skin.shade}"/>
+      <path class="skin-flame" d="M96 128q-18 15-5 25 0-9 10-9 11 10 19-2-14 3-10-14" fill="${skin.accent}" opacity=".85"/>
+      <path class="skin-float" d="m44 38 3-8 3 8 8 3-8 3-3 8-3-8-8-3z" fill="#fff8d5"/>
+      <path class="skin-float" d="m157 47 2-6 3 6 6 2-6 2-3 6-2-6-6-2z" fill="#fff8d5"/>
+    </svg>`;
+  },
+  "mythic-butterfly": (skin) => {
+    const id = skin.id;
+    return `<svg class="mythic-character mythic-butterfly" viewBox="0 0 200 160" role="img" aria-label="${skin.name}">
+      <defs>
+        <linearGradient id="${id}-wing" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff4ff"/><stop offset=".28" stop-color="${skin.accent}"/><stop offset=".7" stop-color="${skin.colors["#8fe06c"]}"/><stop offset="1" stop-color="${skin.shade}"/></linearGradient>
+        <radialGradient id="${id}-shine"><stop stop-color="#fff"/><stop offset=".2" stop-color="${skin.accent}" stop-opacity=".86"/><stop offset="1" stop-color="${skin.accent}" stop-opacity="0"/></radialGradient>
+        <filter id="${id}-glow"><feGaussianBlur stdDeviation="5"/></filter>
+      </defs>
+      <ellipse cx="100" cy="147" rx="53" ry="6" fill="#11102b" opacity=".45"/>
+      <circle cx="100" cy="80" r="72" fill="url(#${id}-shine)" opacity=".55"/>
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="3">
+        <path d="M91 81Q73 13 31 24 3 31 20 66q8 17 28 23-31 13-21 39 13 21 41 3 20-14 32-42z" fill="url(#${id}-wing)"/>
+        <path d="M109 81q18-68 60-57 28 7 11 42-8 17-28 23 31 13 21 39-13 21-41 3-20-14-32-42z" fill="url(#${id}-wing)"/>
+        <path d="M96 83Q69 46 32 31m64 56Q61 75 29 119m75-36q27-37 64-52m-64 61q35-9 67 27" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="3"/>
+        <circle cx="45" cy="70" r="13" fill="none" stroke="#fff9d8" stroke-width="4"/><circle cx="155" cy="70" r="13" fill="none" stroke="#fff9d8" stroke-width="4"/>
+        <circle cx="51" cy="116" r="8" fill="${skin.accent}" stroke="#fff" stroke-width="3"/><circle cx="149" cy="116" r="8" fill="${skin.accent}" stroke="#fff" stroke-width="3"/>
+      </g>
+      <path d="M100 48q-14 12-12 34l5 37 7 11 7-11 5-37q2-22-12-34z" fill="${skin.shade}" stroke="#fff2ff" stroke-width="3"/>
+      <circle cx="100" cy="48" r="14" fill="url(#${id}-wing)" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M94 39Q79 17 83 11m23 28q15-22 11-28" fill="none" stroke="${skin.shade}" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="83" cy="11" r="4" fill="#fff"/><circle cx="117" cy="11" r="4" fill="#fff"/>
+      <path d="M94 60h1m10 0h1" stroke="#282544" stroke-width="4" stroke-linecap="round"/>
+      <path class="skin-float" d="m100 25 4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z" fill="#fff6c8" filter="url(#${id}-glow)"/>
+      <circle class="skin-float" cx="25" cy="45" r="3" fill="#fff"/><circle class="skin-float" cx="174" cy="48" r="4" fill="#fff"/>
+    </svg>`;
+  },
+  "mythic-stag": (skin) => {
+    const id = skin.id;
+    return `<svg class="mythic-character mythic-stag" viewBox="0 0 200 160" role="img" aria-label="${skin.name}">
+      <defs>
+        <linearGradient id="${id}-coat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff3d4"/><stop offset=".38" stop-color="${skin.accent}"/><stop offset="1" stop-color="${skin.shade}"/></linearGradient>
+        <radialGradient id="${id}-moon"><stop stop-color="#fff"/><stop offset=".22" stop-color="${skin.accent}"/><stop offset="1" stop-color="${skin.accent}" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="100" cy="148" rx="65" ry="7" fill="#10132c" opacity=".52"/>
+      <circle cx="103" cy="49" r="43" fill="url(#${id}-moon)" opacity=".7"/>
+      <path d="M57 92q-17-13-24 0l14 11m91-7q13-15 25-2l-15 16" fill="url(#${id}-coat)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="M61 79q25-20 59-8l15 19-13 29H68L53 99z" fill="url(#${id}-coat)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m73 110-5 31h12l8-29m27-1 8 30h12l-3-40" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M118 79q4-30 24-37l18 11-7 25-15 13z" fill="url(#${id}-coat)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m143 60q22-4 24 7-9 9-27 3" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <circle cx="148" cy="61" r="4" fill="#fff"/><circle cx="149" cy="61" r="2" fill="${skin.shade}"/>
+      <path d="M131 48q-2-19-19-28m20 27q1-17 13-25m-33-2q-14 0-18-12m18 12q-3-13 2-20m31 23q13-4 17-16m-17 16q5-13 3-20" fill="none" stroke="${skin.accent}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M108 19q-17-12-11-23m48 28q16-10 15-22" fill="none" stroke="#fff4c2" stroke-width="2"/>
+      <path class="skin-float" d="m107 51 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#fff6cd"/>
+      <circle cx="42" cy="56" r="3" fill="#fff"/><circle cx="74" cy="34" r="2" fill="#fff"/><circle cx="171" cy="37" r="3" fill="#fff"/>
+    </svg>`;
+  },
+  "mythic-serpent": (skin) => {
+    const id = skin.id;
+    return `<svg class="mythic-character mythic-serpent" viewBox="0 0 200 160" role="img" aria-label="${skin.name}">
+      <defs>
+        <linearGradient id="${id}-scale" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dffff5"/><stop offset=".32" stop-color="${skin.accent}"/><stop offset=".72" stop-color="${skin.colors["#8fe06c"]}"/><stop offset="1" stop-color="${skin.shade}"/></linearGradient>
+        <radialGradient id="${id}-pearl"><stop stop-color="#fff"/><stop offset=".25" stop-color="#b7fff1"/><stop offset="1" stop-color="#67e5db" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="100" cy="148" rx="68" ry="7" fill="#091a2b" opacity=".54"/>
+      <path d="M40 118q-22-16-3-38 17-18 48-5 30 13 52 3 25-11 17-32-7-19-32-16-17 2-22 17" fill="none" stroke="${skin.shade}" stroke-width="29" stroke-linecap="round"/>
+      <path d="M40 118q-22-16-3-38 17-18 48-5 30 13 52 3 25-11 17-32-7-19-32-16-17 2-22 17" fill="none" stroke="url(#${id}-scale)" stroke-width="21" stroke-linecap="round"/>
+      <path d="M32 112q-14-13 1-27m25 14q-10-15 3-27m27 19q-9-16 5-26m28 22q-5-16 9-23m28 2q-3-15 10-19" fill="none" stroke="#edffff" stroke-opacity=".72" stroke-width="3"/>
+      <path d="M116 46q-5-19 11-28l24 2 14 17-8 19-27 8-15-9z" fill="url(#${id}-scale)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m132 23-2-16 15 14m6 2 13-11-5 21" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M154 40q21-2 23 8-11 8-25 1" fill="#fff0d6" stroke="${skin.shade}" stroke-width="3"/>
+      <ellipse cx="143" cy="35" rx="6" ry="5" fill="#fff"/><ellipse cx="145" cy="35" rx="2" ry="4" fill="${skin.shade}"/>
+      <path d="M122 44q-17-17-25-2 14 3 15 17m33-10q18-20 30-5-14 7-15 20" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M56 133q-15 8-22-4m88-91q-12-12-21-2" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="46" cy="59" r="26" fill="url(#${id}-pearl)" opacity=".85"/>
+      <circle class="skin-float" cx="46" cy="59" r="8" fill="#f3ffff" stroke="${skin.accent}" stroke-width="3"/>
+      <path class="skin-float" d="m44 55 2-5 2 5 5 2-5 2-2 5-2-5-5-2z" fill="${skin.accent}"/>
+    </svg>`;
+  },
 };
 const SKIN_FACE_CONFIG = {
   garden: ["round", "freckles", "smile", "#315e32"],
@@ -481,32 +833,32 @@ const HELD_ITEM_ART = {
 const SKIN_STAT_DEFINITIONS = {
   health: {
     label: "Max health",
-    values: [10, 15, 20, 25],
+    values: [10, 15, 20, 25, 30],
     format: (value) => `+${value} max health`,
   },
   damage: {
     label: "Attack damage",
-    values: [3, 5, 8, 10],
+    values: [3, 5, 8, 10, 12],
     format: (value) => `+${value} attack damage`,
   },
   stun: {
     label: "Stun chance",
-    values: [10, 15, 20, 30],
+    values: [10, 15, 20, 30, 40],
     format: (value) => `+${value}% stun chance`,
   },
   defense: {
     label: "Damage reduction",
-    values: [1, 1, 2, 3],
+    values: [1, 1, 2, 3, 4],
     format: (value) => `-${value} damage per enemy hit`,
   },
   coins: {
     label: "Coin bonus",
-    values: [5, 8, 12, 15],
+    values: [5, 8, 12, 15, 20],
     format: (value) => `+${value}% coins earned`,
   },
   recovery: {
     label: "Victory recovery",
-    values: [3, 5, 8, 10],
+    values: [3, 5, 8, 10, 12],
     format: (value) => `+${value} health after victory`,
   },
 };
@@ -516,11 +868,13 @@ const SKIN_RARITY_TIERS = {
   rare: 1,
   epic: 2,
   legendary: 3,
+  mythic: 4,
 };
 function getSkinStatCount(rarity, index) {
   if (rarity === "normal") return 1;
   if (rarity === "rare") return 1 + (index % 2);
   if (rarity === "epic") return 2 + (index % 2);
+  if (rarity === "mythic") return 4 + (index % 2);
   return 3 + (index % 2);
 }
 function makeSkinStats(rarity, index) {
@@ -580,13 +934,17 @@ const SKINS = [
   ...LEGENDARY_SKINS.map((skin, index) =>
     makeSkin(skin, "legendary", skin[7], skin[8], index),
   ),
+  ...MYTHIC_SKINS.map((skin, index) =>
+    makeSkin(skin, "mythic", skin[7], skin[8], index),
+  ),
 ];
 const SKIN_RARITIES = [
-  ["all", "All", 33],
-  ["normal", "Normal", 12],
-  ["rare", "Rare", 8],
-  ["epic", "Epic", 6],
-  ["legendary", "Legendary", 7],
+  ["all", "All", SKINS.length],
+  ...["normal", "rare", "epic", "legendary", "mythic"].map((rarity) => [
+    rarity,
+    rarity[0].toUpperCase() + rarity.slice(1),
+    SKINS.filter((skin) => skin.rarity === rarity).length,
+  ]),
 ];
 let activeSkinRarity = "all";
 let activeShopCategory = "skins";
@@ -729,6 +1087,11 @@ function getEquippedSkinStatsSummary() {
     .join(" · ");
 }
 function wormSvg(skin = getSkin()) {
+  if (skin.rarity === "mythic") {
+    const renderMythic = MYTHIC_SKIN_ART[skin.effect];
+    if (!renderMythic) throw new Error(`Missing artwork for ${skin.name}.`);
+    return renderMythic(skin);
+  }
   const coloredSvg = Object.entries(skin.colors).reduce(
     (svg, [original, color]) => svg.replaceAll(original, color),
     hero,
@@ -757,7 +1120,9 @@ function clearSkinAnimations() {
   const gsap = window.gsap;
   if (!gsap) return;
   gsap.killTweensOf(
-    $("hero").querySelectorAll(".skin-float, .skin-wings, .skin-flame"),
+    $("hero").querySelectorAll(
+      ".skin-float, .skin-wings, .skin-flame, .mythic-wings",
+    ),
   );
 }
 function animateEquippedSkin(skin = getSkin()) {
@@ -767,6 +1132,7 @@ function animateEquippedSkin(skin = getSkin()) {
     "skin-rare",
     "skin-epic",
     "skin-legendary",
+    "skin-mythic",
   );
   worm.classList.add(`skin-${skin.rarity}`);
   worm.style.setProperty("--skin-accent", skin.accent);
@@ -828,10 +1194,11 @@ function animateEquippedSkin(skin = getSkin()) {
     );
 }
 function playLegendaryAttack(skin, x, y) {
-  if (skin.rarity !== "legendary") return Promise.resolve();
+  if (skin.rarity !== "legendary" && skin.rarity !== "mythic")
+    return Promise.resolve();
 
   const effect = document.createElement("div");
-  effect.className = `legendary-vfx vfx-${skin.effect}`;
+  effect.className = `legendary-vfx${skin.rarity === "mythic" ? " mythic-vfx" : ""} vfx-${skin.effect}`;
   effect.style.left = `${x}px`;
   effect.style.top = `${y}px`;
   effect.style.setProperty("--vfx-color", skin.accent);
@@ -1391,13 +1758,13 @@ function renderShop() {
   $("shopCoins").textContent = STORE.coins;
   $("shop-title").textContent =
     activeShopCategory === "skins"
-      ? "Worm wardrobe"
+      ? "Character wardrobe"
       : activeShopCategory === "potions"
         ? "Potion counter"
         : "Character upgrades";
   $("shop").querySelector(".shop-kicker").textContent =
     activeShopCategory === "skins"
-      ? "Give your worm a new look"
+      ? "Battle skins, legendary looks, and Mythic forms"
       : activeShopCategory === "potions"
         ? "Battle-ready brews and curses"
         : "Permanent boosts for every adventure";
@@ -1437,7 +1804,7 @@ function renderShop() {
       const label = equipped ? "Equipped" : owned ? "Equip" : `Buy · ${price}`;
       const action = equipped ? "equipped" : owned ? "equip" : "buy";
 
-      return `<article class="skin-card rarity-${skin.rarity}${equipped ? " is-equipped" : ""}">
+      return `<article class="skin-card rarity-${skin.rarity}${equipped ? " is-equipped" : ""}" style="--skin-accent:${skin.accent}">
         <div class="skin-preview" aria-hidden="true">${wormSvg(skin)}</div>
         <div class="skin-info">
           <span class="rarity-label">${skin.rarity}</span>
