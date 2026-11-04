@@ -220,6 +220,172 @@ window.WormwoodFirebaseRooms = {
   serverTime() {
     return Date.now();
   },
+  beginRandomMatch(displayName, handlers) {
+    if (!database || !currentUser)
+      throw new Error("Sign in before searching for a random match.");
+
+    const queueRef = ref(database, "matchmaking/openRooms");
+    const ownQueueRef = ref(
+      database,
+      `matchmaking/openRooms/${currentUser.uid}`,
+    );
+    let active = true;
+    let matched = false;
+    let joining = false;
+    let ownCode = null;
+    let queueUnsubscribe;
+    let roomUnsubscribe;
+    let timeout;
+
+    const stopListeners = () => {
+      if (queueUnsubscribe) queueUnsubscribe();
+      if (roomUnsubscribe) roomUnsubscribe();
+      clearTimeout(timeout);
+    };
+    const removeOwnQueueEntry = async () => {
+      try {
+        await remove(ownQueueRef);
+      } catch (error) {
+        console.error("Could not remove the quick-match queue entry:", error);
+      }
+    };
+    const finish = async (result) => {
+      if (!active || matched) return;
+      matched = true;
+      active = false;
+      stopListeners();
+      await removeOwnQueueEntry();
+      if (!result.host && ownCode) {
+        try {
+          await remove(roomReference(ownCode));
+        } catch (error) {
+          console.error("Could not remove the unused quick-match room:", error);
+        }
+      }
+      handlers.onMatched(result);
+    };
+    const fail = async (error) => {
+      if (!active || matched) return;
+      active = false;
+      stopListeners();
+      await removeOwnQueueEntry();
+      if (ownCode) {
+        try {
+          await remove(roomReference(ownCode));
+        } catch (cleanupError) {
+          console.error("Could not remove the abandoned quick-match room:", cleanupError);
+        }
+      }
+      handlers.onError(error);
+    };
+    const joinFromQueue = async (snapshot) => {
+      if (!active || matched || joining) return;
+      const now = Date.now();
+      const candidates = Object.entries(snapshot.val() || {})
+        .filter(
+          ([uid, entry]) =>
+            uid !== currentUser.uid &&
+            uid < currentUser.uid &&
+            entry?.hostUid === uid &&
+            typeof entry.roomCode === "string" &&
+            entry.createdAt <= now &&
+            now - entry.createdAt < 120_000,
+        )
+        .sort(() => Math.random() - 0.5);
+
+      for (const [, entry] of candidates) {
+        if (!active || matched) return;
+        joining = true;
+        try {
+          await window.WormwoodFirebaseRooms.join(entry.roomCode, displayName);
+          if (!active || matched) {
+            try {
+              await window.WormwoodFirebaseRooms.leave(entry.roomCode);
+            } catch (error) {
+              console.error("Could not leave a cancelled quick-match room:", error);
+            }
+            return;
+          }
+          await finish({ code: entry.roomCode, host: false });
+          return;
+        } catch (error) {
+          if (
+            !/full|already started|not found|rejected/i.test(error.message || "")
+          ) {
+            await fail(error);
+            return;
+          }
+        } finally {
+          joining = false;
+        }
+      }
+    };
+
+    const watchOwnRoom = (code) => {
+      roomUnsubscribe = onValue(
+        roomReference(code),
+        (snapshot) => {
+          const room = snapshot.val();
+          if (!room) {
+            fail(new Error("Your quick-match room was closed."));
+            return;
+          }
+          const members = Object.values(room.members || {});
+          if (
+            room.hostUid === currentUser.uid &&
+            members.length === 2 &&
+            members.every((member) => member.online)
+          )
+            finish({ code, host: true });
+        },
+        (error) => fail(error),
+      );
+    };
+
+    const begin = async () => {
+      const currentQueue = await get(queueRef);
+      await joinFromQueue(currentQueue);
+      if (!active || matched) return;
+
+      ownCode = await window.WormwoodFirebaseRooms.create(displayName);
+      const entry = {
+        hostUid: currentUser.uid,
+        roomCode: ownCode,
+        createdAt: Date.now(),
+      };
+      await onDisconnect(ownQueueRef).remove();
+      await set(ownQueueRef, entry);
+      watchOwnRoom(ownCode);
+      queueUnsubscribe = onValue(
+        queueRef,
+        (snapshot) => joinFromQueue(snapshot),
+        (error) => fail(error),
+      );
+      handlers.onWaiting(ownCode);
+      timeout = setTimeout(
+        () => fail(new Error("No random opponent found. Try again later.")),
+        120_000,
+      );
+    };
+
+    begin().catch(fail);
+    return {
+      async cancel() {
+        if (!active || matched) return;
+        active = false;
+        stopListeners();
+        await removeOwnQueueEntry();
+        if (ownCode) {
+          try {
+            await remove(roomReference(ownCode));
+          } catch (error) {
+            console.error("Could not remove the cancelled quick-match room:", error);
+            throw error;
+          }
+        }
+      },
+    };
+  },
 };
 window.WormwoodFirebaseAuth = {
   ready: authReady,

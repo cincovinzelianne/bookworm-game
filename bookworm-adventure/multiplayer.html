@@ -26,11 +26,11 @@
       </header>
 
       <section class="mp-card">
-        <p class="mp-kicker">Private online battles</p>
-        <h1 class="serif">Challenge a friend</h1>
+        <p class="mp-kicker">Online battles</p>
+        <h1 class="serif">Find your next challenger</h1>
         <p class="mp-intro">
-          Create a room and share its code. Take turns spelling words to bring
-          your friend's health to zero.
+          Jump into a random match, or create a private room and invite a friend
+          with a code. Take turns spelling words to win.
         </p>
         <p id="mpStatus" class="mp-status" role="status" aria-live="polite">
           Checking your sign-in…
@@ -45,6 +45,16 @@
             autocomplete="nickname"
             placeholder="Name shown to your friend"
           />
+          <section class="mp-quick-card">
+            <div>
+              <h2 class="mp-section-title">Quick Match</h2>
+              <p>Find a random online player and start a duel.</p>
+            </div>
+            <button id="quickMatch" class="mp-primary" type="button">
+              Find a player
+            </button>
+          </section>
+          <div class="mp-divider"><span>Private room</span></div>
           <div class="mp-actions">
             <button id="createRoom" class="mp-primary" type="button">
               Create room

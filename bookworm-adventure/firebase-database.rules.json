@@ -30,6 +30,15 @@
           ".validate": "newData.child('status').val() === 'waiting' || newData.child('status').val() === 'playing' || newData.child('status').val() === 'finished'"
         }
       }
+    },
+    "matchmaking": {
+      "openRooms": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "!newData.exists() || (newData.hasChildren(['hostUid', 'roomCode', 'createdAt']) && newData.child('hostUid').val() === auth.uid && newData.child('roomCode').isString() && root.child('rooms').child(newData.child('roomCode').val()).child('hostUid').val() === auth.uid && newData.child('createdAt').isNumber())"
+        }
+      }
     }
   }
 }

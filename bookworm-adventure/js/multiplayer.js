@@ -42,6 +42,9 @@ let roomData;
 let unsubscribeRoom;
 let submitting = false;
 let renderedMoveNumber;
+let quickMatchSession;
+let quickMatchActive = false;
+let quickMatchStarting = false;
 
 function setStatus(message, error = false) {
   $("mpStatus").textContent = message;
@@ -144,8 +147,12 @@ function renderRoom() {
   $("startMatch").disabled = !allOnline;
   $("roomMessage").textContent = waiting
     ? allOnline
-      ? "Both players are here. The room creator can start the match."
-      : "Share the code with one friend. Waiting for them to join…"
+      ? quickMatchActive
+        ? "Opponent found. Starting your match…"
+        : "Both players are here. The room creator can start the match."
+      : quickMatchActive
+        ? "Searching for a random opponent…"
+        : "Share the code with one friend. Waiting for them to join…"
     : roomData.game?.status === "playing" && members.length < 2
       ? "Your opponent left the room. This match cannot continue."
       : "";
@@ -153,6 +160,14 @@ function renderRoom() {
     roomData.game?.status,
   );
   if (!$("matchPanel").hidden) renderMatch();
+  if (
+    quickMatchActive &&
+    waiting &&
+    allOnline &&
+    roomData.hostUid === user.uid &&
+    !quickMatchStarting
+  )
+    startMatch();
 }
 
 function renderMatch() {
@@ -228,6 +243,7 @@ function subscribeToRoom(code) {
   roomCode = code;
   selectedTiles.clear();
   $("roomCodeInput").value = "";
+  $("leaveRoom").textContent = quickMatchActive ? "Cancel search" : "Leave room";
   setStatus(`Connected to room ${code}.`);
   window.WormwoodFirebaseRooms.watchConnection(code).catch((error) => {
     console.error("Could not register room connection status:", error);
@@ -250,6 +266,50 @@ function subscribeToRoom(code) {
       setStatus("Could not connect to this room. Check Firebase database rules.", true);
     },
   );
+}
+
+function startQuickMatch() {
+  if (quickMatchSession) return;
+  quickMatchActive = true;
+  document.body.classList.add("is-quick-match");
+  $("quickMatch").disabled = true;
+  setStatus("Looking for an online player…");
+  try {
+    quickMatchSession = window.WormwoodFirebaseRooms.beginRandomMatch(
+      getDisplayName(),
+      {
+        onWaiting(code) {
+          subscribeToRoom(code);
+          setStatus("Searching for a random opponent. Hang tight…");
+        },
+        onMatched(result) {
+          quickMatchSession = null;
+          if (result.code !== roomCode) subscribeToRoom(result.code);
+          $("leaveRoom").textContent = "Leave match";
+          setStatus("Opponent found! Getting the match ready…");
+          if (!result.host) $("roomMessage").textContent = "Opponent found!";
+        },
+        onError(error) {
+          quickMatchSession = null;
+          quickMatchActive = false;
+          quickMatchStarting = false;
+          document.body.classList.remove("is-quick-match");
+          roomCode = null;
+          roomData = null;
+          renderRoom();
+          $("quickMatch").disabled = false;
+          setStatus(error.message || "Quick Match failed. Try again.", true);
+        },
+      },
+    );
+  } catch (error) {
+    console.error("Could not begin Quick Match:", error);
+    quickMatchSession = null;
+    quickMatchActive = false;
+    document.body.classList.remove("is-quick-match");
+    $("quickMatch").disabled = false;
+    setStatus(error.message, true);
+  }
 }
 
 function getDisplayName() {
@@ -295,8 +355,10 @@ async function joinRoom(event) {
 }
 
 async function startMatch() {
+  if (quickMatchStarting) return;
   const ids = playerIds();
   if (ids.length !== 2) return;
+  quickMatchStarting = true;
   $("startMatch").disabled = true;
   try {
     await window.WormwoodFirebaseRooms.start(roomCode, {
@@ -313,6 +375,7 @@ async function startMatch() {
     console.error("Could not start the online match:", error);
     setStatus(error.message, true);
   } finally {
+    quickMatchStarting = false;
     $("startMatch").disabled = false;
   }
 }
@@ -379,11 +442,20 @@ async function leaveRoom() {
   if (!roomCode) return;
   $("leaveRoom").disabled = true;
   try {
-    await window.WormwoodFirebaseRooms.leave(roomCode);
+    if (quickMatchSession) {
+      await quickMatchSession.cancel();
+      quickMatchSession = null;
+    } else {
+      await window.WormwoodFirebaseRooms.leave(roomCode);
+    }
     if (unsubscribeRoom) unsubscribeRoom();
     unsubscribeRoom = null;
     roomCode = null;
     roomData = null;
+    quickMatchActive = false;
+    quickMatchStarting = false;
+    document.body.classList.remove("is-quick-match");
+    $("quickMatch").disabled = false;
     selectedTiles.clear();
     renderedMoveNumber = undefined;
     renderRoom();
@@ -409,6 +481,9 @@ async function initialize() {
   $("roomSetup").hidden = false;
   $("playerName").value = user.displayName || "";
   setStatus(`Signed in as ${user.displayName || user.email}.`);
+  $("quickMatch").disabled = true;
+  $("createRoom").disabled = true;
+  $("joinForm").querySelector("button").disabled = true;
   try {
     const response = await fetch(
       "https://cdn.jsdelivr.net/npm/an-array-of-english-words@2.0.0/index.json",
@@ -421,17 +496,20 @@ async function initialize() {
     words.forEach((word) => {
       if (typeof word === "string") knownWords.add(word.toLowerCase());
     });
+    $("quickMatch").disabled = false;
+    $("createRoom").disabled = false;
+    $("joinForm").querySelector("button").disabled = false;
   } catch (error) {
     console.error("Could not load the online word list:", error);
     setStatus("The word list could not load. Check your connection and reload.", true);
-    $("createRoom").disabled = true;
-    $("joinForm").querySelector("button").disabled = true;
+    $("quickMatch").disabled = true;
   }
 }
 
 window.addEventListener("wormwood-auth-state", (event) => {
   if (user && !event.detail.user) location.replace("index.html?signin=required");
 });
+$("quickMatch").addEventListener("click", startQuickMatch);
 $("createRoom").addEventListener("click", createRoom);
 $("joinForm").addEventListener("submit", joinRoom);
 $("startMatch").addEventListener("click", startMatch);
