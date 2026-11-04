@@ -24,7 +24,7 @@ Firebase cloud-save setup:
 1. Create a Firebase project and register a Web app in the Firebase console.
 2. Enable Google under Authentication > Sign-in method, and add your deployed site domain under Authentication > Settings > Authorized domains.
 3. Create a Realtime Database. Replace the placeholder values in js/firebase-sync.js with the Web app config from Project settings. Use the database URL shown in the Realtime Database console.
-4. Paste the latest firebase-database.rules.json into Realtime Database > Rules and publish it. The rules must include both rooms and matchmaking sections for Online Arena.
+4. Paste the latest firebase-database.rules.json into Realtime Database > Rules and publish it. The rules must include both rooms and matchmaking sections for Online Arena. Room joins atomically claim the guest slot and add the guest as a member; publish these rules along with the latest site code or joins and Quick Match can be rejected.
 5. Serve the site over HTTP/HTTPS (not file://), then sign in with Google from the landing page before entering Adventure or Online Arena. Returning users can access their cloud save in another browser or an incognito session by signing into the same Google account.
 
 The Firebase web config identifies the project and is not a service-account secret. Realtime Database rules restrict each save to its authenticated owner's UID, room writes to signed-in room members, and matchmaking queue entries to their owner. Online match logic runs in the clients, so matches are not cheat-proof; trusted competitive play would require server-authoritative game logic.

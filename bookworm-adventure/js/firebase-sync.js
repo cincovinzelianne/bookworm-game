@@ -223,6 +223,16 @@ function roomReference(code) {
     throw new Error("Sign in before using online rooms.");
   return ref(database, `rooms/${code}`);
 }
+function explainDatabasePermissionError(error) {
+  if (
+    error?.code === "PERMISSION_DENIED" ||
+    /permission_denied|permission denied/i.test(error?.message || "")
+  )
+    return new Error(
+      "Firebase rejected this online action. Publish the latest firebase-database.rules.json in Realtime Database > Rules, then try again.",
+    );
+  return error;
+}
 window.WormwoodFirebaseRooms = {
   get user() {
     return currentUser;
@@ -257,32 +267,58 @@ window.WormwoodFirebaseRooms = {
     const roomSnapshot = await get(roomRef);
     if (!roomSnapshot.exists()) throw new Error("Room not found. Check the code.");
     const members = roomSnapshot.child("members");
-    const memberRef = ref(
-      database,
-      `rooms/${normalizedCode}/members/${currentUser.uid}`,
-    );
     if (members.hasChild(currentUser.uid)) {
+      const memberRef = ref(
+        database,
+        `rooms/${normalizedCode}/members/${currentUser.uid}`,
+      );
       await set(memberRef, {
         ...members.child(currentUser.uid).val(),
         online: true,
       });
-      return { code: normalizedCode, host: false };
+      return {
+        code: normalizedCode,
+        host: roomSnapshot.child("hostUid").val() === currentUser.uid,
+      };
     }
     if (roomSnapshot.child("game/status").val() !== "waiting")
       throw new Error("This match has already started or ended.");
-    const guestRef = ref(database, `rooms/${normalizedCode}/guestUid`);
-    const claim = await runTransaction(guestRef, (guestUid) =>
-      guestUid === "" || guestUid === currentUser.uid
-        ? currentUser.uid
-        : undefined,
-    );
-    if (!claim.committed)
-      throw new Error("This room is full or your join request was rejected.");
-    await set(memberRef, {
-      uid: currentUser.uid,
-      name: displayName || currentUser.displayName || "Player 2",
-      online: true,
-    });
+    const uid = currentUser.uid;
+    const name = (
+      displayName || currentUser.displayName || "Player 2"
+    ).slice(0, 24);
+    let claim;
+    try {
+      claim = await runTransaction(roomRef, (room) => {
+        if (
+          !room ||
+          room.hostUid === uid ||
+          room.guestUid !== "" ||
+          room.game?.status !== "waiting" ||
+          room.members?.[uid] ||
+          Object.keys(room.members || {}).length !== 1 ||
+          !room.members?.[room.hostUid]
+        )
+          return;
+        return {
+          ...room,
+          guestUid: uid,
+          members: {
+            ...room.members,
+            [uid]: { uid, name, online: true },
+          },
+        };
+      });
+    } catch (error) {
+      throw explainDatabasePermissionError(error);
+    }
+    if (!claim.committed) {
+      const latest = await get(roomRef);
+      if (!latest.exists()) throw new Error("Room not found. Check the code.");
+      if (latest.child("game/status").val() !== "waiting")
+        throw new Error("This match has already started or ended.");
+      throw new Error("This room is full. Ask the host to create a new room.");
+    }
     return { code: normalizedCode, host: false };
   },
   async start(code, initialGame) {
@@ -398,7 +434,7 @@ window.WormwoodFirebaseRooms = {
           console.error("Could not remove the abandoned quick-match room:", cleanupError);
         }
       }
-      handlers.onError(error);
+      handlers.onError(explainDatabasePermissionError(error));
     };
     const joinFromQueue = async (snapshot) => {
       if (!active || matched || joining) return;
