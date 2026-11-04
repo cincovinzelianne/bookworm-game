@@ -2613,6 +2613,62 @@ a.mode-card:hover .mode-arrow {
   color: #aab9c1;
 }
 
+.redeem-form {
+  display: grid;
+  gap: 7px;
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1px solid rgba(242, 201, 111, 0.18);
+  border-radius: 14px;
+  background: rgba(242, 201, 111, 0.045);
+}
+
+.redeem-form label {
+  color: #f0cd82;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.redeem-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.redeem-controls input {
+  min-width: 0;
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--ink);
+  font: inherit;
+}
+
+.redeem-controls input:focus {
+  border-color: rgba(242, 201, 111, 0.65);
+  box-shadow: 0 0 0 3px rgba(242, 201, 111, 0.12);
+}
+
+.redeem-controls .skin-action {
+  grid-column: auto;
+  min-height: 38px;
+  padding: 0 14px;
+}
+
+.redeem-status {
+  min-height: 1em;
+  margin: 0;
+  color: #a8e7ae;
+  font-size: 0.78rem;
+}
+
+.redeem-status.is-error {
+  color: #ff9a9a;
+}
+
 .skin-grid {
   gap: 13px;
 }

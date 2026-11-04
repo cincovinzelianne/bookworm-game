@@ -122,6 +122,7 @@ function updateLocalDailyRewardSave(save) {
       equippedSkin: typeof save.equippedSkin === "string" ? save.equippedSkin : "garden",
       potions: save.potions || {},
       upgrades: save.upgrades || { heart: 0, spellbook: 0, "iron-shell": 0 },
+      redeemedCodes: Array.isArray(save.redeemedCodes) ? save.redeemedCodes : [],
     }));
     localStorage.setItem(
       "wormwood-library-daily-reward",

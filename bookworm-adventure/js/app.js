@@ -951,6 +951,9 @@ let activeShopCategory = "skins";
 const STORE_KEY = "wormwood-library-player";
 const PROGRESS_KEY = "wormwood-library-progress";
 const DAILY_REWARD_KEY = "wormwood-library-daily-reward";
+const REDEEM_CODE = "nice ka goy";
+const REDEEM_CODE_ID = "nice-ka-goy";
+const REDEEM_CODE_REWARD = 20_000;
 const POTIONS = [
   {
     id: "healing",
@@ -1015,6 +1018,7 @@ const DEFAULT_STORE = {
   equippedSkin: "garden",
   potions: emptyPotions(),
   upgrades: emptyUpgrades(),
+  redeemedCodes: [],
 };
 function loadStore() {
   try {
@@ -1054,6 +1058,9 @@ function loadStore() {
             : 0,
         ]),
       ),
+      redeemedCodes: Array.isArray(saved.redeemedCodes)
+        ? [...new Set(saved.redeemedCodes.filter((code) => typeof code === "string"))]
+        : [],
     };
   } catch (error) {
     console.error("Could not load saved marketplace data:", error);
@@ -1425,6 +1432,7 @@ function getCloudSaveData() {
     equippedSkin: STORE.equippedSkin,
     potions: STORE.potions,
     upgrades: STORE.upgrades,
+    redeemedCodes: STORE.redeemedCodes,
     dailyReward: loadDailyRewardRecord(),
     progress: loadProgress(),
   };
@@ -1509,6 +1517,9 @@ function applyCloudSaveData(saved) {
           : 0,
       ]),
     ),
+    redeemedCodes: Array.isArray(saved.redeemedCodes)
+      ? [...new Set(saved.redeemedCodes.filter((code) => typeof code === "string"))]
+      : [],
   };
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(STORE));
@@ -1816,6 +1827,39 @@ function renderShop() {
       </article>`;
     })
     .join("");
+}
+function handleRedeemCode(event) {
+  event.preventDefault();
+  const input = $("redeem-code");
+  const status = $("redeem-status");
+  const code = input.value.trim().toLowerCase().replace(/\s+/g, " ");
+  if (code !== REDEEM_CODE) {
+    status.textContent = "That redeem code isn't valid.";
+    status.classList.add("is-error");
+    return;
+  }
+  if (STORE.redeemedCodes.includes(REDEEM_CODE_ID)) {
+    status.textContent = "You've already redeemed this code.";
+    status.classList.add("is-error");
+    return;
+  }
+
+  const previous = STORE;
+  STORE = {
+    ...STORE,
+    coins: STORE.coins + REDEEM_CODE_REWARD,
+    redeemedCodes: [...STORE.redeemedCodes, REDEEM_CODE_ID],
+  };
+  if (!saveStore()) {
+    STORE = previous;
+    return;
+  }
+
+  input.value = "";
+  status.textContent = `Code redeemed! +${REDEEM_CODE_REWARD.toLocaleString()} coins.`;
+  status.classList.remove("is-error");
+  hud();
+  renderShop();
 }
 function renderConsumables() {
   if (activeShopCategory === "potions") {
@@ -2544,6 +2588,7 @@ async function toggleBattleMusic() {
 // controls
 $("bShop").onclick = openShop;
 $("bShopClose").onclick = closeShop;
+$("redeem-form").addEventListener("submit", handleRedeemCode);
 $("shopCategories").addEventListener("click", (event) => {
   const category = event.target.closest("[data-shop-category]");
   if (!category) return;

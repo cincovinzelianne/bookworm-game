@@ -210,6 +210,22 @@
         <p id="shopMessage" class="shop-message" aria-live="polite">
           Earn coins by attacking monsters and winning battles.
         </p>
+        <form id="redeem-form" class="redeem-form">
+          <label for="redeem-code">Have a redeem code?</label>
+          <div class="redeem-controls">
+            <input
+              id="redeem-code"
+              name="code"
+              type="text"
+              autocomplete="off"
+              maxlength="40"
+              placeholder="Enter code"
+              aria-describedby="redeem-status"
+            />
+            <button class="skin-action" type="submit">Redeem</button>
+          </div>
+          <p id="redeem-status" class="redeem-status" aria-live="polite"></p>
+        </form>
         <nav
           id="shopCategories"
           class="shop-categories"
