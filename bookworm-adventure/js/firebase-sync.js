@@ -16,11 +16,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_DATABASE_NAME.REGION.firebasedatabase.app",
-  projectId: "YOUR_PROJECT_ID",
-  appId: "YOUR_FIREBASE_APP_ID",
+  apiKey: "AIzaSyC4QvBkAcaRIFM8OAJMN0dcTRvKWptuuuI",
+  authDomain: "goyworm.firebaseapp.com",
+  databaseURL: "YOUR_FIREBASE_DATABASE_URL",
+  projectId: "goyworm",
+  appId: "1:560910148964:web:598325ddcfc9cd8bec0671",
 };
 const configured = Object.values(firebaseConfig).every(
   (value) => !value.startsWith("YOUR_"),
