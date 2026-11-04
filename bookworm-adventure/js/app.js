@@ -1694,7 +1694,13 @@ addEventListener("keydown", (e) => {
     if (i > -1) pick(i);
   }
 });
-function startRequestedMode() {
+async function startRequestedMode() {
+  const user = await window.WormwoodFirebaseAuthReady;
+  if (!user) {
+    location.replace("index.html?signin=required");
+    return;
+  }
+  document.body.classList.add("auth-ready");
   start(true);
   if (new URLSearchParams(location.search).get("mode") === "shop") openShop();
 }

@@ -1,16 +1,56 @@
 const modePicker = document.getElementById("mode-picker");
 const openModePicker = document.getElementById("open-mode-picker");
 const closeModePicker = document.getElementById("close-mode-picker");
+const ctaLabel = document.getElementById("library-cta-label");
+const authStatus = document.getElementById("landing-auth-status");
+const signInRequired =
+  new URLSearchParams(location.search).get("signin") === "required";
+let signedInUser = null;
+
+function updateAuthUI(user) {
+  signedInUser = user;
+  ctaLabel.textContent = user ? "Enter the library" : "Sign in with Google";
+  authStatus.textContent = user
+    ? `Signed in as ${user.displayName || user.email}.`
+    : signInRequired
+      ? "Please sign in with Google before opening Adventure."
+      : "Sign in with Google before entering the library.";
+}
 
 function closeModes() {
   modePicker.hidden = true;
   openModePicker.focus();
 }
 
-openModePicker.addEventListener("click", () => {
+openModePicker.addEventListener("click", async () => {
+  const firebaseAuth = window.WormwoodFirebaseAuth;
+  if (!firebaseAuth) {
+    authStatus.textContent = "Sign-in is still loading. Please try again.";
+    return;
+  }
+  if (!signedInUser) signedInUser = firebaseAuth.user;
+  if (!signedInUser) {
+    openModePicker.disabled = true;
+    authStatus.textContent = "Opening Google sign-in…";
+    try {
+      signedInUser = await firebaseAuth.signIn();
+      updateAuthUI(signedInUser);
+    } catch (error) {
+      console.error("Google sign-in failed:", error);
+      authStatus.textContent = `Sign-in failed: ${error.message}`;
+      openModePicker.disabled = false;
+      return;
+    }
+    openModePicker.disabled = false;
+  }
   modePicker.hidden = false;
   closeModePicker.focus();
 });
+
+window.addEventListener("wormwood-auth-state", (event) => {
+  updateAuthUI(event.detail.user);
+});
+window.WormwoodFirebaseAuthReady.then(updateAuthUI);
 
 closeModePicker.addEventListener("click", closeModes);
 modePicker.addEventListener("click", (event) => {

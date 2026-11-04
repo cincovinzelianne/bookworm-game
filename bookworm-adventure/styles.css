@@ -519,6 +519,19 @@ header {
   transform: translateY(2px);
   box-shadow: 0 2px 0 #805820;
 }
+.landing-auth-status {
+  min-height: 1.4em;
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+.landing-cta:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+body.game-page:not(.auth-ready) {
+  visibility: hidden;
+}
 .mode-backdrop[hidden] {
   display: none;
 }

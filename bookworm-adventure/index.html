@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Enter Wormwood Library, a cozy word-battle adventure where clever words protect a magical library."
+      content="Enter Goyworm Adventures, a cozy word-battle adventure where clever words protect a magical library."
     />
-    <title>Wormwood Library – A Word-Battle Adventure</title>
+    <title>Goyworm Adventures – A Word-Battle Adventure</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap"
@@ -22,10 +22,10 @@
         <a
           class="brand-badge"
           href="index.html"
-          aria-label="Wormwood Library home"
+          aria-label="Goyworm Adventures home"
         >
           <span class="brand-mark" aria-hidden="true">✦</span>
-          <span class="serif brand-name">Wormwood Library</span>
+          <span class="serif brand-name">Goyworm Adventures</span>
         </a>
         <a class="landing-nav-link" href="#how-to-play">How to play</a>
       </header>
@@ -50,8 +50,12 @@
             aria-haspopup="dialog"
             aria-controls="mode-picker"
           >
-            Enter the library <span aria-hidden="true">→</span>
+            <span id="library-cta-label">Sign in with Google</span>
+            <span aria-hidden="true">→</span>
           </button>
+          <p id="landing-auth-status" class="landing-auth-status" aria-live="polite">
+            Sign in with Google before entering the library.
+          </p>
           <div class="hero-highlights" aria-label="Game highlights">
             <span><strong>04</strong> story chapters</span>
             <span class="highlight-divider" aria-hidden="true"></span>
@@ -356,7 +360,7 @@
 
       <footer class="landing-footer">
         <span class="brand-mark" aria-hidden="true">✦</span>
-        <span>Wormwood Library</span>
+        <span>Goyworm Adventures</span>
         <span class="footer-divider" aria-hidden="true">·</span>
         <span>A word can change the story.</span>
       </footer>
@@ -424,6 +428,16 @@
         </p>
       </section>
     </div>
+    <script>
+      window.WormwoodFirebaseAuthReady = new Promise((resolve) => {
+        window.addEventListener(
+          "wormwood-auth-ready",
+          (event) => resolve(event.detail.user),
+          { once: true },
+        );
+      });
+    </script>
+    <script type="module" src="js/firebase-sync.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
     <script src="js/landing.js"></script>
   </body>
