@@ -2808,13 +2808,18 @@ function sweep() {}
 const cv = $("fx"),
   cx = cv.getContext("2d");
 let P = [];
+let fxFrame = 0;
+let lastFxFrame = 0;
 function rs() {
-  cv.width = innerWidth;
-  cv.height = innerHeight;
+  const width = Math.round(innerWidth);
+  const height = Math.round(innerHeight);
+  if (cv.width !== width) cv.width = width;
+  if (cv.height !== height) cv.height = height;
 }
 rs();
 addEventListener("resize", rs);
 function burst(x, y, n, c) {
+  if (document.hidden || skinMotionPreference.matches || !cx) return;
   for (let i = 0; i < n; i++) {
     const a = Math.random() * 6.28,
       v = 2 + Math.random() * 7;
@@ -2829,15 +2834,29 @@ function burst(x, y, n, c) {
       star: Math.random() < 0.3,
     });
   }
+  if (!fxFrame) {
+    lastFxFrame = 0;
+    fxFrame = requestAnimationFrame(loop);
+  }
 }
-function loop() {
+function loop(timestamp) {
+  fxFrame = 0;
+  if (document.hidden || !cx) return;
+  const frameScale = lastFxFrame
+    ? Math.min(2, (timestamp - lastFxFrame) / (1000 / 60))
+    : 1;
+  lastFxFrame = timestamp;
   cx.clearRect(0, 0, cv.width, cv.height);
-  P = P.filter((p) => p.l > 0);
-  P.forEach((p) => {
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.25;
-    p.l -= 0.02;
+  for (let i = P.length - 1; i >= 0; i--) {
+    const p = P[i];
+    p.x += p.vx * frameScale;
+    p.y += p.vy * frameScale;
+    p.vy += 0.25 * frameScale;
+    p.l -= 0.02 * frameScale;
+    if (p.l <= 0) {
+      P.splice(i, 1);
+      continue;
+    }
     cx.globalAlpha = Math.max(0, p.l);
     cx.fillStyle = p.c;
     cx.beginPath();
@@ -2851,11 +2870,17 @@ function loop() {
       cx.arc(p.x, p.y, p.r * p.l + 1, 0, 6.28);
       cx.fill();
     }
-  });
+  }
   cx.globalAlpha = 1;
-  requestAnimationFrame(loop);
+  if (P.length) fxFrame = requestAnimationFrame(loop);
 }
-loop();
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden || !fxFrame) return;
+  cancelAnimationFrame(fxFrame);
+  fxFrame = 0;
+  P.length = 0;
+  cx?.clearRect(0, 0, cv.width, cv.height);
+});
 // sound
 let AC;
 let musicTimer = null;
@@ -2974,7 +2999,7 @@ async function startBattleMusic() {
 
   musicStep = 0;
   nextMusicTime = AC.currentTime + 0.05;
-  musicTimer = setInterval(scheduleBattleMusic, 50);
+  musicTimer = setInterval(scheduleBattleMusic, 100);
   $("bMusic").setAttribute("aria-pressed", "true");
   $("musicLabel").textContent = "Pause battle music";
 }
@@ -3106,16 +3131,14 @@ async function startRequestedMode() {
   }
 }
 
+startRequestedMode();
 loadDictionary()
-  .then(() => {
-    console.info("Dictionary words loaded:", BIG.size + WORDS.size);
-    startRequestedMode();
-  })
+  .then(() => console.info("Dictionary words loaded:", BIG.size + WORDS.size))
   .catch((error) => {
     console.error("Could not load the expanded dictionary:", error);
-    startRequestedMode();
-    say(
-      "Expanded dictionary unavailable; some words may not validate.",
-      "#ff8a8a",
-    );
+    if (S?.inBattle)
+      say(
+        "Expanded dictionary unavailable; some words may not validate.",
+        "#ff8a8a",
+      );
   });
