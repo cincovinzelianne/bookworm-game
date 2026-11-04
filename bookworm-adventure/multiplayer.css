@@ -26,6 +26,11 @@
 .mp-header .brand-badge .serif {
   font-weight: 700;
 }
+.mp-header-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 .mp-home-link {
   color: #d7c89e;
   font-size: 0.9rem;
@@ -33,6 +38,30 @@
 }
 .mp-home-link:hover {
   color: #ffe59a;
+}
+.mp-sign-out {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e8e1d1;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mp-sign-out:hover:not(:disabled) {
+  border-color: rgba(255, 154, 148, 0.45);
+  background: rgba(255, 154, 148, 0.1);
+}
+.mp-sign-out:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.mp-sign-out:focus-visible {
+  outline: 3px solid #fff1b0;
+  outline-offset: 3px;
 }
 .mp-card {
   padding: clamp(20px, 5vw, 42px);
@@ -373,6 +402,9 @@
 @media (max-width: 560px) {
   .mp-header {
     margin-bottom: 20px;
+  }
+  .mp-header-links {
+    gap: 8px;
   }
   .mp-header .brand-badge {
     gap: 6px;

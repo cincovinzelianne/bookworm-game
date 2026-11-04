@@ -439,7 +439,7 @@ async function submitWord() {
 }
 
 async function leaveRoom() {
-  if (!roomCode) return;
+  if (!roomCode) return true;
   $("leaveRoom").disabled = true;
   try {
     if (quickMatchSession) {
@@ -460,11 +460,30 @@ async function leaveRoom() {
     renderedMoveNumber = undefined;
     renderRoom();
     setStatus("You left the room.");
+    return true;
   } catch (error) {
     console.error("Could not leave the online room:", error);
     setStatus(error.message, true);
+    return false;
   } finally {
     $("leaveRoom").disabled = false;
+  }
+}
+
+async function signOut() {
+  const button = $("mpSignOut");
+  button.disabled = true;
+  button.textContent = "Logging out…";
+  try {
+    if (roomCode && !(await leaveRoom()))
+      throw new Error("Could not leave the current room.");
+    await window.WormwoodFirebaseAuth.signOut();
+    location.replace("index.html");
+  } catch (error) {
+    console.error("Could not log out from Online Arena:", error);
+    setStatus("Could not log out. Please try again.", true);
+    button.disabled = false;
+    button.textContent = "Log out";
   }
 }
 
@@ -510,6 +529,7 @@ window.addEventListener("wormwood-auth-state", (event) => {
   if (user && !event.detail.user) location.replace("index.html?signin=required");
 });
 $("quickMatch").addEventListener("click", startQuickMatch);
+$("mpSignOut").addEventListener("click", signOut);
 $("createRoom").addEventListener("click", createRoom);
 $("joinForm").addEventListener("submit", joinRoom);
 $("startMatch").addEventListener("click", startMatch);
