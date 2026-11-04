@@ -12,10 +12,10 @@ Use the backpack on your turn to consume owned healing, strength, curse, or defe
 Each enemy gets one random potion per fight and uses it instead of attacking; its potion effects follow the same turn rules.
 Purchases, potion inventory, and progress are included in local and Firebase saves.
 Adventure has endless chapters with 20 illustrated battle scenes that change every 10 chapters. Enemy health and attack scale as chapters advance.
-The marketplace has 58 skins: 16 Normal, 12 Rare, 12 Epic, 13 Legendary, and 5 Mythic.
+The marketplace has 70 skins: 16 Normal, 12 Rare, 12 Epic, 13 Legendary, and 17 Mythic.
 Skins grant only their own equipped bonuses: Normal has 1 stat, Rare 1-2, Epic 2-3, Legendary 3-4, and Mythic 4-5. Bonuses can increase maximum health, attack damage, short-word stun chance, coin earnings, victory healing, or reduce incoming damage. Skin stat values scale with rarity and are shown on each shop card.
 The shop redeem field accepts "Nice ka goy" once per saved player and awards 20,000 coins. Redeem history syncs with Firebase cloud saves; this client-side reward is not protected against save editing.
-Mythic skins use original, detailed SVG character art rather than the worm form: Astral Dragon, Solar Phoenix, Prism Butterfly, Moonlit Stag, and Tide Serpent. SVG is rendered natively by browsers; the game already uses GSAP for skin animation and attack effects, so no additional graphics dependency is needed.
+Mythic skins use original, detailed SVG character art rather than the worm form. The 12 new Mythics include Nine-Tail Starfox, Suncrest Griffin, Nebula Wolf, Celestial Owl, Abyssal Moonwhale, Prism Moth Queen, Skyfire Pegasus, Worldroot Dryad, Prismatic Star Golem, Comet Koi, Thunderwing Roc, and Runebound Hydra. Mythic characters have animated, skin-colored aura fields, spinning arcane rings, glowing sigils, and a premium battle effect. SVG is rendered natively by browsers; GSAP drives the enhanced aura animation, with CSS animation fallback.
 Every worm skin has its own colors and accessories; Epic and Legendary skins also carry animated, skin-matched premium gear.
 GSAP is loaded from jsDelivr for the animated landing-page mascot, animated skins, Mythic wings and attack effects; CSS/browser-animation fallbacks are used when it is unavailable.
 Player coins, owned skins, and game progress are saved in localStorage. Optional cross-browser cloud sync uses Firebase Authentication (Google sign-in) and Realtime Database.

@@ -503,6 +503,138 @@ const MYTHIC_SKINS = [
     "tide",
     "mythic-serpent",
   ],
+  [
+    "mythic-star-fox",
+    "Nine-Tail Starfox",
+    7500,
+    "#ffe3a3",
+    "#ee9c67",
+    "#b84d78",
+    "#703567",
+    "fox",
+    "mythic-fox",
+  ],
+  [
+    "mythic-sun-griffin",
+    "Suncrest Griffin",
+    7900,
+    "#fff1bd",
+    "#e7b85e",
+    "#b87948",
+    "#66435d",
+    "griffin",
+    "mythic-griffin",
+  ],
+  [
+    "mythic-nebula-wolf",
+    "Nebula Wolf",
+    8300,
+    "#d7d4ff",
+    "#9297e8",
+    "#5868b5",
+    "#343968",
+    "wolf",
+    "mythic-wolf",
+  ],
+  [
+    "mythic-celestial-owl",
+    "Celestial Owl",
+    8700,
+    "#f3e5ff",
+    "#c1a8e8",
+    "#8068b5",
+    "#4a3f77",
+    "owl",
+    "mythic-owl",
+  ],
+  [
+    "mythic-abyss-whale",
+    "Abyssal Moonwhale",
+    9100,
+    "#ccfff7",
+    "#63cad1",
+    "#3489ac",
+    "#29446f",
+    "whale",
+    "mythic-whale",
+  ],
+  [
+    "mythic-prism-moth",
+    "Prism Moth Queen",
+    9500,
+    "#ffe3fa",
+    "#da9ce9",
+    "#8a75d1",
+    "#4b4d92",
+    "moth",
+    "mythic-moth",
+  ],
+  [
+    "mythic-sky-pegasus",
+    "Skyfire Pegasus",
+    9900,
+    "#fff4d2",
+    "#edc2a0",
+    "#b889d6",
+    "#614c99",
+    "pegasus",
+    "mythic-pegasus",
+  ],
+  [
+    "mythic-world-tree",
+    "Worldroot Dryad",
+    10300,
+    "#e2ffb5",
+    "#a9d77c",
+    "#5f9a69",
+    "#385c5d",
+    "dryad",
+    "mythic-dryad",
+  ],
+  [
+    "mythic-prismatic-golem",
+    "Prismatic Star Golem",
+    10700,
+    "#e0f9ff",
+    "#9cbce9",
+    "#6b72c7",
+    "#403e83",
+    "golem",
+    "mythic-golem",
+  ],
+  [
+    "mythic-comet-koi",
+    "Comet Koi",
+    11100,
+    "#fff0c4",
+    "#ffaf76",
+    "#e86678",
+    "#914576",
+    "koi",
+    "mythic-koi",
+  ],
+  [
+    "mythic-thunder-roc",
+    "Thunderwing Roc",
+    11500,
+    "#d8f8ff",
+    "#80d9e7",
+    "#438dce",
+    "#394d8d",
+    "roc",
+    "mythic-roc",
+  ],
+  [
+    "mythic-rune-hydra",
+    "Runebound Hydra",
+    12000,
+    "#e8dfff",
+    "#b39bea",
+    "#746bc0",
+    "#444276",
+    "hydra",
+    "mythic-hydra",
+  ],
 ];
 const SKIN_ACCESSORIES = {
   stars: `<g class="skin-accessory skin-float" fill="${"${accent}"}"><path d="m75 60 4 9 10 1-8 7 2 10-8-5-8 5 2-10-8-7 10-1z"/><path d="m133 88 3 6 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z"/></g>`,
@@ -651,7 +783,195 @@ const MYTHIC_SKIN_ART = {
       <path class="skin-float" d="m44 55 2-5 2 5 5 2-5 2-2 5-2-5-5-2z" fill="${skin.accent}"/>
     </svg>`;
   },
+  "mythic-fox": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <path d="M75 112Q33 129 27 91q23 14 48-5-32 1-29-31 25 25 43 14-27-23-8-44 13 27 37 35" fill="${skin.colors["#7bd35c"]}" opacity=".72" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M86 113Q52 147 50 112q24 6 36-25m28 27q38 25 35-10-19 10-34-18m-35 33q-28 37-41 10 20 1 32-27" fill="${skin.accent}" opacity=".76" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M71 119q22-30 52-14l15 19-17 18H83z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m92 112-7 27h13l9-21 9 21h13l-8-32" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M106 104Q94 85 105 63l23-18 25 20 7 28-23 23z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m112 63-4-34 25 20m14 1 24-19-8 39" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M139 82q22-1 29 11l-19 10-22-9z" fill="#fff0d6" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m148 93 5 2-5 3" fill="${skin.shade}"/><path d="M128 76h2m17 0h2" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+      <path d="m130 77 1 7m17-7 1 7" stroke="${skin.shade}" stroke-width="2"/>
+      <circle cx="126" cy="59" r="3" fill="#fff7d1"/><circle cx="151" cy="61" r="3" fill="#fff7d1"/>
+      <path class="skin-float" d="m102 41 4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z" fill="#fff6ca"/>
+    </g>`),
+  "mythic-griffin": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round">
+        <path d="M86 97Q46 20 13 31l22 24-22-4 34 31-20 1 44 31 27-9z" fill="url(#${skin.id}-wing)"/>
+        <path d="M103 96q36-76 82-64l-22 24 22-4-34 31 20 1-44 31-27-9z" fill="url(#${skin.id}-wing)"/>
+        <path d="m86 94-45-37m55 41-47-5m57-2 43-34m-39 41 46-5" fill="none" stroke="#fff5ce" stroke-width="2"/>
+      </g>
+      <path d="M52 108q14-34 56-23 35 4 51 24l-12 24H70z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m72 124-7 20h13l13-20m32 0 12 20h13l-5-29" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M119 77q-3-24 19-38l21 8 13 20-16 20-25 2z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m140 46 2-23 16 16m8 7 18-17-7 27" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m157 67 25 5-22 13-13-7z" fill="#ffe4a0" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m172 72 8 2-7 4" fill="${skin.shade}"/><circle cx="148" cy="57" r="4" fill="#fff"/>
+      <path d="M57 104q-24 9-30-10 21 5 28-10" fill="none" stroke="${skin.accent}" stroke-width="7"/>
+      <path class="skin-float" d="m99 70 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#fff6ce"/>
+    </g>`),
+  "mythic-wolf": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <path d="M43 106q-20-19-8-34 9 20 27 19m93 12q26 2 27-20l-19 8" fill="none" stroke="${skin.accent}" stroke-width="9" stroke-linecap="round"/>
+      <path d="M49 103q23-27 65-19l22 19-15 28H63z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m66 121-4 22h12l12-21m32-2 12 23h12l-6-30" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M111 82q-6-26 17-44l29 10 13 25-18 26-29 1z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m126 53-8-31 29 20m15 3 24-22-5 39" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="4" stroke-linejoin="round"/>
+      <path d="m151 74 28 8-22 12-19-9z" fill="#f8efff" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m170 81 7 2-6 4" fill="${skin.shade}"/><path d="m145 65 10 2" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+      <path d="m109 96 10 9-10 9m18-15 9 8-9 10" fill="none" stroke="#fff6d8" stroke-width="3"/>
+      <path class="skin-float" d="M63 47a18 18 0 1 1 22 17 14 14 0 1 0-22-17z" fill="#fff3bf"/>
+      <circle cx="40" cy="49" r="3" fill="#fff"/><circle cx="96" cy="37" r="2" fill="#fff"/>
+    </g>`),
+  "mythic-owl": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="3">
+        <path d="M76 84Q39 49 17 70l22 9-19 9 33 8-19 13 43 8z" fill="url(#${skin.id}-wing)"/>
+        <path d="M124 84q37-35 59-14l-22 9 19 9-33 8 19 13-43 8z" fill="url(#${skin.id}-wing)"/>
+      </g>
+      <path d="M72 68 56 33l34 19q13-7 26 0l31-19-13 38 1 33q-3 38-35 41-32-3-35-41z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4" stroke-linejoin="round"/>
+      <path d="m81 111-15 24 20-8m33-16 15 24-20-8" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <ellipse cx="83" cy="82" rx="17" ry="20" fill="#fff4d5" stroke="${skin.shade}" stroke-width="3"/>
+      <ellipse cx="119" cy="82" rx="17" ry="20" fill="#fff4d5" stroke="${skin.shade}" stroke-width="3"/>
+      <circle cx="84" cy="83" r="8" fill="${skin.accent}"/><circle cx="118" cy="83" r="8" fill="${skin.accent}"/>
+      <circle cx="85" cy="83" r="3" fill="${skin.shade}"/><circle cx="119" cy="83" r="3" fill="${skin.shade}"/>
+      <path d="m96 94 6 10 7-10-7-7z" fill="#ffd47a" stroke="${skin.shade}" stroke-width="2"/>
+      <path d="m91 53 9-17 9 17" fill="none" stroke="#fff4c4" stroke-width="3"/>
+      <path class="skin-float" d="m103 28 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#fff"/>
+    </g>`),
+  "mythic-whale": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <path d="M42 91Q49 48 104 48q46 0 58 38 17 8 20 26-18-10-29-2-18 28-66 25-43-2-51-35-16 10-26 3 8-16 32-12z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="M55 108q33 18 84 1" fill="none" stroke="#e9fff8" stroke-width="4" opacity=".8"/>
+      <path d="M78 127q-7 15-23 17m62-15q9 14 24 14" fill="none" stroke="${skin.accent}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M75 66q17-13 39 0m-34 9q18-11 38 0m-31 9q14-8 27 0" fill="none" stroke="#fff" stroke-opacity=".46" stroke-width="2"/>
+      <circle cx="148" cy="78" r="5" fill="#fff"/><circle cx="149" cy="78" r="2.5" fill="${skin.shade}"/>
+      <path d="M82 49q-8-23 5-30 11 8 4 25m18 4q2-24 15-26 8 13-5 28" fill="none" stroke="#dfffff" stroke-width="4" stroke-linecap="round"/>
+      <path class="skin-float" d="M54 46q-10-13 0-22 10 9 0 22zm25-16q-8-12 1-20 9 10-1 20z" fill="#fff"/>
+      <circle cx="41" cy="68" r="4" fill="#eaffff"/><circle cx="66" cy="42" r="3" fill="#fff"/>
+    </g>`),
+  "mythic-moth": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="3">
+        <path d="M91 82Q79 28 43 22 11 20 20 61q5 24 34 34-28 17-12 39 20 15 46-15z" fill="url(#${skin.id}-wing)"/>
+        <path d="M109 82q12-54 48-60 32-2 23 39-5 24-34 34 28 17 12 39-20 15-46-15z" fill="url(#${skin.id}-wing)"/>
+        <path d="M92 80 38 35m57 55-38 30m51-40 54-45m-51 55 38 30" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="3"/>
+        <circle cx="49" cy="63" r="12" fill="none" stroke="#fff5d8" stroke-width="4"/><circle cx="151" cy="63" r="12" fill="none" stroke="#fff5d8" stroke-width="4"/>
+      </g>
+      <path d="M92 76q8-11 16 0l7 42-11 19-11-19z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="3"/>
+      <circle cx="100" cy="69" r="15" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M94 58q-20-22-18-31m30 31q20-22 18-31" fill="none" stroke="${skin.accent}" stroke-width="4"/>
+      <circle cx="76" cy="27" r="4" fill="#fff"/><circle cx="124" cy="27" r="4" fill="#fff"/>
+      <circle cx="95" cy="69" r="2.5" fill="#fff"/><circle cx="105" cy="69" r="2.5" fill="#fff"/>
+      <path d="m94 103 6 6 6-6m-12 9 6 6 6-6" fill="none" stroke="#fff4d1" stroke-width="2"/>
+      <path class="skin-float" d="m100 34 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff"/>
+    </g>`),
+  "mythic-pegasus": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round">
+        <path d="M95 96Q67 25 40 33l14 23-22-4 30 25-20 2 40 34z" fill="url(#${skin.id}-wing)"/>
+        <path d="M101 94q25-67 53-60l-14 23 22-4-30 25 20 2-40 34z" fill="url(#${skin.id}-wing)"/>
+      </g>
+      <path d="M48 91q30-26 67-8l20 23-17 30H62z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m68 120-6 24h12l12-22m27-2 7 24h12l-2-31" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M114 82q-7-26 16-43l26 7 13 21-18 24-27 1z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m133 48-1-18 14 16m14 0 15-15-5 26" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m144 49 13-27 2 29" fill="#fff3bf" stroke="${skin.shade}" stroke-width="2"/>
+      <path d="m159 70 22 5-19 11-14-6z" fill="#fff1df" stroke="${skin.shade}" stroke-width="2"/>
+      <circle cx="145" cy="59" r="3" fill="#fff"/>
+      <path d="M55 95q-23-5-25-24 18 15 32 8" fill="none" stroke="${skin.accent}" stroke-width="6"/>
+      <path class="skin-float" d="m78 57 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#fff"/>
+    </g>`),
+  "mythic-dryad": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <path d="M100 121q-19-25-10-46 6-16 10-28 6 14 13 26 13 21-1 48l16 21H74z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="M96 124q-22 9-31 19m37-15q19 5 34 15" fill="none" stroke="${skin.shade}" stroke-width="7" stroke-linecap="round"/>
+      <path d="M91 85Q67 66 44 83q18 5 23 22-22-8-31 10 24-7 43 8m32-38q24-19 47-2-18 5-23 22 22-8 31 10-24-7-43 8" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M72 63Q60 37 79 27q5 19 19 17 12-29 30-20-4 18-17 27 25-12 35 5-22 16-46 8-19 15-37-1z" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M84 67q16-14 33 0l-3 22q-14 9-28 0z" fill="#e8b88b" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M91 76h2m13 0h2m-13 8q5 4 10 0" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <path d="M95 100q-16 15-4 24m15-24q16 15 4 24" fill="none" stroke="#f2d394" stroke-width="3"/>
+      <circle class="skin-float" cx="54" cy="52" r="5" fill="#fff3bc"/><circle class="skin-float" cx="149" cy="54" r="4" fill="#fff3bc"/>
+      <path d="m101 34 3 6 7 1-5 4 1 7-6-3-6 3 1-7-5-4 7-1z" fill="#fff"/>
+    </g>`),
+  "mythic-golem": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <path d="m60 57 18-25 43-4 22 27-6 54-24 28-44-8-18-29z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="5" stroke-linejoin="round"/>
+      <path d="m60 57 28 8-4 37-27-5m64-68-8 39 33-13m-33 13 27 19-8 24m-71-9 35 4 27 26" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="3"/>
+      <path d="m41 71-22 17 9 29 30-10m88-37 25-11 13 25-26 20" fill="url(#${skin.id}-wing)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m76 119-5 25h16l12-22m20-5 12 27h15l-9-34" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m79 65 15 5m16-6-13 7m-13 13 9 4m15-5-7 6" stroke="#fff8d7" stroke-width="4" stroke-linecap="round"/>
+      <path d="m93 82 8-11 9 12-9 18z" fill="#fff" stroke="${skin.accent}" stroke-width="4"/>
+      <circle class="skin-float" cx="101" cy="86" r="21" fill="none" stroke="${skin.accent}" stroke-opacity=".65" stroke-width="3"/>
+      <path d="m100 75 4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z" fill="${skin.accent}"/>
+    </g>`),
+  "mythic-koi": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <path d="M47 98q-29-23-22-50 13 18 33 18-18-26-5-40 15 24 34 26" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M45 91q22-37 74-27 37 8 45 27-12 25-48 31-45 8-71-19z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="M157 85q26-25 33-10l-18 15 19 12q-10 17-34-1" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M72 69q18 13 31 0m-22 31q19 12 35-1m-13-33q16 14 29 0" fill="none" stroke="#fff4da" stroke-width="7" stroke-linecap="round"/>
+      <path d="M75 73q7-11 14 0m-9 27q8-11 15-1m16-27q8-11 15 0" fill="none" stroke="${skin.accent}" stroke-width="3"/>
+      <path d="M59 86q-17 7-18 24 17-3 29-17m63-22q15-9 24 2-11 10-22 9" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <circle cx="145" cy="78" r="5" fill="#fff"/><circle cx="146" cy="78" r="2" fill="${skin.shade}"/>
+      <path class="skin-float" d="M51 40q-10-13 0-22 10 9 0 22zm-19 12q-8-10 0-17 9 8 0 17z" fill="#fff"/>
+      <circle cx="109" cy="45" r="4" fill="#fff7d9"/><circle cx="130" cy="53" r="2" fill="#fff"/>
+    </g>`),
+  "mythic-roc": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <g class="mythic-wings" stroke="${skin.shade}" stroke-width="3" stroke-linejoin="round">
+        <path d="M89 88Q51 2 11 21l24 28-24-4 34 37-22 1 42 39 28-14z" fill="url(#${skin.id}-wing)"/>
+        <path d="M107 88q38-86 78-67l-24 28 24-4-34 37 22 1-42 39-28-14z" fill="url(#${skin.id}-wing)"/>
+        <path d="m89 82-48-33m59 39-48-4m55-2 48-33m-59 39 48-4" fill="none" stroke="#fff" stroke-width="2"/>
+      </g>
+      <path d="M77 91q20-25 46-8l14 28-19 25H79l-15-23z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="M97 103q-7-31 18-51l25 10 13 23-17 22-24 5z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m116 61-3-29 21 20m17 4 18-23-4 35" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m145 76 31 5-25 14-20-7z" fill="#ffdf91" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m164 81 9 2-7 5" fill="${skin.shade}"/><circle cx="133" cy="68" r="4" fill="#fff"/>
+      <path d="m85 119-8 23h13l13-21m18-2 11 23h13l-4-27" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m100 137 7 8 7-8" fill="none" stroke="#ffe7a4" stroke-width="4"/>
+      <path class="skin-float" d="m79 53 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#fff"/>
+    </g>`),
+  "mythic-hydra": (skin) =>
+    mythicCanvas(skin, `<g class="mythic-creature">
+      <path d="M57 124q-8-34 14-47 15-8 29 4 15-13 30-4 24 13 13 47l-17 18H72z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="4"/>
+      <path d="m75 126-8 18h14l13-18m24 0 12 18h14l-7-24" fill="${skin.colors["#7bd35c"]}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M96 91Q75 72 62 47m39 44q1-34 1-54m5 56q25-24 41-45" fill="none" stroke="${skin.shade}" stroke-width="13" stroke-linecap="round"/>
+      <path d="M96 91Q75 72 62 47m39 44q1-34 1-54m5 56q25-24 41-45" fill="none" stroke="url(#${skin.id}-wing)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M44 48q-7-17 9-28l19 5 10 18-12 16-19 1z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M89 39q-5-18 10-29l20 4 10 18-13 16-20 1z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="M127 53q-2-18 14-27l20 5 9 18-14 15-20-1z" fill="url(#${skin.id}-body)" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m53 26-5-17 17 15m30-1 4-18 13 19m37 1 13-15-3 24" fill="${skin.accent}" stroke="${skin.shade}" stroke-width="3"/>
+      <path d="m51 43 20 4-16 8m39-17 20 4-17 8m36 1 20 3-17 9" fill="#fff0d5" stroke="${skin.shade}" stroke-width="2"/>
+      <circle cx="59" cy="36" r="3" fill="#fff"/><circle cx="104" cy="28" r="3" fill="#fff"/><circle cx="147" cy="42" r="3" fill="#fff"/>
+      <path d="m75 98 7-9 7 10m18-11 7 9 7-10m10 17 7-9 7 9" fill="none" stroke="${skin.accent}" stroke-width="3"/>
+      <circle class="skin-float" cx="102" cy="77" r="6" fill="#fff4ca"/>
+    </g>`),
 };
+function mythicCanvas(skin, creature) {
+  const id = skin.id;
+  return `<svg class="mythic-character mythic-${skin.accessory}" viewBox="0 0 200 160" role="img" aria-label="${skin.name}">
+    <defs>
+      <linearGradient id="${id}-body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5d4"/><stop offset=".24" stop-color="${skin.accent}"/><stop offset=".7" stop-color="${skin.colors["#8fe06c"]}"/><stop offset="1" stop-color="${skin.shade}"/></linearGradient>
+      <linearGradient id="${id}-wing" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".88"/><stop offset=".35" stop-color="${skin.accent}" stop-opacity=".94"/><stop offset="1" stop-color="${skin.colors["#7bd35c"]}" stop-opacity=".48"/></linearGradient>
+      <radialGradient id="${id}-aura"><stop stop-color="${skin.accent}" stop-opacity=".22"/><stop offset=".68" stop-color="${skin.accent}" stop-opacity=".08"/><stop offset="1" stop-color="${skin.accent}" stop-opacity="0"/></radialGradient>
+      <filter id="${id}-soft-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle class="mythic-aura-field" cx="100" cy="78" r="72" fill="url(#${id}-aura)"/>
+    <circle class="mythic-aura-ring mythic-aura-ring-one" cx="100" cy="78" r="57" fill="none" stroke="${skin.accent}" stroke-opacity=".62" stroke-width="1.5"/>
+    <circle class="mythic-aura-ring mythic-aura-ring-two" cx="100" cy="78" r="68" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="1" stroke-dasharray="2 7"/>
+    <ellipse cx="101" cy="148" rx="68" ry="6" fill="#080d20" opacity=".48"/>
+    ${creature}
+    <g class="mythic-aura-sigils" fill="#fff7d6" filter="url(#${id}-soft-glow)">
+      <path d="m37 62 2 5 5 2-5 2-2 5-2-5-5-2 5-2zm124 22 2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+      <circle cx="49" cy="112" r="2"/><circle cx="151" cy="47" r="2"/><circle cx="72" cy="28" r="1.5"/>
+    </g>
+  </svg>`;
+}
 const SKIN_FACE_CONFIG = {
   garden: ["round", "freckles", "smile", "#315e32"],
   moonbeam: ["sleepy", "crescent", "smirk", "#28436f"],
@@ -1097,7 +1417,16 @@ function wormSvg(skin = getSkin()) {
   if (skin.rarity === "mythic") {
     const renderMythic = MYTHIC_SKIN_ART[skin.effect];
     if (!renderMythic) throw new Error(`Missing artwork for ${skin.name}.`);
-    return renderMythic(skin);
+    const artwork = renderMythic(skin);
+    if (artwork.includes("mythic-aura-field")) return artwork;
+    return artwork.replace(
+      "</defs>",
+      `</defs>
+        <circle class="mythic-aura-field" cx="100" cy="78" r="72" fill="${skin.accent}" opacity=".16"/>
+        <circle class="mythic-aura-ring mythic-aura-ring-one" cx="100" cy="78" r="58" fill="none" stroke="${skin.accent}" stroke-opacity=".7" stroke-width="1.5"/>
+        <circle class="mythic-aura-ring mythic-aura-ring-two" cx="100" cy="78" r="68" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="1" stroke-dasharray="2 7"/>
+        <g class="mythic-aura-sigils" fill="#fff7d6"><path d="m37 62 2 5 5 2-5 2-2 5-2-5-5-2 5-2zm124 22 2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><circle cx="49" cy="112" r="2"/><circle cx="151" cy="47" r="2"/></g>`,
+    );
   }
   const coloredSvg = Object.entries(skin.colors).reduce(
     (svg, [original, color]) => svg.replaceAll(original, color),
@@ -1128,7 +1457,7 @@ function clearSkinAnimations() {
   if (!gsap) return;
   gsap.killTweensOf(
     $("hero").querySelectorAll(
-      ".skin-float, .skin-wings, .skin-flame, .mythic-wings",
+      ".skin-float, .skin-wings, .skin-flame, .mythic-wings, .mythic-aura-field, .mythic-aura-ring, .mythic-aura-sigils",
     ),
   );
 }
@@ -1152,11 +1481,48 @@ function animateEquippedSkin(skin = getSkin()) {
     return;
 
   gsap.killTweensOf(
-    worm.querySelectorAll(".skin-float, .skin-wings, .skin-flame"),
+    worm.querySelectorAll(
+      ".skin-float, .skin-wings, .skin-flame, .mythic-aura-field, .mythic-aura-ring, .mythic-aura-sigils",
+    ),
   );
   const floaters = worm.querySelectorAll(".skin-float");
   const wings = worm.querySelectorAll(".skin-wings");
   const flames = worm.querySelectorAll(".skin-flame");
+  const auraField = worm.querySelector(".mythic-aura-field");
+  const auraRings = worm.querySelectorAll(".mythic-aura-ring");
+  const auraSigils = worm.querySelectorAll(".mythic-aura-sigils");
+  if (auraField)
+    gsap.fromTo(
+      auraField,
+      { scale: 0.88, opacity: 0.55 },
+      {
+        scale: 1.1,
+        opacity: 1,
+        duration: 1.8,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        transformOrigin: "center",
+      },
+    );
+  if (auraRings.length)
+    gsap.to(auraRings, {
+      rotation: (index) => (index ? -360 : 360),
+      duration: (index) => (index ? 22 : 16),
+      ease: "none",
+      repeat: -1,
+      transformOrigin: "center",
+    });
+  if (auraSigils.length)
+    gsap.to(auraSigils, {
+      rotation: 8,
+      opacity: 0.55,
+      duration: 1.4,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: "center",
+    });
   if (floaters.length)
     gsap.fromTo(
       floaters,

@@ -1750,6 +1750,7 @@ a.mode-card:focus-visible {
   box-shadow:
     inset 0 0 26px rgba(154, 119, 255, 0.08),
     0 0 18px rgba(127, 105, 235, 0.1);
+  animation: mythic-card-glow 3.8s ease-in-out infinite alternate;
 }
 .rarity-label {
   display: inline-block;
@@ -1798,6 +1799,9 @@ a.mode-card:focus-visible {
     drop-shadow(0 0 5px var(--skin-accent, #e8a9ff))
     drop-shadow(0 0 12px rgba(148, 112, 255, 0.6));
 }
+.skin-card.rarity-mythic .rarity-label {
+  text-shadow: 0 0 12px rgba(231, 169, 255, 0.7);
+}
 #hero.skin-epic svg {
   filter: drop-shadow(0 0 8px var(--skin-accent, #c294ff))
     drop-shadow(0 22px 18px rgba(0, 0, 0, 0.24));
@@ -1822,6 +1826,56 @@ a.mode-card:focus-visible {
 }
 .mythic-character .skin-float {
   animation: mythic-sparkle 2s ease-in-out infinite alternate;
+}
+.mythic-aura-field {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mythic-aura-pulse 2.8s ease-in-out infinite alternate;
+}
+.mythic-aura-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.mythic-aura-ring-one {
+  animation: mythic-aura-spin 18s linear infinite;
+}
+.mythic-aura-ring-two {
+  animation: mythic-aura-spin-reverse 25s linear infinite;
+}
+.mythic-aura-sigils {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mythic-sigil-glint 2.2s ease-in-out infinite alternate;
+}
+@keyframes mythic-aura-pulse {
+  from {
+    opacity: 0.56;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+@keyframes mythic-aura-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes mythic-aura-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes mythic-sigil-glint {
+  from {
+    opacity: 0.5;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.04);
+  }
 }
 @keyframes mythic-flap {
   from {
@@ -1852,6 +1906,18 @@ a.mode-card:focus-visible {
   box-shadow:
     0 0 36px var(--vfx-color),
     inset 0 0 30px var(--vfx-color);
+}
+@keyframes mythic-card-glow {
+  from {
+    box-shadow:
+      inset 0 0 20px rgba(154, 119, 255, 0.06),
+      0 0 10px rgba(127, 105, 235, 0.07);
+  }
+  to {
+    box-shadow:
+      inset 0 0 30px rgba(154, 119, 255, 0.13),
+      0 0 22px rgba(127, 105, 235, 0.18);
+  }
 }
 .skin-float,
 .skin-wings,
@@ -1985,7 +2051,11 @@ a.mode-card:focus-visible {
   .skin-wings,
   .skin-flame,
   .mythic-wings,
-  .mythic-character .skin-float {
+  .mythic-character .skin-float,
+  .mythic-aura-field,
+  .mythic-aura-ring,
+  .mythic-aura-sigils,
+  .skin-card.rarity-mythic {
     animation: none !important;
   }
 }
@@ -2463,6 +2533,11 @@ a.mode-card:hover .mode-arrow {
 #hero svg,
 #foe svg {
   filter: drop-shadow(0 22px 21px rgba(0, 0, 0, 0.36));
+}
+
+#hero > svg {
+  width: 100%;
+  height: auto;
 }
 
 #word {
