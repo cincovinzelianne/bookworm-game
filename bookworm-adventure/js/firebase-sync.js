@@ -18,7 +18,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyC4QvBkAcaRIFM8OAJMN0dcTRvKWptuuuI",
   authDomain: "goyworm.firebaseapp.com",
-  databaseURL: "YOUR_FIREBASE_DATABASE_URL",
+  databaseURL: "https://goyworm-default-rtdb.asia-southeast1.firebasedatabase.app/",
   projectId: "goyworm",
   appId: "1:560910148964:web:598325ddcfc9cd8bec0671",
 };
