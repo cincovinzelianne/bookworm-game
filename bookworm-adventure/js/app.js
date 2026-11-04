@@ -521,6 +521,7 @@ const SKIN_RARITIES = [
 ];
 let activeSkinRarity = "all";
 const STORE_KEY = "wormwood-library-player";
+const PROGRESS_KEY = "wormwood-library-progress";
 const DEFAULT_STORE = {
   coins: 0,
   ownedSkins: ["garden"],
@@ -558,6 +559,7 @@ let STORE = loadStore();
 function saveStore() {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(STORE));
+    window.WormwoodFirebase?.save(getCloudSaveData());
     return true;
   } catch (error) {
     console.error("Could not save marketplace data:", error);
@@ -859,6 +861,125 @@ function valid(w) {
   return false;
 }
 let S;
+function getCloudSaveData() {
+  return {
+    coins: STORE.coins,
+    ownedSkins: STORE.ownedSkins,
+    equippedSkin: STORE.equippedSkin,
+    progress: loadProgress(),
+  };
+}
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "null");
+    if (!saved || typeof saved !== "object") return null;
+    return saved;
+  } catch (error) {
+    console.error("Could not load saved game progress:", error);
+    return null;
+  }
+}
+function saveProgress() {
+  if (!S || !Array.isArray(S.t) || S.t.length !== 16) return;
+  const progress = {
+    lv: S.lv,
+    score: S.score,
+    php: S.php,
+    ehp: S.ehp,
+    emax: S.emax,
+    tiles: S.t.map(({ l, gem }) => ({ l, gem: Boolean(gem) })),
+    used: [...S.used],
+  };
+  try {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    window.WormwoodFirebase?.save(getCloudSaveData());
+  } catch (error) {
+    console.error("Could not save game progress:", error);
+    say("Could not save your game progress in this browser.", "#ff8a8a");
+  }
+}
+function applyCloudSaveData(saved) {
+  if (!saved || typeof saved !== "object") return;
+  const ownedSkins = Array.isArray(saved.ownedSkins)
+    ? [
+        ...new Set(
+          saved.ownedSkins.filter((id) => SKINS.some((skin) => skin.id === id)),
+        ),
+      ]
+    : ["garden"];
+  if (!ownedSkins.includes("garden")) ownedSkins.push("garden");
+  STORE = {
+    coins: Number.isFinite(saved.coins)
+      ? Math.max(0, Math.floor(saved.coins))
+      : 0,
+    ownedSkins,
+    equippedSkin: ownedSkins.includes(saved.equippedSkin)
+      ? saved.equippedSkin
+      : "garden",
+  };
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(STORE));
+    if (saved.progress && typeof saved.progress === "object") {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(saved.progress));
+    } else {
+      localStorage.removeItem(PROGRESS_KEY);
+    }
+  } catch (error) {
+    console.error("Could not cache cloud save in this browser:", error);
+  }
+  const progress = loadProgress();
+  if (progress && S && restoreProgress(progress)) {
+    load();
+    S.ehp = Math.min(S.emax, Math.max(1, progress.ehp));
+    S.php = Math.min(100, Math.max(1, progress.php));
+    S.score = Math.max(0, Math.floor(progress.score));
+    hud();
+    render();
+  } else if (S) {
+    hud();
+  }
+  renderShop();
+  $("hero").innerHTML = wormSvg();
+  animateEquippedSkin();
+}
+function restoreProgress(progress) {
+  if (
+    !Number.isInteger(progress.lv) ||
+    progress.lv < 0 ||
+    progress.lv >= FOES.length ||
+    !Array.isArray(progress.tiles) ||
+    progress.tiles.length !== 16 ||
+    !progress.tiles.every(
+      (tile) =>
+        tile &&
+        typeof tile.l === "string" &&
+        /^[A-Z]$/.test(tile.l) &&
+        typeof tile.gem === "boolean",
+    ) ||
+    !Number.isFinite(progress.score) ||
+    !Number.isFinite(progress.php) ||
+    !Number.isFinite(progress.ehp)
+  )
+    return false;
+  S.lv = progress.lv;
+  S.score = Math.max(0, Math.floor(progress.score));
+  S.php = Math.min(100, Math.max(1, progress.php));
+  S.t = progress.tiles.map((tile) => ({
+    l: tile.l,
+    gem: tile.gem,
+    id: Math.random(),
+  }));
+  S.used = new Set(
+    Array.isArray(progress.used)
+      ? progress.used.filter((word) => typeof word === "string")
+      : [],
+  );
+  return true;
+}
+window.WormwoodGame = {
+  getSaveData: getCloudSaveData,
+  applySaveData: applyCloudSaveData,
+};
 function rl() {
   return BAG[(Math.random() * BAG.length) | 0];
 }
@@ -884,7 +1005,7 @@ function fixVowels() {
     v++;
   }
 }
-function start() {
+function start(resume = false) {
   S = {
     lv: 0,
     score: 0,
@@ -902,13 +1023,24 @@ function start() {
     playerStunned: false,
     enemyStunned: false,
   };
+  const savedProgress = resume ? loadProgress() : null;
+  const restoredProgress = savedProgress
+    ? restoreProgress(savedProgress)
+    : false;
   fixVowels();
   $("over").style.display = "none";
   clearSkinAnimations();
   $("hero").innerHTML = wormSvg();
   animateEquippedSkin();
   load();
+  if (restoredProgress) {
+    S.ehp = Math.min(S.emax, Math.max(1, savedProgress.ehp));
+    S.php = Math.min(100, Math.max(1, savedProgress.php));
+    S.score = Math.max(0, Math.floor(savedProgress.score));
+  }
   render();
+  hud();
+  saveProgress();
 }
 function load() {
   const f = FOES[S.lv];
@@ -1186,6 +1318,7 @@ async function go() {
   S.turn = "player";
   hud();
   S.busy = false;
+  saveProgress();
 }
 async function foeAttack() {
   const f = FOES[S.lv],
@@ -1245,11 +1378,13 @@ async function win() {
   saveStore();
   if (++S.lv >= FOES.length) {
     hud();
+    saveProgress();
     return end(true);
   }
   say("Foe defeated! +25 health", "#b6f27a");
   load();
   S.busy = false;
+  saveProgress();
 }
 function end(v) {
   S.busy = true;
@@ -1560,7 +1695,7 @@ addEventListener("keydown", (e) => {
   }
 });
 function startRequestedMode() {
-  start();
+  start(true);
   if (new URLSearchParams(location.search).get("mode") === "shop") openShop();
 }
 

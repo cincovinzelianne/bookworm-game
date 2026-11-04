@@ -1018,6 +1018,21 @@ a.mode-card:focus-visible {
   text-decoration: none;
   cursor: pointer;
 }
+.game-menu-panel button[hidden] {
+  display: none;
+}
+.game-menu-panel .account-status {
+  margin: 0;
+  padding: 8px 10px 10px;
+  color: #a9b7bf;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.game-menu-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 .game-menu-panel a:hover,
 .game-menu-panel button:hover {
   background: rgba(255, 255, 255, 0.09);

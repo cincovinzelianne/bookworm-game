@@ -70,6 +70,16 @@
                 </svg>
                 <span id="musicLabel">Play battle music</span>
               </button>
+              <button id="bGoogleSignIn" type="button">
+                <span aria-hidden="true">G</span>
+                <span>Sign in with Google to sync</span>
+              </button>
+              <button id="bGoogleSignOut" type="button" hidden>
+                Sign out
+              </button>
+              <p id="accountStatus" class="account-status" aria-live="polite">
+                Progress is saved in this browser.
+              </p>
             </nav>
           </details>
         </div>
@@ -196,5 +206,6 @@
     </div>
 
     <script src="js/app.js"></script>
+    <script type="module" src="js/firebase-sync.js"></script>
   </body>
 </html>
