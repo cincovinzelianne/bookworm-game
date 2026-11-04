@@ -520,12 +520,73 @@ const SKIN_RARITIES = [
   ["legendary", "Legendary", 7],
 ];
 let activeSkinRarity = "all";
+let activeShopCategory = "skins";
 const STORE_KEY = "wormwood-library-player";
 const PROGRESS_KEY = "wormwood-library-progress";
+const POTIONS = [
+  {
+    id: "healing",
+    name: "Healing Potion",
+    price: 35,
+    description: "Restore 35 health during your turn.",
+  },
+  {
+    id: "strength",
+    name: "Strength Potion",
+    price: 45,
+    description: "Boost your next 3 attacks by 50%.",
+  },
+  {
+    id: "curse",
+    name: "Curse Potion",
+    price: 40,
+    description: "Halve the next enemy hit against you.",
+  },
+  {
+    id: "defense",
+    name: "Defense Potion",
+    price: 50,
+    description: "Reduce the next 3 enemy attacks by 50%.",
+  },
+];
+const UPGRADES = [
+  {
+    id: "heart",
+    name: "Heart Locket",
+    description: "+20 maximum health per level.",
+    price: (level) => 100 + level * 75,
+    maxLevel: 5,
+  },
+  {
+    id: "spellbook",
+    name: "Spellbook",
+    description: "+10% word attack damage per level.",
+    price: (level) => 140 + level * 100,
+    maxLevel: 5,
+  },
+  {
+    id: "iron-shell",
+    name: "Iron Shell",
+    description: "Reduce each enemy hit by 2 per level.",
+    price: (level) => 120 + level * 85,
+    maxLevel: 5,
+  },
+];
+function emptyPotions() {
+  return { healing: 0, strength: 0, curse: 0, defense: 0 };
+}
+function randomEnemyPotion() {
+  return POTIONS[(Math.random() * POTIONS.length) | 0].id;
+}
+function emptyUpgrades() {
+  return { heart: 0, spellbook: 0, "iron-shell": 0 };
+}
 const DEFAULT_STORE = {
   coins: 0,
   ownedSkins: ["garden"],
   equippedSkin: "garden",
+  potions: emptyPotions(),
+  upgrades: emptyUpgrades(),
 };
 function loadStore() {
   try {
@@ -549,6 +610,22 @@ function loadStore() {
       equippedSkin: ownedSkins.includes(saved.equippedSkin)
         ? saved.equippedSkin
         : "garden",
+      potions: Object.fromEntries(
+        POTIONS.map(({ id }) => [
+          id,
+          Number.isSafeInteger(saved.potions?.[id])
+            ? Math.max(0, saved.potions[id])
+            : 0,
+        ]),
+      ),
+      upgrades: Object.fromEntries(
+        UPGRADES.map(({ id, maxLevel }) => [
+          id,
+          Number.isSafeInteger(saved.upgrades?.[id])
+            ? Math.min(maxLevel, Math.max(0, saved.upgrades[id]))
+            : 0,
+        ]),
+      ),
     };
   } catch (error) {
     console.error("Could not load saved marketplace data:", error);
@@ -901,8 +978,16 @@ function getCloudSaveData() {
     coins: STORE.coins,
     ownedSkins: STORE.ownedSkins,
     equippedSkin: STORE.equippedSkin,
+    potions: STORE.potions,
+    upgrades: STORE.upgrades,
     progress: loadProgress(),
   };
+}
+function getMaxHealth() {
+  return 100 + STORE.upgrades.heart * 20;
+}
+function getAttackMultiplier() {
+  return 1 + STORE.upgrades.spellbook * 0.1;
 }
 function loadProgress() {
   try {
@@ -922,6 +1007,9 @@ function saveProgress() {
     php: S.php,
     ehp: S.ehp,
     emax: S.emax,
+    buffs: { ...S.buffs },
+    enemyPotion: S.enemyPotion,
+    enemyBuffs: { ...S.enemyBuffs },
     tiles: S.t.map(({ l, gem }) => ({ l, gem: Boolean(gem) })),
     used: [...S.used],
   };
@@ -951,6 +1039,22 @@ function applyCloudSaveData(saved) {
     equippedSkin: ownedSkins.includes(saved.equippedSkin)
       ? saved.equippedSkin
       : "garden",
+    potions: Object.fromEntries(
+      POTIONS.map(({ id }) => [
+        id,
+        Number.isSafeInteger(saved.potions?.[id])
+          ? Math.max(0, saved.potions[id])
+          : 0,
+      ]),
+    ),
+    upgrades: Object.fromEntries(
+      UPGRADES.map(({ id, maxLevel }) => [
+        id,
+        Number.isSafeInteger(saved.upgrades?.[id])
+          ? Math.min(maxLevel, Math.max(0, saved.upgrades[id]))
+          : 0,
+      ]),
+    ),
   };
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(STORE));
@@ -964,9 +1068,9 @@ function applyCloudSaveData(saved) {
   }
   const progress = loadProgress();
   if (progress && S && restoreProgress(progress)) {
-    load();
+    load(false);
     S.ehp = Math.min(S.emax, Math.max(1, progress.ehp));
-    S.php = Math.min(100, Math.max(1, progress.php));
+    S.php = Math.min(getMaxHealth(), Math.max(1, progress.php));
     S.score = Math.max(0, Math.floor(progress.score));
     hud();
     render();
@@ -997,7 +1101,15 @@ function restoreProgress(progress) {
     return false;
   S.lv = progress.lv;
   S.score = Math.max(0, Math.floor(progress.score));
-  S.php = Math.min(100, Math.max(1, progress.php));
+  S.php = Math.min(getMaxHealth(), Math.max(1, progress.php));
+  S.buffs = normalizeBuffs(progress.buffs);
+  S.enemyPotion =
+    progress.enemyPotion === null
+      ? null
+      : POTIONS.some(({ id }) => id === progress.enemyPotion)
+        ? progress.enemyPotion
+        : randomEnemyPotion();
+  S.enemyBuffs = normalizeBuffs(progress.enemyBuffs);
   S.t = progress.tiles.map((tile) => ({
     l: tile.l,
     gem: tile.gem,
@@ -1009,6 +1121,17 @@ function restoreProgress(progress) {
       : [],
   );
   return true;
+}
+function normalizeBuffs(buffs) {
+  return {
+    strength: Number.isSafeInteger(buffs?.strength)
+      ? Math.min(3, Math.max(0, buffs.strength))
+      : 0,
+    curse: Boolean(buffs?.curse),
+    defense: Number.isSafeInteger(buffs?.defense)
+      ? Math.min(3, Math.max(0, buffs.defense))
+      : 0,
+  };
 }
 window.WormwoodGame = {
   getSaveData: getCloudSaveData,
@@ -1043,7 +1166,7 @@ function start(resume = false) {
   S = {
     lv: 0,
     score: 0,
-    php: 100,
+    php: getMaxHealth(),
     t: Array.from(
       {
         length: 16,
@@ -1056,6 +1179,11 @@ function start(resume = false) {
     turn: "player",
     playerStunned: false,
     enemyStunned: false,
+    buffs: { strength: 0, curse: false },
+    enemyPotion: randomEnemyPotion(),
+    enemyBuffs: { strength: 0, curse: false, defense: 0 },
+    inBattle: true,
+    preparing: false,
   };
   const savedProgress = resume ? loadProgress() : null;
   const restoredProgress = savedProgress
@@ -1063,10 +1191,11 @@ function start(resume = false) {
     : false;
   fixVowels();
   $("over").style.display = "none";
+  setBattleMode(true);
   clearSkinAnimations();
   $("hero").innerHTML = wormSvg();
   animateEquippedSkin();
-  load();
+  load(!restoredProgress);
   if (restoredProgress) {
     S.ehp = Math.min(S.emax, Math.max(1, savedProgress.ehp));
     S.php = Math.min(100, Math.max(1, savedProgress.php));
@@ -1076,8 +1205,12 @@ function start(resume = false) {
   hud();
   saveProgress();
 }
-function load() {
+function load(newEnemy = true) {
   const f = getFoe();
+  if (newEnemy) {
+    S.enemyPotion = randomEnemyPotion();
+    S.enemyBuffs = { strength: 0, curse: false, defense: 0 };
+  }
   setScene(S.lv);
   S.ehp = f.hp;
   S.emax = f.hp;
@@ -1110,13 +1243,15 @@ function load() {
   hud();
 }
 function hud() {
-  $("pbar").style.width = Math.max(0, S.php) + "%";
-  $("php").textContent = Math.max(0, S.php);
+  $("php").textContent = `${Math.max(0, Math.ceil(S.php))}/${getMaxHealth()}`;
+  $("pbar").style.width =
+    Math.max(0, (S.php / getMaxHealth()) * 100) + "%";
   $("ebar").style.width = Math.max(0, (S.ehp / S.emax) * 100) + "%";
   $("ehp").textContent = Math.max(0, S.ehp);
   $("score").textContent = S.score;
   $("coins").textContent = STORE.coins;
   $("turn").textContent = S.turn === "player" ? "Wilbur" : getFoe().n;
+  if (!$("backpack").hidden) renderBackpack();
 }
 function render() {
   const b = $("board");
@@ -1150,7 +1285,7 @@ function word() {
       .join("") || '<span class="serif opacity-50">Spell a word…</span>';
 }
 function pick(i) {
-  if (S.busy) return;
+  if (S.busy || S.preparing) return;
   const k = S.sel.indexOf(i);
   if (k > -1) S.sel.splice(k, 1);
   else S.sel.push(i);
@@ -1163,6 +1298,37 @@ function say(t, c) {
 }
 function renderShop() {
   $("shopCoins").textContent = STORE.coins;
+  $("shop-title").textContent =
+    activeShopCategory === "skins"
+      ? "Worm wardrobe"
+      : activeShopCategory === "potions"
+        ? "Potion counter"
+        : "Character upgrades";
+  $("shop").querySelector(".shop-kicker").textContent =
+    activeShopCategory === "skins"
+      ? "Give your worm a new look"
+      : activeShopCategory === "potions"
+        ? "Battle-ready brews and curses"
+        : "Permanent boosts for every adventure";
+  $("shopStats").textContent =
+    `Health ${S ? Math.ceil(S.php) : getMaxHealth()}/${getMaxHealth()} · ` +
+    `Attack +${Math.round((getAttackMultiplier() - 1) * 100)}% · ` +
+    `Defense ${STORE.upgrades["iron-shell"] * 2}` +
+    (S?.buffs?.strength ? ` · Strength ${S.buffs.strength} attacks` : "") +
+    (S?.buffs?.curse ? " · Curse ready" : "") +
+    (S?.buffs?.defense ? ` · Defense ${S.buffs.defense} attacks` : "");
+  const isSkinShop = activeShopCategory === "skins";
+  $("skinFilters").hidden = !isSkinShop;
+  $("skinGrid").classList.toggle("shop-item-grid", !isSkinShop);
+  document.querySelectorAll("[data-shop-category]").forEach((button) => {
+    const active = button.dataset.shopCategory === activeShopCategory;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  if (!isSkinShop) {
+    $("skinGrid").innerHTML = renderConsumables();
+    return;
+  }
   $("skinFilters").innerHTML = SKIN_RARITIES.map(
     ([rarity, label, count]) =>
       `<button class="rarity-filter rarity-${rarity}${activeSkinRarity === rarity ? " is-active" : ""}" type="button" data-rarity="${rarity}" aria-pressed="${activeSkinRarity === rarity}">${label}<span>${count}</span></button>`,
@@ -1191,7 +1357,39 @@ function renderShop() {
     })
     .join("");
 }
+function renderConsumables() {
+  if (activeShopCategory === "potions") {
+    return POTIONS.map((potion) => {
+      const quantity = STORE.potions[potion.id];
+      return `<article class="shop-item-card">
+        <div class="shop-item-icon" aria-hidden="true">${potion.id === "healing" ? "♥" : potion.id === "strength" ? "⚔" : potion.id === "defense" ? "⬟" : "☠"}</div>
+        <div class="shop-item-info"><h3>${potion.name}</h3><p>${potion.description}</p><small>Owned: ${quantity}</small></div>
+        <button class="skin-action" type="button" data-market-action="buy" data-item-id="${potion.id}">Buy · ${potion.price} ✦</button>
+      </article>`;
+    }).join("");
+  }
+  return UPGRADES.map((upgrade) => {
+    const level = STORE.upgrades[upgrade.id];
+    const maxed = level >= upgrade.maxLevel;
+    const price = upgrade.price(level);
+    return `<article class="shop-item-card">
+      <div class="shop-item-icon" aria-hidden="true">${upgrade.id === "heart" ? "♥" : upgrade.id === "spellbook" ? "✦" : "⬟"}</div>
+      <div class="shop-item-info"><h3>${upgrade.name}</h3><p>${upgrade.description}</p><small>Level ${level}/${upgrade.maxLevel}</small></div>
+      <button class="skin-action" type="button" data-market-action="upgrade" data-item-id="${upgrade.id}" ${maxed ? "disabled" : ""}>${maxed ? "Max level" : `Upgrade · ${price} ✦`}</button>
+    </article>`;
+  }).join("");
+}
+function setBattleMode(active) {
+  S.inBattle = active;
+  document.body.classList.toggle("battle-active", active);
+  $("battleActions").hidden = !active;
+  if (active) $("gameMenu").open = false;
+}
 function openShop() {
+  if (S?.inBattle) {
+    say("The marketplace is closed during a fight.", "#ff8a8a");
+    return;
+  }
   renderShop();
   $("shop").hidden = false;
   document.body.classList.add("shop-open");
@@ -1200,9 +1398,108 @@ function openShop() {
 function closeShop() {
   $("shop").hidden = true;
   document.body.classList.remove("shop-open");
+  if (S?.preparing) {
+    S.preparing = false;
+    setBattleMode(true);
+    $("shopMessage").textContent = "The marketplace is closed during a fight.";
+    $("bBackpack").focus();
+    return;
+  }
   $("bShop").focus();
 }
+function renderBackpack() {
+  const canAct = S && !S.busy && S.turn === "player";
+  $("backpackMessage").textContent = canAct
+    ? "Choose a potion to use on this turn."
+    : "Potions can only be used during your turn.";
+  $("backpackItems").innerHTML = POTIONS.map((potion) => {
+    const quantity = STORE.potions[potion.id];
+    const usable =
+      canAct &&
+      quantity > 0 &&
+      (potion.id !== "healing" || S.php < getMaxHealth());
+    const label =
+      quantity < 1
+        ? "None owned"
+        : potion.id === "healing" && S.php >= getMaxHealth()
+          ? "Health full"
+          : usable
+            ? "Use potion"
+            : "Your turn";
+    return `<article class="shop-item-card">
+      <div class="shop-item-icon" aria-hidden="true">${potion.id === "healing" ? "♥" : potion.id === "strength" ? "⚔" : potion.id === "defense" ? "⬟" : "☠"}</div>
+      <div class="shop-item-info"><h3>${potion.name}</h3><p>${potion.description}</p><small>Owned: ${quantity}</small></div>
+      <button class="skin-action" type="button" data-use-potion="${potion.id}" ${usable ? "" : "disabled"}>${label}</button>
+    </article>`;
+  }).join("");
+}
+function openBackpack() {
+  if (!S?.inBattle || $("over").style.display === "flex") return;
+  renderBackpack();
+  $("backpack").hidden = false;
+  document.body.classList.add("backpack-open");
+  $("bBackpackClose").focus();
+}
+function closeBackpack() {
+  $("backpack").hidden = true;
+  document.body.classList.remove("backpack-open");
+  $("bBackpack").focus();
+}
+async function usePotion(id) {
+  if (!S?.inBattle || S.busy || S.turn !== "player") {
+    $("backpackMessage").textContent =
+      "Wait until your turn to use a potion.";
+    renderBackpack();
+    return;
+  }
+  if (!POTIONS.some((potion) => potion.id === id) || STORE.potions[id] < 1)
+    return;
+  const previousHealth = S.php;
+  const previousBuffs = { ...S.buffs };
+  if (id === "healing") {
+    if (S.php >= getMaxHealth()) {
+      $("backpackMessage").textContent = "Your health is already full.";
+      renderBackpack();
+      return;
+    }
+    const healed = Math.min(35, getMaxHealth() - S.php);
+    S.php += healed;
+    say(`Healing Potion restored ${healed} health.`, "#b6f27a");
+  } else if (id === "strength") {
+    S.buffs.strength = Math.min(3, S.buffs.strength + 3);
+    say("Strength Potion ready: your next 3 attacks deal 50% more damage.", "#ffe08a");
+  } else if (id === "curse") {
+    S.buffs.curse = true;
+    say("Curse Potion ready: the next enemy hit will be halved.", "#bba5ff");
+  } else {
+    S.buffs.defense = Math.min(3, S.buffs.defense + 3);
+    say("Defense Potion ready: the next 3 enemy attacks deal 50% less damage.", "#9ddcff");
+  }
+  const previous = STORE;
+  STORE = {
+    ...STORE,
+    potions: { ...STORE.potions, [id]: STORE.potions[id] - 1 },
+  };
+  if (!saveStore()) {
+    STORE = previous;
+    S.php = previousHealth;
+    S.buffs = previousBuffs;
+    hud();
+    return;
+  }
+  saveProgress();
+  closeBackpack();
+  S.busy = true;
+  S.turn = "enemy";
+  hud();
+  await resolveEnemyTurn();
+}
 function handleSkinAction(event) {
+  if (S?.inBattle) return;
+  if (event.target.closest("[data-market-action]")) {
+    handleMarketAction(event);
+    return;
+  }
   const button = event.target.closest("[data-skin-action]");
   if (!button || button.disabled) return;
 
@@ -1237,6 +1534,64 @@ function handleSkinAction(event) {
   hud();
   renderShop();
 }
+function handleMarketAction(event) {
+  if (S?.inBattle) return;
+  const button = event.target.closest("[data-market-action]");
+  if (!button || button.disabled) return;
+  const action = button.dataset.marketAction;
+  const id = button.dataset.itemId;
+  const previous = STORE;
+  const previousHealth = S?.php;
+  const previousBuffs = S ? { ...S.buffs } : null;
+  let message;
+
+  if (action === "buy") {
+    const potion = POTIONS.find((item) => item.id === id);
+    if (!potion) return;
+    if (STORE.coins < potion.price) {
+      $("shopMessage").textContent =
+        `You need ${potion.price - STORE.coins} more coins for ${potion.name}.`;
+      return;
+    }
+    STORE = {
+      ...STORE,
+      coins: STORE.coins - potion.price,
+      potions: { ...STORE.potions, [id]: STORE.potions[id] + 1 },
+    };
+    message = `${potion.name} added to your inventory.`;
+  } else if (action === "upgrade") {
+    const upgrade = UPGRADES.find((item) => item.id === id);
+    if (!upgrade) return;
+    const level = STORE.upgrades[id];
+    if (level >= upgrade.maxLevel) return;
+    const price = upgrade.price(level);
+    if (STORE.coins < price) {
+      $("shopMessage").textContent =
+        `You need ${price - STORE.coins} more coins for ${upgrade.name}.`;
+      return;
+    }
+    STORE = {
+      ...STORE,
+      coins: STORE.coins - price,
+      upgrades: { ...STORE.upgrades, [id]: level + 1 },
+    };
+    if (id === "heart" && S) S.php = Math.min(getMaxHealth(), S.php + 20);
+    message = `${upgrade.name} upgraded to level ${level + 1}.`;
+  } else {
+    return;
+  }
+
+  if (!saveStore()) {
+    STORE = previous;
+    if (S && previousHealth !== undefined) S.php = previousHealth;
+    if (S && previousBuffs) S.buffs = previousBuffs;
+    return;
+  }
+  if (action === "upgrade") saveProgress();
+  $("shopMessage").textContent = message;
+  hud();
+  renderShop();
+}
 function bad(t) {
   say(t, "#ff8a8a");
   $("word").classList.remove("shake");
@@ -1245,7 +1600,14 @@ function bad(t) {
   blip(120, 0.2, "sawtooth");
 }
 async function go() {
-  if (S.busy || S.turn !== "player" || !S.sel.length) return;
+  if (
+    !S.inBattle ||
+    S.preparing ||
+    S.busy ||
+    S.turn !== "player" ||
+    !S.sel.length
+  )
+    return;
   const w = S.sel
     .map((i) => S.t[i].l)
     .join("")
@@ -1261,7 +1623,19 @@ async function go() {
   const gems = idx.filter((i) => S.t[i].gem).length;
   const playerSkin = getSkin();
   let dmg = idx.reduce((a, i) => a + PTS[S.t[i].l], 0);
-  dmg = Math.round(dmg * (1 + (w.length - 3) * 0.4) * (gems ? 2 : 1));
+  dmg = Math.round(
+    dmg *
+      (1 + (w.length - 3) * 0.4) *
+      (gems ? 2 : 1) *
+      getAttackMultiplier() *
+      (S.buffs.strength > 0 ? 1.5 : 1),
+  );
+  if (S.enemyBuffs.curse || S.enemyBuffs.defense > 0) {
+    dmg = Math.max(1, Math.round(dmg * 0.5));
+  }
+  S.enemyBuffs.curse = false;
+  if (S.enemyBuffs.defense > 0) S.enemyBuffs.defense--;
+  if (S.buffs.strength > 0) S.buffs.strength--;
   const foe = $("foe").getBoundingClientRect(),
     els = [...$("board").children];
   const fl = idx.map((i, n) => {
@@ -1332,9 +1706,13 @@ async function go() {
   render();
   $("hero").classList.remove("lungeL");
   $("hero").classList.add("bob");
+  await resolveEnemyTurn(S.enemyStunned);
+}
+async function resolveEnemyTurn(enemyStunned = false) {
+  hud();
   await sleep(500);
   if (S.ehp <= 0) return win();
-  if (S.enemyStunned) {
+  if (enemyStunned) {
     S.enemyStunned = false;
     say(`${getFoe().n} is stunned and misses its turn!`, "#b6f27a");
     await sleep(500);
@@ -1353,9 +1731,11 @@ async function go() {
   S.turn = "player";
   hud();
   S.busy = false;
+  if (!$("backpack").hidden) renderBackpack();
   saveProgress();
 }
 async function foeAttack() {
+  if (await useEnemyPotion()) return;
   const f = getFoe(),
     e = $("foe");
   const attackWords = f.words.filter(has);
@@ -1368,15 +1748,27 @@ async function foeAttack() {
   e.classList.add("lunge");
   await sleep(300);
   const h = $("hero").getBoundingClientRect();
-  S.php -= f.atk;
+  const damage = Math.max(
+    1,
+    Math.ceil(
+      f.atk *
+        (S.enemyBuffs.strength > 0 ? 1.5 : 1) *
+        (S.buffs.curse || S.buffs.defense > 0 ? 0.5 : 1) -
+        STORE.upgrades["iron-shell"] * 2,
+    ),
+  );
+  if (S.enemyBuffs.strength > 0) S.enemyBuffs.strength--;
+  S.buffs.curse = false;
+  if (S.buffs.defense > 0) S.buffs.defense--;
+  S.php -= damage;
   burst(h.left + h.width / 2, h.top + h.height / 2, 30, "#ff4d4d");
   shakeScreen(f.atk * 2);
   blip(90, 0.3, "sawtooth");
   $("hero").classList.add("hit");
-  num(h.left + 60, h.top, "-" + f.atk);
+  num(h.left + 60, h.top, "-" + damage);
   S.playerStunned = word.length > 5;
   say(
-    `${f.n} attacks with "${word.toUpperCase()}" for ${f.atk} damage!${S.playerStunned ? " Wilbur is stunned!" : ""}`,
+    `${f.n} attacks with "${word.toUpperCase()}" for ${damage} damage!${S.playerStunned ? " Wilbur is stunned!" : ""}`,
     "#ff8a8a",
   );
   hud();
@@ -1385,6 +1777,30 @@ async function foeAttack() {
   e.classList.remove("lunge");
   e.classList.add("bob");
   if (S.php <= 0) end(false);
+}
+async function useEnemyPotion() {
+  const potion = POTIONS.find(({ id }) => id === S.enemyPotion);
+  if (!potion) return false;
+  if (potion.id === "healing" && S.emax - S.ehp < 35) return false;
+
+  S.enemyPotion = null;
+  if (potion.id === "healing") {
+    const healed = Math.min(35, S.emax - S.ehp);
+    S.ehp += healed;
+    say(`${getFoe().n} drinks a Healing Potion and restores ${healed} health!`, "#b6f27a");
+  } else if (potion.id === "strength") {
+    S.enemyBuffs.strength = Math.min(3, S.enemyBuffs.strength + 3);
+    say(`${getFoe().n} drinks a Strength Potion! Its next 3 attacks deal 50% more damage.`, "#ffe08a");
+  } else if (potion.id === "curse") {
+    S.enemyBuffs.curse = true;
+    say(`${getFoe().n} drinks a Curse Potion! Your next attack deals 50% less damage.`, "#bba5ff");
+  } else {
+    S.enemyBuffs.defense = Math.min(3, S.enemyBuffs.defense + 3);
+    say(`${getFoe().n} drinks a Defense Potion! Your next 3 attacks deal 50% less damage.`, "#9ddcff");
+  }
+  hud();
+  await sleep(500);
+  return true;
 }
 async function win() {
   const f = $("foe").getBoundingClientRect();
@@ -1408,7 +1824,7 @@ async function win() {
   blip(520, 0.3);
   setTimeout(() => blip(780, 0.3), 150);
   S.score += 500;
-  S.php = Math.min(100, S.php + 25);
+  S.php = Math.min(getMaxHealth(), S.php + 25);
   STORE.coins += 10;
   saveStore();
   S.lv++;
@@ -1419,6 +1835,7 @@ async function win() {
 }
 function end(v) {
   S.busy = true;
+  saveProgress();
   $("ot").textContent = v ? "Library saved!" : "Adventure over";
   $("os").textContent =
     (v ? "Wilbur defeated every monster. " : "Wilbur was bookmarked. ") +
@@ -1647,6 +2064,12 @@ async function toggleBattleMusic() {
 // controls
 $("bShop").onclick = openShop;
 $("bShopClose").onclick = closeShop;
+$("shopCategories").addEventListener("click", (event) => {
+  const category = event.target.closest("[data-shop-category]");
+  if (!category) return;
+  activeShopCategory = category.dataset.shopCategory;
+  renderShop();
+});
 $("skinFilters").addEventListener("click", (event) => {
   const filter = event.target.closest("[data-rarity]");
   if (!filter) return;
@@ -1659,6 +2082,16 @@ $("shop").addEventListener("click", (event) => {
 });
 addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !$("shop").hidden) closeShop();
+  else if (event.key === "Escape" && !$("backpack").hidden) closeBackpack();
+});
+$("bBackpack").onclick = openBackpack;
+$("bBackpackClose").onclick = closeBackpack;
+$("backpackItems").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-use-potion]");
+  if (button && !button.disabled) usePotion(button.dataset.usePotion);
+});
+$("backpack").addEventListener("click", (event) => {
+  if (event.target === $("backpack")) closeBackpack();
 });
 $("bMusic").onclick = async () => {
   try {
@@ -1690,7 +2123,13 @@ $("bShuf").onclick = () => {
 };
 $("bAgain").onclick = start;
 addEventListener("keydown", (e) => {
-  if (S.busy) return;
+  if (S.busy || S.preparing || !$("backpack").hidden) return;
+  if (
+    e.target.closest(
+      "button, a, input, select, textarea, [contenteditable=true]",
+    )
+  )
+    return;
   if (e.key === "Enter") return go();
   if (e.key === "Backspace") {
     S.sel.pop();
@@ -1709,8 +2148,16 @@ async function startRequestedMode() {
     return;
   }
   document.body.classList.add("auth-ready");
+  const preparing = new URLSearchParams(location.search).get("mode") === "shop";
   start(true);
-  if (new URLSearchParams(location.search).get("mode") === "shop") openShop();
+  if (preparing) {
+    S.inBattle = false;
+    S.preparing = true;
+    setBattleMode(false);
+    $("shopMessage").textContent =
+      "Prepare before your adventure. Close the marketplace to begin the fight.";
+    openShop();
+  }
 }
 
 loadDictionary()

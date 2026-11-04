@@ -25,20 +25,16 @@
       class="relative z-10 mx-auto flex min-h-full max-w-xl flex-col gap-3 px-3 py-3"
     >
       <header class="topbar">
-        <a
-          class="brand-badge"
-          href="index.html"
-          aria-label="Back to Goyworm Adventures home"
-        >
+        <div class="brand-badge">
           <span class="brand-mark">✦</span>
           <h1 class="serif text-xl font-bold leading-none">Goyworm Adventures</h1>
-        </a>
+        </div>
         <div class="game-header-actions">
           <div class="score-pill">
             Chapter <b id="lvl">1</b> · Score <b id="score">0</b> ·
             <span aria-label="Coins">✦ <b id="coins">0</b></span>
           </div>
-          <details class="game-menu">
+          <details id="gameMenu" class="game-menu">
             <summary
               class="menu-icon"
               aria-label="Open game menu"
@@ -83,6 +79,22 @@
               </p>
             </nav>
           </details>
+          <div id="battleActions" class="battle-actions" hidden>
+            <button
+              id="bBackpack"
+              class="battle-action"
+              type="button"
+              aria-label="Open potion backpack"
+              title="Potion backpack"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 4h6m-5 0v4l-4 3v9h12v-9l-4-3V4M7 12h10m-5-3v6" />
+              </svg>
+            </button>
+            <a class="battle-action battle-quit" href="index.html">
+              Quit
+            </a>
+          </div>
         </div>
       </header>
 
@@ -194,15 +206,76 @@
         <p class="shop-wallet">
           Your coins: <strong id="shopCoins">0</strong> ✦
         </p>
+        <p id="shopStats" class="shop-stats"></p>
         <p id="shopMessage" class="shop-message" aria-live="polite">
           Earn coins by attacking monsters and winning battles.
         </p>
+        <nav
+          id="shopCategories"
+          class="shop-categories"
+          aria-label="Shop categories"
+        >
+          <button
+            type="button"
+            class="shop-category is-active"
+            data-shop-category="skins"
+            aria-pressed="true"
+          >
+            Skins
+          </button>
+          <button
+            type="button"
+            class="shop-category"
+            data-shop-category="potions"
+            aria-pressed="false"
+          >
+            Potions
+          </button>
+          <button
+            type="button"
+            class="shop-category"
+            data-shop-category="items"
+            aria-pressed="false"
+          >
+            Items
+          </button>
+        </nav>
         <div
           id="skinFilters"
           class="skin-filters"
           aria-label="Filter skins by rarity"
         ></div>
         <div id="skinGrid" class="skin-grid"></div>
+      </section>
+    </div>
+
+    <div
+      id="backpack"
+      class="shop-backdrop"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="backpack-title"
+    >
+      <section class="shop-panel backpack-panel">
+        <header class="shop-header">
+          <div>
+            <p class="shop-kicker">Your battle supplies</p>
+            <h2 id="backpack-title" class="serif">Potion backpack</h2>
+          </div>
+          <button
+            id="bBackpackClose"
+            class="shop-close"
+            type="button"
+            aria-label="Close backpack"
+          >
+            ×
+          </button>
+        </header>
+        <p id="backpackMessage" class="shop-message" aria-live="polite">
+          Potions can be used on your turn.
+        </p>
+        <div id="backpackItems" class="skin-grid shop-item-grid"></div>
       </section>
     </div>
 

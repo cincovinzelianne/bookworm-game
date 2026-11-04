@@ -5,8 +5,11 @@ Run: open index.html in a browser to see the landing page.
 Sign in with Google from the landing page before choosing Adventure or Shop. The game also checks authentication on direct URLs.
 Adventure opens the story campaign. Shop opens the marketplace. Online Arena / Multiplayer is shown as coming soon because this static project has no multiplayer server yet.
 The game needs internet for Tailwind, fonts and the word list.
-Use the game menu to return home or toggle the original synthesized battle music.
-Open the game menu's Worm skin marketplace to buy and equip skins with coins earned from battles.
+Before an adventure, choose Shop to buy supplies. Closing the shop starts the fight.
+During a fight, the header only provides the potion backpack and Quit; the marketplace and other menu controls are unavailable.
+Use the backpack on your turn to consume owned healing, strength, curse, or defense potions; each potion uses your turn and gives the enemy a chance to attack. Defense Potions reduce the next three enemy attacks by 50%. The marketplace includes Skins and permanent Items that improve health, attack damage, and defense.
+Each enemy gets one random potion per fight and uses it instead of attacking; its potion effects follow the same turn rules.
+Purchases, potion inventory, and progress are included in local and Firebase saves.
 Adventure has endless chapters with 20 illustrated battle scenes that change every 10 chapters. Enemy health and attack scale as chapters advance.
 The marketplace has 33 skins: 12 Normal, 8 Rare, 6 Epic, and 7 Legendary.
 Every skin has its own face design; Epic and Legendary skins also carry animated, skin-matched premium gear.
