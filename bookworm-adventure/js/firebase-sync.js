@@ -82,6 +82,127 @@ window.WormwoodFirebase = {
   },
 };
 
+const DAILY_REWARDS = [
+  { type: "coins", amount: 200, label: "200 coins" },
+  { type: "potion", potion: "healing", amount: 1, label: "Healing Potion" },
+  { type: "coins", amount: 300, label: "300 coins" },
+  { type: "potion", potion: "strength", amount: 1, label: "Strength Potion" },
+  { type: "coins", amount: 500, label: "500 coins" },
+  { type: "potion", potion: "curse", amount: 1, label: "Curse Potion" },
+  { type: "potion", potion: "defense", amount: 1, label: "Defense Potion" },
+];
+function localDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+function getPreviousDateKey(date = new Date()) {
+  const previous = new Date(date);
+  previous.setDate(previous.getDate() - 1);
+  return localDateKey(previous);
+}
+function nextDailyRewardDay(dailyReward, today) {
+  if (dailyReward?.lastClaimDate === today) return dailyReward.day;
+  const lastDay =
+    Number.isSafeInteger(dailyReward?.day) &&
+    dailyReward.day >= 1 &&
+    dailyReward.day <= DAILY_REWARDS.length
+      ? dailyReward.day
+      : 0;
+  return dailyReward?.lastClaimDate === getPreviousDateKey() && lastDay
+    ? (lastDay % DAILY_REWARDS.length) + 1
+    : 1;
+}
+function updateLocalDailyRewardSave(save) {
+  try {
+    localStorage.setItem("wormwood-library-player", JSON.stringify({
+      coins: Number.isSafeInteger(save.coins) ? save.coins : 0,
+      ownedSkins: Array.isArray(save.ownedSkins) ? save.ownedSkins : ["garden"],
+      equippedSkin: typeof save.equippedSkin === "string" ? save.equippedSkin : "garden",
+      potions: save.potions || {},
+      upgrades: save.upgrades || { heart: 0, spellbook: 0, "iron-shell": 0 },
+    }));
+    localStorage.setItem(
+      "wormwood-library-daily-reward",
+      JSON.stringify(save.dailyReward || null),
+    );
+  } catch (error) {
+    console.error("Could not cache the daily reward locally:", error);
+  }
+}
+window.WormwoodFirebaseDailyRewards = {
+  rewards: DAILY_REWARDS,
+  async getStatus() {
+    if (!currentUser || !syncReady)
+      throw new Error("Wait for your account sync to finish.");
+    const snapshot = await get(ref(database, `users/${currentUser.uid}/save`));
+    const save = snapshot.val() || {};
+    const dailyReward = save.dailyReward || null;
+    const today = localDateKey();
+    return {
+      dailyReward,
+      today,
+      nextDay: nextDailyRewardDay(dailyReward, today),
+      claimedToday: dailyReward?.lastClaimDate === today,
+    };
+  },
+  async claim() {
+    if (!currentUser || !syncReady)
+      throw new Error("Wait for your account sync to finish.");
+    const today = localDateKey();
+    let rewardDay = 1;
+    const saveRef = ref(database, `users/${currentUser.uid}/save`);
+    const result = await runTransaction(saveRef, (currentSave) => {
+      const save = currentSave && typeof currentSave === "object"
+        ? currentSave
+        : {};
+      if (save.dailyReward?.lastClaimDate === today) return;
+
+      rewardDay = nextDailyRewardDay(save.dailyReward, today);
+      const reward = DAILY_REWARDS[rewardDay - 1];
+      const potions = Object.fromEntries(
+        ["healing", "strength", "curse", "defense"].map((id) => [
+          id,
+          Number.isSafeInteger(save.potions?.[id])
+            ? Math.max(0, save.potions[id])
+            : 0,
+        ]),
+      );
+      const coins = Number.isSafeInteger(save.coins)
+        ? Math.max(0, save.coins)
+        : 0;
+      return {
+        ...save,
+        coins:
+          coins + (reward.type === "coins" ? reward.amount : 0),
+        potions:
+          reward.type === "potion"
+            ? {
+                ...potions,
+                [reward.potion]: potions[reward.potion] + reward.amount,
+              }
+            : potions,
+        dailyReward: { lastClaimDate: today, day: rewardDay },
+      };
+    });
+    const updatedSave = result.snapshot.val();
+    if (!result.committed) {
+      return {
+        claimed: false,
+        dailyReward: updatedSave?.dailyReward || null,
+        reward: null,
+      };
+    }
+    updateLocalDailyRewardSave(updatedSave);
+    return {
+      claimed: true,
+      dailyReward: updatedSave.dailyReward,
+      reward: DAILY_REWARDS[rewardDay - 1],
+    };
+  },
+};
+
 let resolveAuthReady;
 const authReady = new Promise((resolve) => {
   resolveAuthReady = resolve;

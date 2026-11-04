@@ -3,18 +3,88 @@ const openModePicker = document.getElementById("open-mode-picker");
 const closeModePicker = document.getElementById("close-mode-picker");
 const ctaLabel = document.getElementById("library-cta-label");
 const authStatus = document.getElementById("landing-auth-status");
+const signOutButton = document.getElementById("landing-sign-out");
+const dailyRewardsPanel = document.getElementById("daily-rewards");
+const dailyCalendar = document.getElementById("daily-calendar");
+const dailyStreak = document.getElementById("daily-streak");
+const dailyClaimButton = document.getElementById("claim-daily-reward");
+const dailyRewardStatus = document.getElementById("daily-reward-status");
 const signInRequired =
   new URLSearchParams(location.search).get("signin") === "required";
 let signedInUser = null;
+let rewardStatusRequest = 0;
+
+function renderDailyCalendar(status) {
+  const rewards = window.WormwoodFirebaseDailyRewards?.rewards;
+  if (!Array.isArray(rewards) || !dailyCalendar) return;
+  const todayDay = status.claimedToday
+    ? status.dailyReward.day
+    : status.nextDay;
+  dailyCalendar.replaceChildren(
+    ...rewards.map((reward, index) => {
+      const day = index + 1;
+      const card = document.createElement("article");
+      card.className = "daily-reward-day";
+      if (day < todayDay || (status.claimedToday && day === todayDay))
+        card.classList.add("is-claimed");
+      if (day === todayDay) card.classList.add("is-today");
+      const number = document.createElement("span");
+      number.className = "daily-reward-day-number";
+      number.textContent = `Day ${day}`;
+      const name = document.createElement("strong");
+      name.textContent = reward.label;
+      card.append(number, name);
+      return card;
+    }),
+  );
+  dailyStreak.textContent = `Day ${todayDay} of ${rewards.length}`;
+  dailyClaimButton.disabled = status.claimedToday;
+  dailyClaimButton.textContent = status.claimedToday
+    ? "Claimed today"
+    : "Claim today's reward";
+  dailyRewardStatus.textContent = status.claimedToday
+    ? "Your next gift will be ready tomorrow."
+    : "Log in daily to keep your reward streak going.";
+}
+
+async function loadDailyRewardStatus() {
+  const requestId = ++rewardStatusRequest;
+  const dailyRewards = window.WormwoodFirebaseDailyRewards;
+  if (!signedInUser || !dailyRewards || !dailyRewardsPanel) return;
+  dailyClaimButton.disabled = true;
+  dailyRewardStatus.textContent = "Loading your daily reward…";
+  try {
+    const status = await dailyRewards.getStatus();
+    if (requestId !== rewardStatusRequest || !signedInUser) return;
+    renderDailyCalendar(status);
+  } catch (error) {
+    console.error("Could not load daily reward status:", error);
+    if (requestId === rewardStatusRequest) {
+      dailyRewardStatus.textContent =
+        "Daily reward could not load. Check your connection and try again.";
+      dailyClaimButton.disabled = false;
+    }
+  }
+}
 
 function updateAuthUI(user) {
   signedInUser = user;
   ctaLabel.textContent = user ? "Enter the library" : "Sign in with Google";
+  signOutButton.hidden = !user;
+  dailyRewardsPanel.hidden = !user;
   authStatus.textContent = user
     ? `Signed in as ${user.displayName || user.email}.`
     : signInRequired
       ? "Please sign in with Google before opening Adventure."
       : "Sign in with Google before entering the library.";
+  if (user) loadDailyRewardStatus();
+  else {
+    rewardStatusRequest++;
+    dailyCalendar.replaceChildren();
+    dailyStreak.textContent = "";
+    dailyRewardStatus.textContent = "";
+    dailyClaimButton.disabled = true;
+  }
 }
 
 function closeModes() {
@@ -59,6 +129,42 @@ modePicker.addEventListener("click", (event) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !modePicker.hidden) closeModes();
+});
+
+signOutButton.addEventListener("click", async () => {
+  signOutButton.disabled = true;
+  signOutButton.textContent = "Logging out…";
+  try {
+    await window.WormwoodFirebaseAuth.signOut();
+    updateAuthUI(null);
+    authStatus.textContent = "You have been logged out.";
+  } catch (error) {
+    console.error("Could not log out from the landing page:", error);
+    authStatus.textContent = "Could not log out. Please try again.";
+  } finally {
+    signOutButton.disabled = false;
+    signOutButton.textContent = "Log out";
+  }
+});
+
+dailyClaimButton.addEventListener("click", async () => {
+  dailyClaimButton.disabled = true;
+  dailyRewardStatus.textContent = "Claiming your daily reward…";
+  try {
+    const result = await window.WormwoodFirebaseDailyRewards.claim();
+    await loadDailyRewardStatus();
+    if (!result.claimed) {
+      dailyRewardStatus.textContent =
+        "You already claimed today's reward. Come back tomorrow.";
+      return;
+    }
+    dailyRewardStatus.textContent = `You claimed ${result.reward.label}!`;
+  } catch (error) {
+    console.error("Could not claim the daily reward:", error);
+    dailyRewardStatus.textContent =
+      "Could not claim today's reward. Check your connection and try again.";
+    dailyClaimButton.disabled = false;
+  }
 });
 
 const heroVisual = document.querySelector(".hero-visual");

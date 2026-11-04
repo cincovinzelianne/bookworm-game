@@ -518,6 +518,34 @@ header {
   justify-content: space-between;
   gap: 20px;
 }
+.landing-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.landing-sign-out {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(8, 17, 27, 0.36);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+.landing-sign-out:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+}
+.landing-sign-out:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
 .landing-nav .brand-badge {
   text-decoration: none;
   color: var(--ink);
@@ -619,6 +647,127 @@ header {
   margin: 14px 0 0;
   color: var(--ink-soft);
   font-size: 0.9rem;
+}
+.daily-rewards[hidden] {
+  display: none;
+}
+.daily-rewards {
+  margin-top: 21px;
+  padding: 17px;
+  border: 1px solid rgba(242, 201, 111, 0.24);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0 0, rgba(242, 201, 111, 0.1), transparent 48%),
+    rgba(8, 17, 27, 0.48);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.045);
+}
+.daily-rewards-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.daily-rewards-kicker {
+  margin: 0 0 3px;
+  color: #dec17c;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.daily-rewards-heading h2 {
+  margin: 0;
+  color: #fbf4e3;
+  font-size: 1.25rem;
+}
+.daily-streak {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid rgba(242, 201, 111, 0.2);
+  border-radius: 999px;
+  background: rgba(242, 201, 111, 0.08);
+  color: #ffe59a;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.daily-calendar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+.daily-reward-day {
+  display: grid;
+  min-height: 64px;
+  align-content: center;
+  gap: 4px;
+  padding: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.035);
+  text-align: center;
+}
+.daily-reward-day-number {
+  color: #aebac2;
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.daily-reward-day strong {
+  color: #e7e1d3;
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+.daily-reward-day.is-today {
+  border-color: rgba(242, 201, 111, 0.58);
+  background: rgba(242, 201, 111, 0.11);
+  box-shadow: inset 0 0 0 1px rgba(242, 201, 111, 0.12);
+}
+.daily-reward-day.is-today .daily-reward-day-number,
+.daily-reward-day.is-today strong {
+  color: #ffe59a;
+}
+.daily-reward-day.is-claimed {
+  border-color: rgba(147, 226, 151, 0.2);
+  background: rgba(112, 200, 78, 0.075);
+}
+.daily-reward-day.is-claimed .daily-reward-day-number {
+  color: #a7e8ad;
+}
+.daily-claim {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 11px;
+  border: 1px solid rgba(242, 201, 111, 0.4);
+  border-radius: 11px;
+  background: linear-gradient(135deg, #765a24, #4c391d);
+  color: #ffedc1;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.daily-claim:hover:not(:disabled) {
+  background: linear-gradient(135deg, #88692d, #5e4823);
+}
+.daily-claim:disabled {
+  border-color: rgba(147, 226, 151, 0.23);
+  background: rgba(112, 200, 78, 0.1);
+  color: #b6f27a;
+  cursor: default;
+}
+.daily-claim:focus-visible,
+.landing-sign-out:focus-visible {
+  outline: 3px solid #fff1b0;
+  outline-offset: 3px;
+}
+.daily-reward-status {
+  min-height: 1.3em;
+  margin: 8px 0 0;
+  color: #aebac2;
+  font-size: 0.74rem;
+  text-align: center;
 }
 .landing-cta:disabled {
   cursor: wait;
@@ -2435,6 +2584,17 @@ a.mode-card:hover .mode-arrow {
 
 .skin-info p {
   color: #bac6cf;
+}
+
+.skin-stats {
+  display: grid;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding: 0;
+  color: #c8d8d1;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  list-style: none;
 }
 
 .skin-action {

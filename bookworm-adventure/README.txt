@@ -2,6 +2,7 @@ Goyworm Adventures - landing page and word-battle game
 Stack: HTML, CSS, JavaScript + Tailwind CSS (CDN). No build step.
 
 Run: open index.html in a browser to see the landing page.
+The landing page has the Google sign-out button and a seven-day daily reward calendar. Claim once per local calendar day; the streak resets after a missed day. Rewards repeat weekly: 200 coins, Healing Potion, 300 coins, Strength Potion, 500 coins, Curse Potion, and Defense Potion.
 Sign in with Google from the landing page before choosing Adventure or Shop. The game also checks authentication on direct URLs.
 Adventure opens the story campaign. Shop opens the marketplace. Online Arena offers Quick Match against a random online player or private room codes for friend matches. Both use alternating-turn word battles.
 The game needs internet for Tailwind, fonts and the word list.
@@ -12,6 +13,7 @@ Each enemy gets one random potion per fight and uses it instead of attacking; it
 Purchases, potion inventory, and progress are included in local and Firebase saves.
 Adventure has endless chapters with 20 illustrated battle scenes that change every 10 chapters. Enemy health and attack scale as chapters advance.
 The marketplace has 33 skins: 12 Normal, 8 Rare, 6 Epic, and 7 Legendary.
+Skins grant only their own equipped bonuses: Normal has 1 stat, Rare 1-2, Epic 2-3, and Legendary 3-4. Bonuses can increase maximum health, attack damage, short-word stun chance, coin earnings, victory healing, or reduce incoming damage. Skin stat values scale with rarity and are shown on each shop card.
 Every skin has its own face design; Epic and Legendary skins also carry animated, skin-matched premium gear.
 GSAP is loaded from jsDelivr for the animated landing-page mascot, animated skins, and Legendary attack effects; CSS/browser-animation fallbacks are used when it is unavailable.
 Player coins, owned skins, and game progress are saved in localStorage. Optional cross-browser cloud sync uses Firebase Authentication (Google sign-in) and Realtime Database.

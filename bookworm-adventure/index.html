@@ -27,7 +27,17 @@
           <span class="brand-mark" aria-hidden="true">✦</span>
           <span class="serif brand-name">Goyworm Adventures</span>
         </a>
-        <a class="landing-nav-link" href="#how-to-play">How to play</a>
+        <nav class="landing-nav-actions" aria-label="Landing page navigation">
+          <a class="landing-nav-link" href="#how-to-play">How to play</a>
+          <button
+            id="landing-sign-out"
+            class="landing-sign-out"
+            type="button"
+            hidden
+          >
+            Log out
+          </button>
+        </nav>
       </header>
 
       <section class="landing-hero" aria-labelledby="hero-title">
@@ -61,6 +71,33 @@
             <span class="highlight-divider" aria-hidden="true"></span>
             <span><strong>33</strong> worm skins</span>
           </div>
+          <section
+            id="daily-rewards"
+            class="daily-rewards"
+            aria-labelledby="daily-rewards-title"
+            hidden
+          >
+            <div class="daily-rewards-heading">
+              <div>
+                <p class="daily-rewards-kicker">A little gift every day</p>
+                <h2 id="daily-rewards-title" class="serif">Daily rewards</h2>
+              </div>
+              <span id="daily-streak" class="daily-streak"></span>
+            </div>
+            <div
+              id="daily-calendar"
+              class="daily-calendar"
+              aria-label="Seven-day reward calendar"
+            ></div>
+            <button id="claim-daily-reward" class="daily-claim" type="button">
+              Claim today's reward
+            </button>
+            <p
+              id="daily-reward-status"
+              class="daily-reward-status"
+              aria-live="polite"
+            ></p>
+          </section>
         </div>
 
         <div
@@ -416,7 +453,7 @@
             <span class="mode-arrow" aria-hidden="true">→</span>
           </a>
         </div>
-        <p class="mode-note">Take turns spelling words to defeat your friend.</p>
+        <p class="mode-note">Take turns spelling words to defeat your rival.</p>
       </section>
     </div>
     <script>

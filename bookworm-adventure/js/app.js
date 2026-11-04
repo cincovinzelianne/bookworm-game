@@ -478,17 +478,80 @@ const HELD_ITEM_ART = {
   timeStaff: (accent, shade) =>
     `<g class="skin-held-item skin-float"><path d="m11 42 17-33" stroke="#795638" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="8" r="13" fill="${accent}" stroke="${shade}" stroke-width="3"/><circle cx="32" cy="8" r="9" fill="none" stroke="#fff4be" stroke-width="1.5"/><path d="M32 2v7l5 3m-17-4h3m22 0h3m-16-13v3m0 22v3" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></g>`,
 };
+const SKIN_STAT_DEFINITIONS = {
+  health: {
+    label: "Max health",
+    values: [10, 15, 20, 25],
+    format: (value) => `+${value} max health`,
+  },
+  damage: {
+    label: "Attack damage",
+    values: [3, 5, 8, 10],
+    format: (value) => `+${value} attack damage`,
+  },
+  stun: {
+    label: "Stun chance",
+    values: [10, 15, 20, 30],
+    format: (value) => `+${value}% stun chance`,
+  },
+  defense: {
+    label: "Damage reduction",
+    values: [1, 1, 2, 3],
+    format: (value) => `-${value} damage per enemy hit`,
+  },
+  coins: {
+    label: "Coin bonus",
+    values: [5, 8, 12, 15],
+    format: (value) => `+${value}% coins earned`,
+  },
+  recovery: {
+    label: "Victory recovery",
+    values: [3, 5, 8, 10],
+    format: (value) => `+${value} health after victory`,
+  },
+};
+const SKIN_STAT_IDS = Object.keys(SKIN_STAT_DEFINITIONS);
+const SKIN_RARITY_TIERS = {
+  normal: 0,
+  rare: 1,
+  epic: 2,
+  legendary: 3,
+};
+function getSkinStatCount(rarity, index) {
+  if (rarity === "normal") return 1;
+  if (rarity === "rare") return 1 + (index % 2);
+  if (rarity === "epic") return 2 + (index % 2);
+  return 3 + (index % 2);
+}
+function makeSkinStats(rarity, index) {
+  const tier = SKIN_RARITY_TIERS[rarity];
+  const count = getSkinStatCount(rarity, index);
+  const offset = (index * 2 + tier) % SKIN_STAT_IDS.length;
+  return Array.from({ length: count }, (_, position) => {
+    const id = SKIN_STAT_IDS[(offset + position) % SKIN_STAT_IDS.length];
+    return {
+      id,
+      label: SKIN_STAT_DEFINITIONS[id].label,
+      value: SKIN_STAT_DEFINITIONS[id].values[tier],
+      description: SKIN_STAT_DEFINITIONS[id].format(
+        SKIN_STAT_DEFINITIONS[id].values[tier],
+      ),
+    };
+  });
+}
 function makeSkin(
   [id, name, price, head, body, tail, shade],
   rarity,
   accessory,
   effect,
+  index,
 ) {
   return {
     id,
     name,
     price,
     rarity,
+    stats: makeSkinStats(rarity, index),
     accessory,
     effect,
     face: SKIN_FACE_CONFIG[id],
@@ -505,11 +568,17 @@ function makeSkin(
   };
 }
 const SKINS = [
-  ...SKIN_PALETTES.map((palette) => makeSkin(palette, "normal")),
-  ...RARE_SKINS.map((skin) => makeSkin(skin, "rare", skin[7])),
-  ...EPIC_SKINS.map((skin) => makeSkin(skin, "epic", skin[7])),
-  ...LEGENDARY_SKINS.map((skin) =>
-    makeSkin(skin, "legendary", skin[7], skin[8]),
+  ...SKIN_PALETTES.map((palette, index) =>
+    makeSkin(palette, "normal", undefined, undefined, index),
+  ),
+  ...RARE_SKINS.map((skin, index) =>
+    makeSkin(skin, "rare", skin[7], undefined, index),
+  ),
+  ...EPIC_SKINS.map((skin, index) =>
+    makeSkin(skin, "epic", skin[7], undefined, index),
+  ),
+  ...LEGENDARY_SKINS.map((skin, index) =>
+    makeSkin(skin, "legendary", skin[7], skin[8], index),
   ),
 ];
 const SKIN_RARITIES = [
@@ -523,6 +592,7 @@ let activeSkinRarity = "all";
 let activeShopCategory = "skins";
 const STORE_KEY = "wormwood-library-player";
 const PROGRESS_KEY = "wormwood-library-progress";
+const DAILY_REWARD_KEY = "wormwood-library-daily-reward";
 const POTIONS = [
   {
     id: "healing",
@@ -649,6 +719,14 @@ function saveStore() {
 }
 function getSkin(id = STORE.equippedSkin) {
   return SKINS.find((skin) => skin.id === id) || SKINS[0];
+}
+function getEquippedSkinStat(id) {
+  return getSkin().stats.find((stat) => stat.id === id)?.value || 0;
+}
+function getEquippedSkinStatsSummary() {
+  return getSkin()
+    .stats.map((stat) => stat.description)
+    .join(" · ");
 }
 function wormSvg(skin = getSkin()) {
   const coloredSvg = Object.entries(skin.colors).reduce(
@@ -980,11 +1058,20 @@ function getCloudSaveData() {
     equippedSkin: STORE.equippedSkin,
     potions: STORE.potions,
     upgrades: STORE.upgrades,
+    dailyReward: loadDailyRewardRecord(),
     progress: loadProgress(),
   };
 }
+function loadDailyRewardRecord() {
+  try {
+    return JSON.parse(localStorage.getItem(DAILY_REWARD_KEY) || "null");
+  } catch (error) {
+    console.error("Could not load daily reward progress:", error);
+    return null;
+  }
+}
 function getMaxHealth() {
-  return 100 + STORE.upgrades.heart * 20;
+  return 100 + STORE.upgrades.heart * 20 + getEquippedSkinStat("health");
 }
 function getAttackMultiplier() {
   return 1 + STORE.upgrades.spellbook * 0.1;
@@ -1063,6 +1150,10 @@ function applyCloudSaveData(saved) {
     } else {
       localStorage.removeItem(PROGRESS_KEY);
     }
+    localStorage.setItem(
+      DAILY_REWARD_KEY,
+      JSON.stringify(saved.dailyReward || null),
+    );
   } catch (error) {
     console.error("Could not cache cloud save in this browser:", error);
   }
@@ -1198,7 +1289,7 @@ function start(resume = false) {
   load(!restoredProgress);
   if (restoredProgress) {
     S.ehp = Math.min(S.emax, Math.max(1, savedProgress.ehp));
-    S.php = Math.min(100, Math.max(1, savedProgress.php));
+    S.php = Math.min(getMaxHealth(), Math.max(1, savedProgress.php));
     S.score = Math.max(0, Math.floor(savedProgress.score));
   }
   render();
@@ -1313,7 +1404,8 @@ function renderShop() {
   $("shopStats").textContent =
     `Health ${S ? Math.ceil(S.php) : getMaxHealth()}/${getMaxHealth()} · ` +
     `Attack +${Math.round((getAttackMultiplier() - 1) * 100)}% · ` +
-    `Defense ${STORE.upgrades["iron-shell"] * 2}` +
+    `Defense ${STORE.upgrades["iron-shell"] * 2 + getEquippedSkinStat("defense")}` +
+    ` · Skin: ${getEquippedSkinStatsSummary()}` +
     (S?.buffs?.strength ? ` · Strength ${S.buffs.strength} attacks` : "") +
     (S?.buffs?.curse ? " · Curse ready" : "") +
     (S?.buffs?.defense ? ` · Defense ${S.buffs.defense} attacks` : "");
@@ -1351,6 +1443,7 @@ function renderShop() {
           <span class="rarity-label">${skin.rarity}</span>
           <h3>${skin.name}</h3>
           <p>${owned ? (equipped ? "Currently wearing" : "Owned") : price}</p>
+          <ul class="skin-stats">${skin.stats.map((stat) => `<li>${stat.description}</li>`).join("")}</ul>
         </div>
         <button class="skin-action" type="button" data-skin-id="${skin.id}" data-skin-action="${action}" ${equipped ? "disabled" : ""}>${label}</button>
       </article>`;
@@ -1505,6 +1598,8 @@ function handleSkinAction(event) {
 
   const skin = getSkin(button.dataset.skinId);
   const previous = STORE;
+  const previousHealth = S?.php;
+  const previousMaxHealth = getMaxHealth();
   if (button.dataset.skinAction === "buy") {
     if (STORE.coins < skin.price) {
       $("shopMessage").textContent =
@@ -1520,9 +1615,17 @@ function handleSkinAction(event) {
   } else {
     STORE = { ...STORE, equippedSkin: skin.id };
   }
+  if (S) {
+    const newMaxHealth = getMaxHealth();
+    S.php = Math.min(
+      newMaxHealth,
+      S.php + Math.max(0, newMaxHealth - previousMaxHealth),
+    );
+  }
 
   if (!saveStore()) {
     STORE = previous;
+    if (S && previousHealth !== undefined) S.php = previousHealth;
     return;
   }
 
@@ -1532,6 +1635,7 @@ function handleSkinAction(event) {
   $("shopMessage").textContent =
     `${skin.name} skin equipped! Keep battling to earn more coins.`;
   hud();
+  saveProgress();
   renderShop();
 }
 function handleMarketAction(event) {
@@ -1629,7 +1733,7 @@ async function go() {
       (gems ? 2 : 1) *
       getAttackMultiplier() *
       (S.buffs.strength > 0 ? 1.5 : 1),
-  );
+  ) + getEquippedSkinStat("damage");
   if (S.enemyBuffs.curse || S.enemyBuffs.defense > 0) {
     dmg = Math.max(1, Math.round(dmg * 0.5));
   }
@@ -1686,11 +1790,15 @@ async function go() {
   num(foe.left + foe.width / 2, foe.top, "-" + dmg);
   S.ehp -= dmg;
   S.score += dmg * 10;
-  const earnedCoins = Math.max(1, Math.floor(dmg / 5));
+  const earnedCoins = Math.max(
+    1,
+    Math.floor((dmg / 5) * (1 + getEquippedSkinStat("coins") / 100)),
+  );
   STORE.coins += earnedCoins;
   saveStore();
   S.sel = [];
-  S.enemyStunned = w.length > 5;
+  S.enemyStunned =
+    w.length > 5 || Math.random() * 100 < getEquippedSkinStat("stun");
   say(
     `${w.toUpperCase()}${dmg >= 25 ? "! Critical hit!" : ` deals ${dmg}`}${S.enemyStunned ? ` ${getFoe().n} is stunned!` : ""} +${earnedCoins} coins`,
     "#ffe08a",
@@ -1754,7 +1862,7 @@ async function foeAttack() {
       f.atk *
         (S.enemyBuffs.strength > 0 ? 1.5 : 1) *
         (S.buffs.curse || S.buffs.defense > 0 ? 0.5 : 1) -
-        STORE.upgrades["iron-shell"] * 2,
+        STORE.upgrades["iron-shell"] * 2 + getEquippedSkinStat("defense"),
     ),
   );
   if (S.enemyBuffs.strength > 0) S.enemyBuffs.strength--;
@@ -1824,11 +1932,16 @@ async function win() {
   blip(520, 0.3);
   setTimeout(() => blip(780, 0.3), 150);
   S.score += 500;
-  S.php = Math.min(getMaxHealth(), S.php + 25);
-  STORE.coins += 10;
+  const recoveredHealth = 25 + getEquippedSkinStat("recovery");
+  S.php = Math.min(getMaxHealth(), S.php + recoveredHealth);
+  const victoryCoins = 10 + Math.floor((10 * getEquippedSkinStat("coins")) / 100);
+  STORE.coins += victoryCoins;
   saveStore();
   S.lv++;
-  say(`Chapter ${S.lv + 1}! A new foe approaches. +25 health`, "#b6f27a");
+  say(
+    `Chapter ${S.lv + 1}! A new foe approaches. +${recoveredHealth} health · +${victoryCoins} coins`,
+    "#b6f27a",
+  );
   load();
   S.busy = false;
   saveProgress();
