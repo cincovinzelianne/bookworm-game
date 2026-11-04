@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="w" x2="0" y2="1"><stop stop-color="#9fc9df"/><stop offset=".58" stop-color="#d9e8e4"/><stop offset="1" stop-color="#657d95"/></linearGradient>
+    <linearGradient id="ice" x2="0" y2="1"><stop stop-color="#e8ffff"/><stop offset="1" stop-color="#6396b3"/></linearGradient>
+    <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#d7e8e5"/><stop offset="1" stop-color="#60768d"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#w)"/>
+  <path d="M0 420 150 240l125 135 175-250 140 270 210-300 180 300 160-240 180 245 165-220 110 240v200H0z" fill="#7998ad"/>
+  <path d="m0 455 150-150 125 120 175-210 140 220 210-245 180 245 160-185 180 210 165-185 110 205v190H0z" fill="#eaf7f0"/>
+  <path d="M0 0h285v600H0zm1315 0h285v600h-285z" fill="#9dbbc7" stroke="#efffff" stroke-width="24"/>
+  <path d="M285 610V300Q800-90 1315 300v310" fill="url(#ice)" stroke="#f5ffff" stroke-width="35"/>
+  <path d="M395 600V325Q800 10 1205 325v275" fill="#aacbd7" stroke="#6086a0" stroke-width="14"/>
+  <path d="M800 115v485M410 410h780M555 200l245 400m245-400L800 600" stroke="#e9ffff" stroke-width="13"/>
+  <path d="M0 620h1600v280H0z" fill="url(#floor)"/><path d="M0 680h1600M0 770h1600M0 855h1600" stroke="#f4ffff" stroke-width="10"/>
+  <path d="M0 620 355 900m1245-280-355 280M385 620l-170 280m970-280 170 280" stroke="#7394a9" stroke-width="15"/>
+  <path d="M590 610h420l130 290H460z" fill="#789bb2" stroke="#eaffff" stroke-width="13"/>
+  <path d="M660 665h280l62 112H598z" fill="#a5c6d2" stroke="#efffff" stroke-width="9"/>
+  <path d="M0 565q140-65 280 0t280 0m760 0q140-65 280 0t280 0" fill="none" stroke="#f5ffff" stroke-width="20"/>
+  <g fill="#eaffff"><path d="m170 615 40-145 38 145z"/><path d="m1355 615 42-145 40 145z"/><circle cx="410" cy="205" r="8"/><circle cx="1180" cy="220" r="9"/></g>
+</svg>

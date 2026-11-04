@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="s" x2="0" y2="1"><stop stop-color="#202947"/><stop offset=".52" stop-color="#596477"/><stop offset="1" stop-color="#302e3c"/></linearGradient>
+    <linearGradient id="l" x2="0" y2="1"><stop stop-color="#fff5c3"/><stop offset=".6" stop-color="#e8c178"/><stop offset="1" stop-color="#67758e"/></linearGradient>
+    <linearGradient id="f" x2="0" y2="1"><stop stop-color="#877668"/><stop offset="1" stop-color="#292936"/></linearGradient>
+    <pattern id="books" width="100" height="76" patternUnits="userSpaceOnUse"><rect width="100" height="76" fill="#303748"/><path d="M4 5h18v58H4zm24 8h17v50H28zm23-8h18v58H51zm24 5h19v53H75z" fill="#77505a" stroke="#d9a968" stroke-width="2"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#s)"/>
+  <path d="M0 0h330v610H0zm1270 0h330v610h-330z" fill="url(#books)" stroke="#c19360" stroke-width="20"/>
+  <path d="M345 610V300Q800-75 1255 300v310" fill="#33384c" stroke="#d0a063" stroke-width="32"/>
+  <path d="M435 600V320Q800 15 1165 320v280" fill="url(#l)" stroke="#65566a" stroke-width="14"/>
+  <path d="M800 105v495M450 420h700M575 190l225 410m225-410L800 600" stroke="#594d5c" stroke-width="14"/>
+  <path d="M0 610h1600v290H0z" fill="url(#f)"/><path d="M0 675h1600M0 780h1600M0 860h1600" stroke="#dcba7d" stroke-width="10"/>
+  <path d="M0 610 350 900m1250-290-350 290M380 610l-180 290m1020-290 180 290" stroke="#403640" stroke-width="16"/>
+  <path d="M570 605h460l125 295H445z" fill="#48445a" stroke="#e6c27e" stroke-width="12"/>
+  <path d="M670 660h260l55 112H615z" fill="#706078" stroke="#efcf89" stroke-width="9"/>
+  <path d="M800 0v215" stroke="#fff2b5" stroke-width="9"/><path d="m800 195 95 310-95-55-95 55z" fill="#fff2b5" opacity=".25"/>
+  <path d="M1120 120 895 355l190-105-130 200 285-270-200 110 130-180z" fill="#f5e9bb" stroke="#fff9db" stroke-width="8"/>
+  <path d="M1100 408q40-80 80 0v180h-80z" fill="#f4cc77" stroke="#584551" stroke-width="10"/>
+  <g fill="#f8d98b"><circle cx="300" cy="480" r="12"/><circle cx="1320" cy="480" r="12"/><circle cx="800" cy="570" r="10"/></g>
+</svg>

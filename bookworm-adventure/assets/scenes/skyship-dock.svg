@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="s" x2="0" y2="1"><stop stop-color="#63b8d5"/><stop offset=".55" stop-color="#f0bd8a"/><stop offset="1" stop-color="#8f6c83"/></linearGradient>
+    <linearGradient id="d" x2="0" y2="1"><stop stop-color="#4d5268"/><stop offset="1" stop-color="#242b40"/></linearGradient>
+    <linearGradient id="w" x2="0" y2="1"><stop stop-color="#f9e3a8"/><stop offset="1" stop-color="#d27f61"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#s)"/><circle cx="1240" cy="155" r="78" fill="#fff0bd"/>
+  <path d="M0 430q170-185 340 0t340 0 340 0 340 0 240 0v200H0z" fill="#748a9a" opacity=".8"/>
+  <path d="M0 485q180-140 360 0t360 0 360 0 360 0 160 0v160H0z" fill="#c6a194"/>
+  <path d="M0 0h280v515H0zm1320 0h280v515h-280z" fill="#56445c" stroke="#d69a67" stroke-width="22"/>
+  <path d="M20 70h240v100H20zm0 170h240v100H20zm0 170h240v80H20zm1320-340h240v100h-240zm0 170h240v100h-240zm0 170h240v80h-240z" fill="#79585a"/>
+  <path d="M340 500V315q460-370 920 0v185" fill="#41536a" stroke="#e3b67e" stroke-width="28"/>
+  <path d="M430 490V325q370-285 740 0v165" fill="url(#w)" stroke="#514457" stroke-width="14"/>
+  <path d="M800 120v370M450 365h700M565 220l235 270m235-270L800 490" stroke="#78576a" stroke-width="13"/>
+  <path d="M0 565h1600v335H0z" fill="url(#d)"/><path d="M0 635h1600M0 745h1600M0 850h1600" stroke="#d3a56d" stroke-width="12"/>
+  <path d="M0 565 360 900m1240-335-360 335M360 565l-165 335m1045-335 165 335" stroke="#303149" stroke-width="18"/>
+  <g transform="translate(590 240)"><path d="M-170 130q165 112 340 0l-38 66q-135 76-266 0z" fill="#523b4c" stroke="#f4d293" stroke-width="12"/><path d="M0 130V-80" stroke="#553b4c" stroke-width="14"/><path d="M-5-70q-120 5-105 150H-5z" fill="#f3e5c4" stroke="#a46d58" stroke-width="9"/><path d="M10-55q115-7 130 135H10z" fill="#d86361" stroke="#a46d58" stroke-width="9"/></g>
+  <path d="M1020 390h155v24h-155m15-58v98m120-98v98" fill="none" stroke="#513c50" stroke-width="12"/>
+  <g fill="#ffe1a0"><circle cx="280" cy="520" r="12"/><circle cx="1325" cy="520" r="12"/></g>
+</svg>

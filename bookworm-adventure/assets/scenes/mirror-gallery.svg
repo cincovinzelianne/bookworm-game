@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="g" x2="0" y2="1"><stop stop-color="#3b315a"/><stop offset=".55" stop-color="#8a6b83"/><stop offset="1" stop-color="#272840"/></linearGradient>
+    <linearGradient id="m" x2="0" y2="1"><stop stop-color="#d9e7ed"/><stop offset=".48" stop-color="#a1bacd"/><stop offset="1" stop-color="#645b82"/></linearGradient>
+    <linearGradient id="f" x2="0" y2="1"><stop stop-color="#7b6883"/><stop offset="1" stop-color="#25263a"/></linearGradient>
+    <pattern id="b" width="100" height="72" patternUnits="userSpaceOnUse"><rect width="100" height="72" fill="#362d49"/><path d="M4 4h18v58H4zm24 8h17v50H28zm23-8h18v58H51zm24 7h19v51H75z" fill="#785068" stroke="#cfac8b" stroke-width="2"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g)"/>
+  <path d="M0 0h270v610H0zm1330 0h270v610h-270z" fill="url(#b)" stroke="#dfbd91" stroke-width="20"/>
+  <path d="M310 610V285Q800-130 1290 285v325" fill="#51435e" stroke="#dfc79f" stroke-width="34"/>
+  <path d="M420 600V315Q800-40 1180 315v285" fill="url(#m)" stroke="#f2e3c4" stroke-width="16"/>
+  <path d="M800 100v500M435 420h730M570 185l230 415m230-415L800 600" stroke="#55455e" stroke-width="15"/>
+  <path d="M0 610h1600v290H0z" fill="url(#f)"/><path d="M0 675h1600M0 770h1600M0 855h1600" stroke="#e3c99a" stroke-width="10"/>
+  <path d="M0 610 355 900m1245-290-355 290M380 610l-180 290m1020-290 180 290" stroke="#453449" stroke-width="16"/>
+  <path d="M570 600h460l125 300H445z" fill="#654967" stroke="#e4c294" stroke-width="14"/>
+  <path d="M650 660h300l65 115H585z" fill="#98708c" stroke="#f1dfb6" stroke-width="9"/>
+  <path d="M90 130q105-80 210 0v410q-105 90-210 0zM1300 130q105-80 210 0v410q-105 90-210 0z" fill="url(#m)" stroke="#edd6a1" stroke-width="20"/>
+  <path d="M140 160v350m-25-175h160m-25-175v350m1110-350v350m-25-175h160m-25-175v350" stroke="#f3e6c9" stroke-width="8"/>
+  <path d="M560 0 800 600 1040 0" fill="#eaf5fa" opacity=".11"/><path d="M800 570v110" stroke="#ffdfa1" stroke-width="14"/>
+  <g fill="#fff0c7"><circle cx="360" cy="255" r="11"/><circle cx="1240" cy="255" r="11"/></g>
+</svg>

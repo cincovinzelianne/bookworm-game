@@ -7,6 +7,7 @@ Adventure opens the story campaign. Shop opens the marketplace. Online Arena / M
 The game needs internet for Tailwind, fonts and the word list.
 Use the game menu to return home or toggle the original synthesized battle music.
 Open the game menu's Worm skin marketplace to buy and equip skins with coins earned from battles.
+Adventure has endless chapters with 20 illustrated battle scenes that change every 10 chapters. Enemy health and attack scale as chapters advance.
 The marketplace has 33 skins: 12 Normal, 8 Rare, 6 Epic, and 7 Legendary.
 Every skin has its own face design; Epic and Legendary skins also carry animated, skin-matched premium gear.
 GSAP is loaded from jsDelivr for the animated landing-page mascot, animated skins, and Legendary attack effects; CSS/browser-animation fallbacks are used when it is unavailable.

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="n" x2="0" y2="1"><stop stop-color="#172638"/><stop offset=".65" stop-color="#405557"/><stop offset="1" stop-color="#142d39"/></linearGradient>
+    <linearGradient id="w" x2="0" y2="1"><stop stop-color="#92d1c5" stop-opacity=".68"/><stop offset="1" stop-color="#174b60" stop-opacity=".4"/></linearGradient>
+    <linearGradient id="p" x2="0" y2="1"><stop stop-color="#8d7b68"/><stop offset="1" stop-color="#29343c"/></linearGradient>
+    <pattern id="t" width="100" height="72" patternUnits="userSpaceOnUse"><path d="M0 0h100v72H0z" fill="#394748"/><path d="M0 35h100M50 0v35M0 70h100M20 35v35M80 35v35" fill="none" stroke="#75685b" stroke-width="4"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#n)"/>
+  <path d="M0 0h300v585H0zm1300 0h300v585h-300z" fill="url(#t)" stroke="#b39974" stroke-width="18"/>
+  <path d="M340 610V280Q800-110 1260 280v330" fill="#26353b" stroke="#b59b75" stroke-width="34"/>
+  <path d="M440 600V310Q800-20 1160 310v290" fill="url(#w)" stroke="#7ea69b" stroke-width="13"/>
+  <path d="M800 110v490M455 405h690M580 200l220 400m220-400L800 600" stroke="#9a8b70" stroke-width="13"/>
+  <path d="M0 595h1600v305H0z" fill="url(#p)"/><path d="M0 640h1600M0 724h1600M0 820h1600" stroke="#d0b38a" stroke-width="10"/>
+  <path d="M0 595 360 900m1240-305-360 305M400 595l-180 305m960-305 180 305" stroke="#424448" stroke-width="16"/>
+  <path d="M580 600h440l115 300H465z" fill="#3e5a5c" stroke="#c1aa82" stroke-width="12"/>
+  <path d="M0 600q200-45 400 0t400 0 400 0 400 0v300H0z" fill="#205267" fill-opacity=".72"/>
+  <path d="M0 658q170-28 340 0t340 0 340 0 340 0 240 0m-1600 120q150-22 300 0t300 0 300 0 300 0 400 0" fill="none" stroke="#9dd8cb" stroke-width="8" opacity=".8"/>
+  <g fill="#7cb39a" stroke="#c5e0b3" stroke-width="5"><path d="M180 600q-80-130-20-195 75 84 20 195zm55 0q100-115 70-180-95 70-70 180z"/><path d="M1380 600q-90-130-25-205 80 90 25 205zm60 0q95-115 70-180-95 70-70 180z"/></g>
+  <g fill="#f6d995"><circle cx="320" cy="395" r="11"/><circle cx="1280" cy="430" r="10"/><circle cx="800" cy="532" r="13"/></g>
+  <path d="M720 640h160v36H720z" fill="#886f56" stroke="#d3b88a" stroke-width="7"/>
+</svg>

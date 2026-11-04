@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="m" x2="0" y2="1"><stop stop-color="#29314e"/><stop offset=".52" stop-color="#554968"/><stop offset="1" stop-color="#263a49"/></linearGradient>
+    <linearGradient id="gl" x2="0" y2="1"><stop stop-color="#ffd7a0"/><stop offset="1" stop-color="#8dbd9f" stop-opacity=".2"/></linearGradient>
+    <linearGradient id="f" x2="0" y2="1"><stop stop-color="#607258"/><stop offset="1" stop-color="#263b3d"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#m)"/>
+  <path d="M0 0h310v610H0zm1290 0h310v610h-310z" fill="#35414b" stroke="#a18066" stroke-width="20"/>
+  <path d="M350 600V280Q800-140 1250 280v320" fill="#354555" stroke="#c39672" stroke-width="32"/>
+  <path d="M450 590V310Q800-20 1150 310v280" fill="url(#gl)" stroke="#e2c29a" stroke-width="13"/>
+  <path d="M800 100v490M460 405h680M575 195l225 395m225-395L800 590" stroke="#85705f" stroke-width="12"/>
+  <path d="M0 610h1600v290H0z" fill="url(#f)"/><path d="M0 690h1600M0 790h1600" stroke="#c2a77e" stroke-width="10"/>
+  <path d="M0 610 350 900m1250-290-350 290M380 610l-170 290m980-290 170 290" stroke="#3d4943" stroke-width="16"/>
+  <path d="M590 605h420l125 295H465z" fill="#526a54" stroke="#dec18e" stroke-width="12"/>
+  <g><path d="M155 650V530q0-75 76-75t76 75v120z" fill="#f0d7ae"/><path d="M105 540q10-130 126-130t126 130z" fill="#d35261" stroke="#f2bc8b" stroke-width="12"/><circle cx="180" cy="497" r="14" fill="#fff0c8"/><circle cx="242" cy="465" r="18" fill="#fff0c8"/><circle cx="292" cy="510" r="13" fill="#fff0c8"/></g>
+  <g><path d="M1295 650V520q0-70 70-70t70 70v130z" fill="#ead5b0"/><path d="M1248 530q10-125 117-125t117 125z" fill="#e58c53" stroke="#f6d399" stroke-width="12"/><circle cx="1300" cy="490" r="13" fill="#fff1cd"/><circle cx="1360" cy="455" r="17" fill="#fff1cd"/><circle cx="1412" cy="500" r="12" fill="#fff1cd"/></g>
+  <g fill="#80c89d" stroke="#d5e7a5" stroke-width="5"><path d="M390 625v-80q0-47 42-47t42 47v80z"/><path d="M1150 625v-80q0-47 42-47t42 47v80z"/></g>
+  <g fill="#ffe0a2"><circle cx="440" cy="340" r="9"/><circle cx="1180" cy="360" r="11"/><circle cx="800" cy="520" r="8"/></g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#253c56"/><stop offset=".55" stop-color="#6c8065"/><stop offset="1" stop-color="#d2a16a"/></linearGradient>
+    <linearGradient id="stone" x2="0" y2="1"><stop stop-color="#b9a477"/><stop offset="1" stop-color="#514b43"/></linearGradient>
+    <linearGradient id="ground" x2="0" y2="1"><stop stop-color="#66734b"/><stop offset="1" stop-color="#263a35"/></linearGradient>
+    <pattern id="ivybooks" width="130" height="78" patternUnits="userSpaceOnUse"><rect width="130" height="78" fill="#403d36"/><path d="M5 8h19v55H5zm25 4h17v51H30zm23-7h22v58H53zm28 9h17v49H81zm23-9h21v58h-21z" fill="#a35f42" stroke="#ddba78" stroke-width="2"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1250" cy="170" r="82" fill="#ffe2a0" opacity=".8"/>
+  <path d="M0 420Q160 135 360 420Q540 75 720 430Q900 130 1060 420Q1260 100 1440 410Q1520 300 1600 360v280H0z" fill="#294b42"/>
+  <path d="M0 460Q210 210 410 460v210H0zm1190 0q180-250 410 0v210h-410z" fill="url(#ivybooks)" stroke="#ac9365" stroke-width="25"/>
+  <path d="M380 640V345q420-490 840 0v295" fill="url(#stone)" stroke="#806c50" stroke-width="38"/>
+  <path d="M470 630V360q330-380 660 0v270" fill="#314c45" stroke="#d2b279" stroke-width="14"/>
+  <path d="M800 194v436M495 440h610" stroke="#d2b279" stroke-width="14" opacity=".7"/>
+  <path d="M0 655h1600v245H0z" fill="url(#ground)"/>
+  <path d="M0 700q230-80 420 0t380 0 400 0 400 0v200H0z" fill="#3d513e"/>
+  <path d="M0 768q260-78 520 0t520 0 560 0v132H0z" fill="#52613f"/>
+  <path d="M0 675q90-95 170-2 80 74 158-8 70-76 145 14M1600 670q-80-90-160 0-90 95-180 0-80-80-155 14" fill="none" stroke="#6b8e4d" stroke-width="22"/>
+  <g fill="#4a703f" stroke="#b5a36d" stroke-width="7"><path d="M180 490h155v24H180z"/><path d="M1265 490h155v24h-155z"/><path d="M205 446h104v42H205z" fill="#a24e3c"/><path d="M1290 446h104v42h-104z" fill="#3d6870"/></g>
+  <g fill="#d9b66d"><path d="m800 690 105 53-105 52-105-52z"/><path d="M760 360h80v14h-80z"/></g>
+  <g fill="#263e35"><path d="M70 900q40-210 95-250 50 130 52 250z"/><path d="M1380 900q18-220 82-250 58 130 68 250z"/></g>
+  <g fill="#e6c27a"><circle cx="135" cy="635" r="15"/><circle cx="1470" cy="620" r="14"/><circle cx="510" cy="300" r="12"/></g>
+</svg>

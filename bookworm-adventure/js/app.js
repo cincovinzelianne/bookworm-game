@@ -809,6 +809,41 @@ const FOES = [
       `<svg viewBox="0 0 160 150"><ellipse cx="80" cy="144" rx="60" ry="6" fill="#0006"/><path d="M20 120Q10 50 50 36L40 6 66 26Q80 20 94 26L120 6 110 36Q150 50 140 120Q80 140 20 120Z" fill="${c}"/><path d="M0 70q20-30 40-10M160 70q-20-30-40-10" stroke="${c}" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M50 72l28 8M110 72l-28 8" stroke="#111" stroke-width="7" stroke-linecap="round"/><circle cx="62" cy="86" r="9" fill="#ffe14d"/><circle cx="98" cy="86" r="9" fill="#ffe14d"/><path d="M52 108l10 12 9-10 9 10 9-10 10 12 10-14" fill="#fff" stroke="#111" stroke-width="3"/><rect x="60" y="2" width="40" height="14" rx="3" fill="#ffd23f"/></svg>`,
   },
 ];
+const SCENES = [
+  "grand-library",
+  "ivy-archive",
+  "moonlit-observatory",
+  "ember-forge",
+  "undersea-archive",
+  "crystal-cavern",
+  "skyship-dock",
+  "royal-greenhouse",
+  "flooded-crypt",
+  "clockwork-hall",
+  "dragon-roost",
+  "winter-citadel",
+  "desert-caravan",
+  "mushroom-grotto",
+  "sunken-temple",
+  "storm-library",
+  "autumn-courtyard",
+  "mirror-gallery",
+  "dragon-lair",
+  "celestial-atrium",
+];
+function getFoe(level = S.lv) {
+  const base = FOES[level % FOES.length];
+  return {
+    ...base,
+    n: `${base.n} · ${level + 1}`,
+    hp: Math.round(base.hp * (1 + level * 0.1)),
+    atk: base.atk + Math.floor(level / 10),
+  };
+}
+function setScene(level) {
+  const sceneIndex = Math.floor(level / 10) % SCENES.length;
+  document.body.dataset.scene = SCENES[sceneIndex];
+}
 const $ = (id) => document.getElementById(id);
 const BIG = new Set();
 function addWords(words) {
@@ -944,9 +979,8 @@ function applyCloudSaveData(saved) {
 }
 function restoreProgress(progress) {
   if (
-    !Number.isInteger(progress.lv) ||
+    !Number.isSafeInteger(progress.lv) ||
     progress.lv < 0 ||
-    progress.lv >= FOES.length ||
     !Array.isArray(progress.tiles) ||
     progress.tiles.length !== 16 ||
     !progress.tiles.every(
@@ -1043,7 +1077,8 @@ function start(resume = false) {
   saveProgress();
 }
 function load() {
-  const f = FOES[S.lv];
+  const f = getFoe();
+  setScene(S.lv);
   S.ehp = f.hp;
   S.emax = f.hp;
   S.turn = "player";
@@ -1081,7 +1116,7 @@ function hud() {
   $("ehp").textContent = Math.max(0, S.ehp);
   $("score").textContent = S.score;
   $("coins").textContent = STORE.coins;
-  $("turn").textContent = S.turn === "player" ? "Wilbur" : FOES[S.lv].n;
+  $("turn").textContent = S.turn === "player" ? "Wilbur" : getFoe().n;
 }
 function render() {
   const b = $("board");
@@ -1283,7 +1318,7 @@ async function go() {
   S.sel = [];
   S.enemyStunned = w.length > 5;
   say(
-    `${w.toUpperCase()}${dmg >= 25 ? "! Critical hit!" : ` deals ${dmg}`}${S.enemyStunned ? ` ${FOES[S.lv].n} is stunned!` : ""} +${earnedCoins} coins`,
+    `${w.toUpperCase()}${dmg >= 25 ? "! Critical hit!" : ` deals ${dmg}`}${S.enemyStunned ? ` ${getFoe().n} is stunned!` : ""} +${earnedCoins} coins`,
     "#ffe08a",
   );
   idx.forEach((i) => {
@@ -1301,7 +1336,7 @@ async function go() {
   if (S.ehp <= 0) return win();
   if (S.enemyStunned) {
     S.enemyStunned = false;
-    say(`${FOES[S.lv].n} is stunned and misses its turn!`, "#b6f27a");
+    say(`${getFoe().n} is stunned and misses its turn!`, "#b6f27a");
     await sleep(500);
   } else {
     await foeAttack();
@@ -1321,7 +1356,7 @@ async function go() {
   saveProgress();
 }
 async function foeAttack() {
-  const f = FOES[S.lv],
+  const f = getFoe(),
     e = $("foe");
   const attackWords = f.words.filter(has);
   const fallbackWords = Array.from(WORDS).filter((entry) => entry.length >= 2);
@@ -1376,23 +1411,18 @@ async function win() {
   S.php = Math.min(100, S.php + 25);
   STORE.coins += 10;
   saveStore();
-  if (++S.lv >= FOES.length) {
-    hud();
-    saveProgress();
-    return end(true);
-  }
-  say("Foe defeated! +25 health", "#b6f27a");
+  S.lv++;
+  say(`Chapter ${S.lv + 1}! A new foe approaches. +25 health`, "#b6f27a");
   load();
   S.busy = false;
   saveProgress();
 }
 function end(v) {
   S.busy = true;
-  $("ot").textContent = v ? "Library saved!" : "Story over";
+  $("ot").textContent = v ? "Library saved!" : "Adventure over";
   $("os").textContent =
-    (v ? "Wilbur defeated every monster. " : "Wilbur got bookmarked. ") +
-    "Final score: " +
-    S.score;
+    (v ? "Wilbur defeated every monster. " : "Wilbur was bookmarked. ") +
+    `Reached chapter ${S.lv + 1}. Final score: ${S.score}`;
   $("over").style.display = "flex";
 }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1412,24 +1442,16 @@ function shakeScreen(n) {
   a.classList.add("shake");
 }
 function sweep() {}
-// particles + ambient fireflies
+// Combat impact particles only; the scene art is a static illustrated backdrop.
 const cv = $("fx"),
   cx = cv.getContext("2d");
-let P = [],
-  FF = [];
+let P = [];
 function rs() {
   cv.width = innerWidth;
   cv.height = innerHeight;
 }
 rs();
 addEventListener("resize", rs);
-for (let i = 0; i < 40; i++)
-  FF.push({
-    x: Math.random() * innerWidth,
-    y: Math.random() * innerHeight,
-    a: Math.random() * 6,
-    s: 0.2 + Math.random() * 0.5,
-  });
 function burst(x, y, n, c) {
   for (let i = 0; i < n; i++) {
     const a = Math.random() * 6.28,
@@ -1448,20 +1470,6 @@ function burst(x, y, n, c) {
 }
 function loop() {
   cx.clearRect(0, 0, cv.width, cv.height);
-  FF.forEach((f) => {
-    f.a += 0.02;
-    f.x += Math.cos(f.a) * f.s;
-    f.y += Math.sin(f.a * 0.8) * f.s - 0.1;
-    if (f.y < -10) f.y = cv.height + 10;
-    cx.globalAlpha = 0.4 + 0.4 * Math.sin(f.a * 3);
-    cx.fillStyle = "#fff3a8";
-    cx.shadowBlur = 12;
-    cx.shadowColor = "#ffe14d";
-    cx.beginPath();
-    cx.arc(f.x, f.y, 2, 0, 6.28);
-    cx.fill();
-  });
-  cx.shadowBlur = 0;
   P = P.filter((p) => p.l > 0);
   P.forEach((p) => {
     p.x += p.vx;
