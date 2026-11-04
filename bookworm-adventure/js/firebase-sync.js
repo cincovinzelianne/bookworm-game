@@ -112,6 +112,7 @@ window.WormwoodFirebaseRooms = {
       const code = makeRoomCode();
       const room = {
         hostUid: currentUser.uid,
+        guestUid: "",
         members: {
           [currentUser.uid]: {
             uid: currentUser.uid,
@@ -147,19 +148,19 @@ window.WormwoodFirebaseRooms = {
     }
     if (roomSnapshot.child("game/status").val() !== "waiting")
       throw new Error("This match has already started or ended.");
-    if (members.numChildren() >= 2)
-      throw new Error("This room already has two players.");
-    const result = await runTransaction(memberRef, (existing) =>
-      existing === null
-        ? {
-            uid: currentUser.uid,
-            name: displayName || currentUser.displayName || "Player 2",
-            online: true,
-          }
+    const guestRef = ref(database, `rooms/${normalizedCode}/guestUid`);
+    const claim = await runTransaction(guestRef, (guestUid) =>
+      guestUid === "" || guestUid === currentUser.uid
+        ? currentUser.uid
         : undefined,
     );
-    if (!result.committed)
+    if (!claim.committed)
       throw new Error("This room is full or your join request was rejected.");
+    await set(memberRef, {
+      uid: currentUser.uid,
+      name: displayName || currentUser.displayName || "Player 2",
+      online: true,
+    });
     return { code: normalizedCode, host: false };
   },
   async start(code, initialGame) {
@@ -169,7 +170,11 @@ window.WormwoodFirebaseRooms = {
     if (!room || room.hostUid !== currentUser.uid)
       throw new Error("Only the room creator can start the match.");
     const members = Object.values(room.members || {});
-    if (members.length !== 2 || members.some((member) => !member.online))
+    if (
+      room.guestUid === "" ||
+      members.length !== 2 ||
+      members.some((member) => !member.online)
+    )
       throw new Error("Wait for your friend to connect before starting.");
     const gameRef = ref(database, `rooms/${code}/game`);
     const result = await runTransaction(gameRef, (game) =>
@@ -201,6 +206,7 @@ window.WormwoodFirebaseRooms = {
       await remove(roomRef);
       return;
     }
+    await set(ref(database, `rooms/${code}/guestUid`), "");
     await remove(ref(database, `rooms/${code}/members/${currentUser.uid}`));
   },
   async watchConnection(code) {
