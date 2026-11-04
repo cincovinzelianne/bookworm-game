@@ -9,6 +9,23 @@
           ".write": "auth != null && auth.uid === $uid"
         }
       }
+    },
+    "rooms": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('hostUid').val() === auth.uid && newData.child('members').numChildren() === 1 && newData.child('members').child(auth.uid).exists() && newData.child('game/status').val() === 'waiting') || (!newData.exists() && data.child('hostUid').val() === auth.uid))",
+        "members": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && ((data.exists() && (!newData.exists() || newData.child('uid').val() === auth.uid)) || (!data.exists() && data.parent().numChildren() < 2 && newData.child('uid').val() === auth.uid))",
+            ".validate": "!newData.exists() || (newData.hasChildren(['uid', 'name', 'online']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('online').isBoolean())"
+          }
+        },
+        "game": {
+          ".read": "auth != null && root.child('rooms').child($code).child('members').child(auth.uid).exists()",
+          ".write": "auth != null && root.child('rooms').child($code).child('members').child(auth.uid).exists() && ((data.child('status').val() === 'waiting' && root.child('rooms').child($code).child('hostUid').val() === auth.uid) || data.child('turnUid').val() === auth.uid)",
+          ".validate": "newData.child('status').val() === 'waiting' || newData.child('status').val() === 'playing' || newData.child('status').val() === 'finished'"
+        }
+      }
     }
   }
 }

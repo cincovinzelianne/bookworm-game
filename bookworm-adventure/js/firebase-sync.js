@@ -11,7 +11,11 @@ import {
 import {
   get,
   getDatabase,
+  onDisconnect,
+  onValue,
   ref,
+  remove,
+  runTransaction,
   set,
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
@@ -82,6 +86,135 @@ let resolveAuthReady;
 const authReady = new Promise((resolve) => {
   resolveAuthReady = resolve;
 });
+const roomCodeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function makeRoomCode() {
+  const randomValues = crypto.getRandomValues(new Uint32Array(6));
+  return Array.from(
+    randomValues,
+    (value) => roomCodeAlphabet[value % roomCodeAlphabet.length],
+  ).join("");
+}
+function roomReference(code) {
+  if (!/^[A-HJ-NP-Z2-9]{6}$/.test(code))
+    throw new Error("Room codes must be 6 letters or numbers.");
+  if (!database || !currentUser)
+    throw new Error("Sign in before using online rooms.");
+  return ref(database, `rooms/${code}`);
+}
+window.WormwoodFirebaseRooms = {
+  get user() {
+    return currentUser;
+  },
+  async create(displayName) {
+    if (!database || !currentUser)
+      throw new Error("Sign in before creating an online room.");
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const code = makeRoomCode();
+      const room = {
+        hostUid: currentUser.uid,
+        members: {
+          [currentUser.uid]: {
+            uid: currentUser.uid,
+            name: displayName || currentUser.displayName || "Player 1",
+            online: true,
+          },
+        },
+        game: { status: "waiting" },
+      };
+      const result = await runTransaction(roomReference(code), (existing) =>
+        existing === null ? room : undefined,
+      );
+      if (result.committed) return code;
+    }
+    throw new Error("Could not find an available room code. Try again.");
+  },
+  async join(code, displayName) {
+    const normalizedCode = code.trim().toUpperCase();
+    const roomRef = roomReference(normalizedCode);
+    const roomSnapshot = await get(roomRef);
+    if (!roomSnapshot.exists()) throw new Error("Room not found. Check the code.");
+    const members = roomSnapshot.child("members");
+    const memberRef = ref(
+      database,
+      `rooms/${normalizedCode}/members/${currentUser.uid}`,
+    );
+    if (members.hasChild(currentUser.uid)) {
+      await set(memberRef, {
+        ...members.child(currentUser.uid).val(),
+        online: true,
+      });
+      return { code: normalizedCode, host: false };
+    }
+    if (roomSnapshot.child("game/status").val() !== "waiting")
+      throw new Error("This match has already started or ended.");
+    if (members.numChildren() >= 2)
+      throw new Error("This room already has two players.");
+    const result = await runTransaction(memberRef, (existing) =>
+      existing === null
+        ? {
+            uid: currentUser.uid,
+            name: displayName || currentUser.displayName || "Player 2",
+            online: true,
+          }
+        : undefined,
+    );
+    if (!result.committed)
+      throw new Error("This room is full or your join request was rejected.");
+    return { code: normalizedCode, host: false };
+  },
+  async start(code, initialGame) {
+    const roomRef = roomReference(code);
+    const roomSnapshot = await get(roomRef);
+    const room = roomSnapshot.val();
+    if (!room || room.hostUid !== currentUser.uid)
+      throw new Error("Only the room creator can start the match.");
+    const members = Object.values(room.members || {});
+    if (members.length !== 2 || members.some((member) => !member.online))
+      throw new Error("Wait for your friend to connect before starting.");
+    const gameRef = ref(database, `rooms/${code}/game`);
+    const result = await runTransaction(gameRef, (game) =>
+      game?.status === "waiting" ? initialGame : undefined,
+    );
+    if (!result.committed)
+      throw new Error("This match has already started.");
+  },
+  async updateGame(code, update) {
+    const gameRef = ref(database, `rooms/${code}/game`);
+    const result = await runTransaction(gameRef, update);
+    if (!result.committed)
+      throw new Error("The match changed. Please wait for the latest turn.");
+    return result.snapshot.val();
+  },
+  listen(code, onRoom, onError) {
+    return onValue(
+      roomReference(code),
+      (snapshot) => onRoom(snapshot.val()),
+      (error) => onError(error),
+    );
+  },
+  async leave(code) {
+    const roomRef = roomReference(code);
+    const roomSnapshot = await get(roomRef);
+    const room = roomSnapshot.val();
+    if (!room) return;
+    if (room.hostUid === currentUser.uid) {
+      await remove(roomRef);
+      return;
+    }
+    await remove(ref(database, `rooms/${code}/members/${currentUser.uid}`));
+  },
+  async watchConnection(code) {
+    const memberRef = ref(
+      database,
+      `rooms/${code}/members/${currentUser.uid}/online`,
+    );
+    await set(memberRef, true);
+    return onDisconnect(memberRef).set(false);
+  },
+  serverTime() {
+    return Date.now();
+  },
+};
 window.WormwoodFirebaseAuth = {
   ready: authReady,
   get user() {

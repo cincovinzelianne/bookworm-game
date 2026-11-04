@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Online Arena – Goyworm Adventures</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="multiplayer.css" />
+  </head>
+  <body class="mp-page">
+    <main class="mp-shell">
+      <header class="mp-header">
+        <a class="brand-badge" href="index.html">
+          <span class="brand-mark">✦</span>
+          <span class="serif">Goyworm Adventures</span>
+        </a>
+        <a class="mp-home-link" href="index.html">Back to home</a>
+      </header>
+
+      <section class="mp-card">
+        <p class="mp-kicker">Private online battles</p>
+        <h1 class="serif">Challenge a friend</h1>
+        <p class="mp-intro">
+          Create a room and share its code. Take turns spelling words to bring
+          your friend's health to zero.
+        </p>
+        <p id="mpStatus" class="mp-status" role="status" aria-live="polite">
+          Checking your sign-in…
+        </p>
+
+        <div id="roomSetup" class="mp-setup" hidden>
+          <label class="mp-label" for="playerName">Your name</label>
+          <input
+            id="playerName"
+            class="mp-input"
+            maxlength="24"
+            autocomplete="nickname"
+            placeholder="Name shown to your friend"
+          />
+          <div class="mp-actions">
+            <button id="createRoom" class="mp-primary" type="button">
+              Create room
+            </button>
+            <span class="mp-or">or</span>
+            <form id="joinForm" class="mp-join-form">
+              <label class="mp-label" for="roomCodeInput">Enter room code</label>
+              <div class="mp-join-row">
+                <input
+                  id="roomCodeInput"
+                  class="mp-input mp-code-input"
+                  maxlength="6"
+                  autocomplete="off"
+                  autocapitalize="characters"
+                  spellcheck="false"
+                  placeholder="ABC234"
+                  aria-label="Six-character room code"
+                />
+                <button class="mp-secondary" type="submit">Join</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <section id="roomPanel" class="mp-room" hidden>
+          <div class="mp-room-code">
+            <div>
+              <span class="mp-label">Room code</span>
+              <strong id="roomCode" class="serif"></strong>
+            </div>
+            <button id="copyCode" class="mp-secondary" type="button">
+              Copy code
+            </button>
+          </div>
+          <p id="roomMessage" class="mp-room-message" aria-live="polite"></p>
+          <ul id="memberList" class="mp-members"></ul>
+          <div class="mp-room-actions">
+            <button id="startMatch" class="mp-primary" type="button" hidden>
+              Start match
+            </button>
+            <button id="leaveRoom" class="mp-secondary" type="button">
+              Leave room
+            </button>
+          </div>
+        </section>
+
+        <section id="matchPanel" class="mp-match" hidden>
+          <div class="mp-health">
+            <div class="mp-health-player">
+              <span id="youName"></span>
+              <strong id="youHealth">100</strong>
+              <div class="mp-health-track">
+                <span id="youHealthBar"></span>
+              </div>
+            </div>
+            <span class="mp-vs">VS</span>
+            <div class="mp-health-player">
+              <span id="opponentName"></span>
+              <strong id="opponentHealth">100</strong>
+              <div class="mp-health-track">
+                <span id="opponentHealthBar"></span>
+              </div>
+            </div>
+          </div>
+          <p id="turnMessage" class="mp-turn" aria-live="polite"></p>
+          <p id="lastMove" class="mp-last-move"></p>
+          <div id="wordPreview" class="mp-word">Spell a word…</div>
+          <div id="mpBoard" class="mp-board" aria-label="Word letter board"></div>
+          <div class="mp-room-actions">
+            <button id="clearWord" class="mp-secondary" type="button">
+              Clear
+            </button>
+            <button id="submitWord" class="mp-primary" type="button" disabled>
+              Attack
+            </button>
+          </div>
+        </section>
+      </section>
+      <p class="mp-footnote">
+        Online Arena uses turn-based word battles. Room access is limited to
+        players with the code.
+      </p>
+    </main>
+    <script>
+      window.WormwoodFirebaseAuthReady = new Promise((resolve) => {
+        window.addEventListener(
+          "wormwood-auth-ready",
+          (event) => resolve(event.detail.user),
+          { once: true },
+        );
+      });
+    </script>
+    <script type="module" src="js/firebase-sync.js"></script>
+    <script type="module" src="js/multiplayer.js"></script>
+  </body>
+</html>
