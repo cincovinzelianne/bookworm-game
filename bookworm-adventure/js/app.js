@@ -1851,6 +1851,7 @@ function getCloudSaveData() {
     coins: STORE.coins,
     ownedSkins: STORE.ownedSkins,
     equippedSkin: STORE.equippedSkin,
+    equippedSkinSvg: wormSvg(),
     potions: STORE.potions,
     upgrades: STORE.upgrades,
     redeemedCodes: STORE.redeemedCodes,

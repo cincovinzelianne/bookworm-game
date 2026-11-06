@@ -287,6 +287,11 @@ function explainDatabasePermissionError(error) {
     );
   return error;
 }
+async function getPlayerSkinSvg() {
+  const snapshot = await get(ref(database, `users/${currentUser.uid}/save`));
+  const svg = snapshot.child("equippedSkinSvg").val();
+  return typeof svg === "string" && svg.length <= 100_000 ? svg : "";
+}
 window.WormwoodFirebaseRooms = {
   get user() {
     return currentUser;
@@ -294,18 +299,19 @@ window.WormwoodFirebaseRooms = {
   async create(displayName) {
     if (!database || !currentUser)
       throw new Error("Sign in before creating an online room.");
+    const skinSvg = await getPlayerSkinSvg();
     for (let attempt = 0; attempt < 5; attempt++) {
       const code = makeRoomCode();
+      const member = {
+        uid: currentUser.uid,
+        name: displayName || currentUser.displayName || "Player 1",
+        online: true,
+      };
+      if (skinSvg) member.skinSvg = skinSvg;
       const room = {
         hostUid: currentUser.uid,
         guestUid: "",
-        members: {
-          [currentUser.uid]: {
-            uid: currentUser.uid,
-            name: displayName || currentUser.displayName || "Player 1",
-            online: true,
-          },
-        },
+        members: { [currentUser.uid]: member },
         game: { status: "waiting" },
       };
       const result = await runTransaction(roomReference(code), (existing) =>
@@ -333,6 +339,7 @@ window.WormwoodFirebaseRooms = {
       await set(memberRef, {
         ...members.child(currentUser.uid).val(),
         online: true,
+        ...(skinSvg ? { skinSvg } : {}),
       });
       return {
         code: normalizedCode,
@@ -345,6 +352,9 @@ window.WormwoodFirebaseRooms = {
     const name = (
       displayName || currentUser.displayName || "Player 2"
     ).slice(0, 24);
+    const skinSvg = await getPlayerSkinSvg();
+    const member = { uid, name, online: true };
+    if (skinSvg) member.skinSvg = skinSvg;
     let claim;
     try {
       claim = await runTransaction(roomRef, (room) => {
@@ -368,7 +378,7 @@ window.WormwoodFirebaseRooms = {
           guestUid: uid,
           members: {
             [currentRoom.hostUid]: currentRoom.members[currentRoom.hostUid],
-            [uid]: { uid, name, online: true },
+            [uid]: member,
           },
         };
       });
@@ -733,6 +743,11 @@ if (!configured) {
       const snapshot = await get(ref(database, `users/${user.uid}/save`));
       if (snapshot.exists()) {
         window.WormwoodGame?.applySaveData(snapshot.val());
+        if (
+          window.WormwoodGame &&
+          !snapshot.child("equippedSkinSvg").exists()
+        )
+          queuedSave = true;
       } else if (window.WormwoodGame) {
         queuedSave = true;
       }
