@@ -348,9 +348,10 @@ window.WormwoodFirebaseRooms = {
     let claim;
     try {
       claim = await runTransaction(roomRef, (room) => {
-        const guestSlotOccupied =
+        const guestSlotOccupied = Boolean(
           room?.guestUid &&
-          room.members?.[room.guestUid];
+            room.members?.[room.guestUid]?.online !== false,
+        );
         if (
           !room ||
           room.hostUid === uid ||
@@ -376,13 +377,17 @@ window.WormwoodFirebaseRooms = {
       if (!latest.exists()) throw new Error("Room not found. Check the code.");
       if (latest.child("game/status").val() !== "waiting")
         throw new Error("This match has already started or ended.");
+      if (latest.child("hostUid").val() === uid)
+        throw new Error(
+          "You are signed in as the room host. Join from a different account or browser profile.",
+        );
       const latestGuestUid = latest.child("guestUid").val();
       if (
         latestGuestUid &&
         latest.child(`members/${latestGuestUid}`).exists()
       )
         throw new Error(
-          "Another player is still assigned to this room. Ask them to leave or reconnect.",
+          "Another player is still online in this room. Ask them to leave first.",
         );
       throw new Error(
         "Could not claim this room. Ask the host to create a new room and share its code.",
