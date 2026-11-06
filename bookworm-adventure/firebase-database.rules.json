@@ -21,7 +21,7 @@
         "members": {
           "$uid": {
             ".write": "auth != null && auth.uid === $uid && ((newData.exists() && (root.child('rooms').child($code).child('hostUid').val() === auth.uid || root.child('rooms').child($code).child('guestUid').val() === auth.uid) && newData.child('uid').val() === auth.uid) || (data.exists() && !newData.exists()))",
-            ".validate": "!newData.exists() || (newData.hasChildren(['uid', 'name', 'online']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('online').isBoolean())"
+            ".validate": "!newData.exists() || (newData.hasChildren(['uid', 'name', 'online']) && newData.child('uid').val() === $uid && newData.child('name').isString() && newData.child('name').val().length <= 24 && newData.child('online').isBoolean())"
           }
         },
         "game": {

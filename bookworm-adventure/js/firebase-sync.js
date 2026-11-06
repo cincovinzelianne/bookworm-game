@@ -321,7 +321,11 @@ window.WormwoodFirebaseRooms = {
     const roomSnapshot = await get(roomRef);
     if (!roomSnapshot.exists()) throw new Error("Room not found. Check the code.");
     const members = roomSnapshot.child("members");
-    if (members.hasChild(currentUser.uid)) {
+    if (
+      members.hasChild(currentUser.uid) &&
+      (roomSnapshot.child("hostUid").val() === currentUser.uid ||
+        roomSnapshot.child("guestUid").val() === currentUser.uid)
+    ) {
       const memberRef = ref(
         database,
         `rooms/${normalizedCode}/members/${currentUser.uid}`,
@@ -349,8 +353,6 @@ window.WormwoodFirebaseRooms = {
           room.hostUid === uid ||
           room.guestUid !== "" ||
           room.game?.status !== "waiting" ||
-          room.members?.[uid] ||
-          Object.keys(room.members || {}).length !== 1 ||
           !room.members?.[room.hostUid]
         )
           return;
@@ -358,7 +360,7 @@ window.WormwoodFirebaseRooms = {
           ...room,
           guestUid: uid,
           members: {
-            ...room.members,
+            [room.hostUid]: room.members[room.hostUid],
             [uid]: { uid, name, online: true },
           },
         };
