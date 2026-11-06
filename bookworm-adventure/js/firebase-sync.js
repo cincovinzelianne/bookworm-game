@@ -376,7 +376,17 @@ window.WormwoodFirebaseRooms = {
       if (!latest.exists()) throw new Error("Room not found. Check the code.");
       if (latest.child("game/status").val() !== "waiting")
         throw new Error("This match has already started or ended.");
-      throw new Error("This room is full. Ask the host to create a new room.");
+      const latestGuestUid = latest.child("guestUid").val();
+      if (
+        latestGuestUid &&
+        latest.child(`members/${latestGuestUid}`).exists()
+      )
+        throw new Error(
+          "Another player is still assigned to this room. Ask them to leave or reconnect.",
+        );
+      throw new Error(
+        "Could not claim this room. Ask the host to create a new room and share its code.",
+      );
     }
     return { code: normalizedCode, host: false };
   },
