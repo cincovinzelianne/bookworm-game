@@ -491,7 +491,21 @@ window.WormwoodFirebaseRooms = {
       database,
       `rooms/${code}/members/${currentUser.uid}/online`,
     );
-    await set(memberRef, true);
+    const skin = await getPlayerSkinSvg();
+    const playerRef = ref(
+      database,
+      `rooms/${code}/members/${currentUser.uid}`,
+    );
+    const playerSnapshot = await get(playerRef);
+    if (!playerSnapshot.exists())
+      throw new Error("Your player entry is missing from this room.");
+    const player = { ...playerSnapshot.val(), online: true };
+    if (skin.svg) {
+      player.skinAccent = skin.accent;
+      player.skinRarity = skin.rarity;
+      player.skinSvg = skin.svg;
+    }
+    await set(playerRef, player);
     return onDisconnect(memberRef).set(false);
   },
   serverTime() {
