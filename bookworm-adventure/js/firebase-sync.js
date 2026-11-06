@@ -348,23 +348,26 @@ window.WormwoodFirebaseRooms = {
     let claim;
     try {
       claim = await runTransaction(roomRef, (room) => {
-        const guestMember = room?.members?.[room.guestUid];
+        const currentRoom = room ?? roomSnapshot.val();
+        const guestMember = currentRoom?.members?.[currentRoom.guestUid];
         const guestSlotOccupied = Boolean(
-          room?.guestUid && guestMember && guestMember.online !== false,
+          currentRoom?.guestUid &&
+            guestMember &&
+            guestMember.online !== false,
         );
         if (
-          !room ||
-          room.hostUid === uid ||
+          !currentRoom ||
+          currentRoom.hostUid === uid ||
           guestSlotOccupied ||
-          room.game?.status !== "waiting" ||
-          !room.members?.[room.hostUid]
+          currentRoom.game?.status !== "waiting" ||
+          !currentRoom.members?.[currentRoom.hostUid]
         )
           return;
         return {
-          ...room,
+          ...currentRoom,
           guestUid: uid,
           members: {
-            [room.hostUid]: room.members[room.hostUid],
+            [currentRoom.hostUid]: currentRoom.members[currentRoom.hostUid],
             [uid]: { uid, name, online: true },
           },
         };
