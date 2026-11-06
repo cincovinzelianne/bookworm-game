@@ -348,10 +348,13 @@ window.WormwoodFirebaseRooms = {
     let claim;
     try {
       claim = await runTransaction(roomRef, (room) => {
+        const guestSlotOccupied =
+          room?.guestUid &&
+          room.members?.[room.guestUid];
         if (
           !room ||
           room.hostUid === uid ||
-          room.guestUid !== "" ||
+          guestSlotOccupied ||
           room.game?.status !== "waiting" ||
           !room.members?.[room.hostUid]
         )
