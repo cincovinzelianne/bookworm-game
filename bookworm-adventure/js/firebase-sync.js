@@ -290,7 +290,20 @@ function explainDatabasePermissionError(error) {
 async function getPlayerSkinSvg() {
   const snapshot = await get(ref(database, `users/${currentUser.uid}/save`));
   const svg = snapshot.child("equippedSkinSvg").val();
-  return typeof svg === "string" && svg.length <= 100_000 ? svg : "";
+  const rarity = snapshot.child("equippedSkinRarity").val();
+  const accent = snapshot.child("equippedSkinAccent").val();
+  return {
+    rarity:
+      typeof rarity === "string" &&
+      ["normal", "rare", "epic", "legendary", "mythic"].includes(rarity)
+        ? rarity
+        : "normal",
+    accent:
+      typeof accent === "string" && /^#[\da-f]{3,8}$/i.test(accent)
+        ? accent
+        : "#8fe06c",
+    svg: typeof svg === "string" && svg.length <= 100_000 ? svg : "",
+  };
 }
 window.WormwoodFirebaseRooms = {
   get user() {
@@ -299,7 +312,7 @@ window.WormwoodFirebaseRooms = {
   async create(displayName) {
     if (!database || !currentUser)
       throw new Error("Sign in before creating an online room.");
-    const skinSvg = await getPlayerSkinSvg();
+    const skin = await getPlayerSkinSvg();
     for (let attempt = 0; attempt < 5; attempt++) {
       const code = makeRoomCode();
       const member = {
@@ -307,7 +320,11 @@ window.WormwoodFirebaseRooms = {
         name: displayName || currentUser.displayName || "Player 1",
         online: true,
       };
-      if (skinSvg) member.skinSvg = skinSvg;
+      if (skin.svg) {
+        member.skinAccent = skin.accent;
+        member.skinRarity = skin.rarity;
+        member.skinSvg = skin.svg;
+      }
       const room = {
         hostUid: currentUser.uid,
         guestUid: "",
@@ -326,7 +343,7 @@ window.WormwoodFirebaseRooms = {
     const roomRef = roomReference(normalizedCode);
     const roomSnapshot = await get(roomRef);
     if (!roomSnapshot.exists()) throw new Error("Room not found. Check the code.");
-    const skinSvg = await getPlayerSkinSvg();
+    const skin = await getPlayerSkinSvg();
     const members = roomSnapshot.child("members");
     if (
       members.hasChild(currentUser.uid) &&
@@ -340,7 +357,13 @@ window.WormwoodFirebaseRooms = {
       await set(memberRef, {
         ...members.child(currentUser.uid).val(),
         online: true,
-        ...(skinSvg ? { skinSvg } : {}),
+        ...(skin.svg
+          ? {
+              skinAccent: skin.accent,
+              skinRarity: skin.rarity,
+              skinSvg: skin.svg,
+            }
+          : {}),
       });
       return {
         code: normalizedCode,
@@ -354,7 +377,11 @@ window.WormwoodFirebaseRooms = {
       displayName || currentUser.displayName || "Player 2"
     ).slice(0, 24);
     const member = { uid, name, online: true };
-    if (skinSvg) member.skinSvg = skinSvg;
+    if (skin.svg) {
+      member.skinAccent = skin.accent;
+      member.skinRarity = skin.rarity;
+      member.skinSvg = skin.svg;
+    }
     let claim;
     try {
       claim = await runTransaction(roomRef, (room) => {
@@ -745,7 +772,9 @@ if (!configured) {
         window.WormwoodGame?.applySaveData(snapshot.val());
         if (
           window.WormwoodGame &&
-          !snapshot.child("equippedSkinSvg").exists()
+          (!snapshot.child("equippedSkinSvg").exists() ||
+            !snapshot.child("equippedSkinRarity").exists() ||
+            !snapshot.child("equippedSkinAccent").exists())
         )
           queuedSave = true;
       } else if (window.WormwoodGame) {

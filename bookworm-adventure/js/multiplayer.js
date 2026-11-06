@@ -46,6 +46,7 @@ let quickMatchSession;
 let quickMatchActive = false;
 let quickMatchStarting = false;
 const skinImageSourceCache = new Map();
+const renderedCharacterSkins = new WeakMap();
 
 function setStatus(message, error = false) {
   $("mpStatus").textContent = message;
@@ -116,19 +117,36 @@ function opponentId() {
   return playerIds().find((id) => id !== user.uid);
 }
 
-function setSkinPortrait(image, member) {
-  image.removeAttribute("src");
-  image.alt = member?.skinSvg
-    ? `${member.name || "Player"} equipped skin`
-    : `${member?.name || "Player"} skin preview unavailable`;
-  if (typeof member?.skinSvg !== "string" || member.skinSvg.length > 100_000)
-    return;
-  const cachedSource = skinImageSourceCache.get(member.skinSvg);
-  if (cachedSource) {
-    image.src = cachedSource;
+function setBattleCharacter(container, member) {
+  container.classList.remove(
+    "skin-normal",
+    "skin-rare",
+    "skin-epic",
+    "skin-legendary",
+    "skin-mythic",
+  );
+  container.style.removeProperty("--skin-accent");
+  if (typeof member?.skinSvg !== "string" || member.skinSvg.length > 100_000) {
+    container.replaceChildren();
+    renderedCharacterSkins.delete(container);
     return;
   }
-
+  const rarity = [
+    "normal",
+    "rare",
+    "epic",
+    "legendary",
+    "mythic",
+  ].includes(member.skinRarity)
+    ? member.skinRarity
+    : "normal";
+  container.classList.add(`skin-${rarity}`);
+  if (
+    typeof member.skinAccent === "string" &&
+    /^#[\da-f]{3,8}$/i.test(member.skinAccent)
+  )
+    container.style.setProperty("--skin-accent", member.skinAccent);
+  if (renderedCharacterSkins.get(container) === member.skinSvg) return;
   const parsed = new DOMParser().parseFromString(
     member.skinSvg,
     "image/svg+xml",
@@ -137,11 +155,17 @@ function setSkinPortrait(image, member) {
   if (
     svg.localName !== "svg" ||
     svg.namespaceURI !== "http://www.w3.org/2000/svg" ||
-    parsed.querySelector("parsererror")
-  )
+    parsed.querySelector("parsererror") ||
+    !svg.hasAttribute("viewBox")
+  ) {
+    container.replaceChildren();
+    renderedCharacterSkins.delete(container);
     return;
+  }
   parsed
-    .querySelectorAll("script, style, foreignObject, iframe, object, embed")
+    .querySelectorAll(
+      "script, style, foreignObject, iframe, object, embed, audio, video",
+    )
     .forEach((element) => element.remove());
   [svg, ...svg.querySelectorAll("*")].forEach((element) => {
     [...element.attributes].forEach((attribute) => {
@@ -152,18 +176,27 @@ function setSkinPortrait(image, member) {
         ((name === "href" || name.endsWith(":href") || name === "src") &&
           !value.startsWith("#")) ||
         (name === "style" &&
-          /url\s*\(|expression\s*\(|javascript:/i.test(value))
+          /url\s*\((?!\s*['"]?#)|expression\s*\(|javascript:/i.test(value)) ||
+        /url\s*\((?!\s*['"]?#)|javascript:/i.test(value)
       )
         element.removeAttribute(attribute.name);
     });
   });
-  const source = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
-    new XMLSerializer().serializeToString(svg),
-  )}`;
+  const cachedMarkup = skinImageSourceCache.get(member.skinSvg);
+  if (cachedMarkup) {
+    container.innerHTML = cachedMarkup;
+    renderedCharacterSkins.set(container, member.skinSvg);
+    return;
+  }
+  svg.classList.add("mp-battle-skin");
+  svg.setAttribute("aria-label", `${member.name || "Player"} character skin`);
+  svg.setAttribute("role", "img");
+  const markup = new XMLSerializer().serializeToString(svg);
   if (skinImageSourceCache.size >= 4)
     skinImageSourceCache.delete(skinImageSourceCache.keys().next().value);
-  skinImageSourceCache.set(member.skinSvg, source);
-  image.src = source;
+  skinImageSourceCache.set(member.skinSvg, markup);
+  container.innerHTML = markup;
+  renderedCharacterSkins.set(container, member.skinSvg);
 }
 
 function renderRoom() {
@@ -234,8 +267,8 @@ function renderMatch() {
   const theirs = game.health?.[otherId] ?? 100;
   $("youName").textContent = me?.name || "You";
   $("opponentName").textContent = opponent?.name || "Friend";
-  setSkinPortrait($("youSkin"), me);
-  setSkinPortrait($("opponentSkin"), opponent);
+  setBattleCharacter($("youCharacter"), me);
+  setBattleCharacter($("opponentCharacter"), opponent);
   $("youHealth").textContent = mine;
   $("opponentHealth").textContent = theirs;
   $("youHealthBar").style.width = `${Math.max(0, mine)}%`;

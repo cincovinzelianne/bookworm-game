@@ -105,7 +105,6 @@
           <div class="mp-health">
             <div class="mp-health-player">
               <div class="mp-player-heading">
-                <img id="youSkin" class="mp-skin-portrait" alt="" />
                 <span id="youName"></span>
                 <strong id="youHealth">100</strong>
               </div>
@@ -116,13 +115,21 @@
             <span class="mp-vs">VS</span>
             <div class="mp-health-player">
               <div class="mp-player-heading">
-                <img id="opponentSkin" class="mp-skin-portrait" alt="" />
                 <span id="opponentName"></span>
                 <strong id="opponentHealth">100</strong>
               </div>
               <div class="mp-health-track">
                 <span id="opponentHealthBar"></span>
               </div>
+            </div>
+          </div>
+          <div class="mp-battle-stage" aria-label="Player characters">
+            <div class="mp-character-side">
+              <div id="youCharacter" class="mp-character-art"></div>
+            </div>
+            <span class="mp-stage-versus" aria-hidden="true">VS</span>
+            <div class="mp-character-side is-opponent">
+              <div id="opponentCharacter" class="mp-character-art"></div>
             </div>
           </div>
           <p id="turnMessage" class="mp-turn" aria-live="polite"></p>
