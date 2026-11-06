@@ -384,13 +384,18 @@ window.WormwoodFirebaseRooms = {
       const latestGuestUid = latest.child("guestUid").val();
       if (
         latestGuestUid &&
-        latest.child(`members/${latestGuestUid}`).exists()
+        latest.child(`members/${latestGuestUid}`).child("online").val() !==
+          false
       )
         throw new Error(
           "Another player is still online in this room. Ask them to leave first.",
         );
+      if (!latest.child(`members/${latest.child("hostUid").val()}`).exists())
+        throw new Error(
+          "This room is missing its host player data. Ask the host to create a new room.",
+        );
       throw new Error(
-        "Could not claim this room. Ask the host to create a new room and share its code.",
+        "Firebase could not save the join. The room code works, but the latest Realtime Database rules may not be published yet.",
       );
     }
     return { code: normalizedCode, host: false };
