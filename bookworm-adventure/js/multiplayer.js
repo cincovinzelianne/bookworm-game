@@ -476,13 +476,21 @@ async function initialize() {
     location.replace("index.html?signin=required");
     return;
   }
+  if (user.localOnly) {
+    location.replace("index.html?online=required");
+    return;
+  }
   if (!window.WormwoodFirebaseRooms) {
     setStatus("Online rooms did not initialize. Reload and try again.", true);
     return;
   }
   $("roomSetup").hidden = false;
-  $("playerName").value = user.displayName || "";
-  setStatus(`Signed in as ${user.displayName || user.email}.`);
+  $("playerName").value = user.displayName || (user.isAnonymous ? "Guest" : "");
+  setStatus(
+    user.isAnonymous
+      ? "Playing as a guest."
+      : `Signed in as ${user.displayName || user.email}.`,
+  );
   $("quickMatch").disabled = true;
   $("createRoom").disabled = true;
   $("joinForm").querySelector("button").disabled = true;

@@ -722,6 +722,35 @@ header {
   transform: translateY(2px);
   box-shadow: 0 2px 0 #805820;
 }
+.landing-guest-cta {
+  display: block;
+  margin-top: 16px;
+  padding: 10px 17px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(8, 17, 27, 0.36);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.landing-guest-cta[hidden] {
+  display: none;
+}
+.landing-guest-cta:hover:not(:disabled) {
+  border-color: rgba(255, 244, 198, 0.45);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+}
+.landing-guest-cta:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
 .landing-auth-status {
   min-height: 1.4em;
   margin: 14px 0 0;
@@ -853,6 +882,10 @@ header {
   cursor: wait;
   opacity: 0.75;
 }
+.landing-guest-cta:focus-visible {
+  outline: 3px solid #fff1b0;
+  outline-offset: 3px;
+}
 body.game-page:not(.auth-ready) {
   visibility: hidden;
 }
@@ -934,6 +967,9 @@ body.game-page:not(.auth-ready) {
     transform 0.18s ease,
     border-color 0.18s ease,
     background 0.18s ease;
+}
+.mode-card[hidden] {
+  display: none;
 }
 a.mode-card:hover,
 a.mode-card:focus-visible {

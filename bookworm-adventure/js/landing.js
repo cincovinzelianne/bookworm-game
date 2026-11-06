@@ -1,5 +1,7 @@
 const modePicker = document.getElementById("mode-picker");
 const openModePicker = document.getElementById("open-mode-picker");
+const playAsGuestButton = document.getElementById("play-as-guest");
+const onlineArenaOption = document.getElementById("online-arena-option");
 const closeModePicker = document.getElementById("close-mode-picker");
 const ctaLabel = document.getElementById("library-cta-label");
 const authStatus = document.getElementById("landing-auth-status");
@@ -11,6 +13,8 @@ const dailyClaimButton = document.getElementById("claim-daily-reward");
 const dailyRewardStatus = document.getElementById("daily-reward-status");
 const signInRequired =
   new URLSearchParams(location.search).get("signin") === "required";
+const onlineArenaRequired =
+  new URLSearchParams(location.search).get("online") === "required";
 let signedInUser = null;
 let rewardStatusRequest = 0;
 
@@ -71,13 +75,21 @@ function updateAuthUI(user) {
   signedInUser = user;
   ctaLabel.textContent = user ? "Enter the library" : "Sign in with Google";
   signOutButton.hidden = !user;
-  dailyRewardsPanel.hidden = !user;
+  playAsGuestButton.hidden = Boolean(user);
+  onlineArenaOption.hidden = Boolean(user?.localOnly);
+  dailyRewardsPanel.hidden = !user || Boolean(user.localOnly);
   authStatus.textContent = user
-    ? `Signed in as ${user.displayName || user.email}.`
+    ? user.isAnonymous
+      ? user.localOnly
+        ? onlineArenaRequired
+          ? "Online Arena requires a Google account or Firebase guest sign-in. Your local guest progress is still saved."
+          : "Playing as a guest. Your progress is saved only in this browser."
+        : "Playing as a guest. Your progress syncs to this browser's guest account."
+      : `Signed in as ${user.displayName || user.email}.`
     : signInRequired
-      ? "Please sign in with Google before opening Adventure."
-      : "Sign in with Google before entering the library.";
-  if (user) loadDailyRewardStatus();
+      ? "Please sign in with Google or choose Play as guest before opening Adventure."
+      : "Sign in with Google or play as a guest to enter the library.";
+  if (user && !user.localOnly) loadDailyRewardStatus();
   else {
     rewardStatusRequest++;
     dailyCalendar.replaceChildren();
@@ -115,6 +127,27 @@ openModePicker.addEventListener("click", async () => {
   }
   modePicker.hidden = false;
   closeModePicker.focus();
+});
+
+playAsGuestButton.addEventListener("click", async () => {
+  const firebaseAuth = window.WormwoodFirebaseAuth;
+  if (!firebaseAuth) {
+    authStatus.textContent = "Guest mode is still loading. Please try again.";
+    return;
+  }
+  playAsGuestButton.disabled = true;
+  authStatus.textContent = "Starting your guest session…";
+  try {
+    signedInUser = await firebaseAuth.signInAsGuest();
+    updateAuthUI(signedInUser);
+    modePicker.hidden = false;
+    closeModePicker.focus();
+  } catch (error) {
+    console.error("Could not start a guest session:", error);
+    authStatus.textContent = `Could not start a guest session: ${error.message}`;
+  } finally {
+    playAsGuestButton.disabled = false;
+  }
 });
 
 window.addEventListener("wormwood-auth-state", (event) => {

@@ -3,8 +3,8 @@ Stack: HTML, CSS, JavaScript + Tailwind CSS (CDN). No build step.
 
 Run: open index.html in a browser to see the landing page.
 The landing page has the Google sign-out button and a seven-day daily reward calendar. Claim once per local calendar day; the streak resets after a missed day. Rewards repeat weekly: 200 coins, Healing Potion, 300 coins, Strength Potion, 500 coins, Curse Potion, and Defense Potion.
-Sign in with Google from the landing page before choosing Adventure or Shop. The game also checks authentication on direct URLs.
-Adventure opens the story campaign. Shop opens the marketplace. Online Arena offers Quick Match against a random online player or private room codes for friend matches. Both use alternating-turn word battles.
+Choose Play as guest on the landing page to play without a Google account, or sign in with Google for a cloud save tied to your Google account. The game also checks authentication on direct URLs.
+Adventure opens the story campaign. Shop opens the marketplace. Online Arena offers Quick Match against a random online player or private room codes for friend matches. Both use alternating-turn word battles. Local-only guests can play Adventure and Shop; Online Arena requires Google sign-in or enabled Firebase Anonymous sign-in.
 The game needs internet for Tailwind, fonts and the word list.
 Before an adventure, choose Shop to buy supplies. Closing the shop starts the fight.
 During a fight, the header only provides the potion backpack and Quit; the marketplace and other menu controls are unavailable.
@@ -18,14 +18,14 @@ The shop redeem field accepts "Nice ka goy" once per saved player and awards 20,
 Mythic skins use original, detailed SVG character art rather than the worm form. The 12 new Mythics include Nine-Tail Starfox, Suncrest Griffin, Nebula Wolf, Celestial Owl, Abyssal Moonwhale, Prism Moth Queen, Skyfire Pegasus, Worldroot Dryad, Prismatic Star Golem, Comet Koi, Thunderwing Roc, and Runebound Hydra. Mythic characters have animated, skin-colored aura fields, spinning arcane rings, glowing sigils, and a premium battle effect. SVG is rendered natively by browsers; GSAP drives the enhanced aura animation, with CSS animation fallback.
 Every worm skin has its own colors and accessories; Epic and Legendary skins also carry animated, skin-matched premium gear. Equipped characters have smooth idle breathing, sway, and accessory motion; shop previews animate only while hovered, keyboard-focused, or equipped. Mythic skins add animated auras and wings.
 GSAP is loaded from jsDelivr for the animated landing-page mascot, animated skins, Mythic wings and attack effects; CSS/browser-animation fallbacks are used when it is unavailable. The skin animations honor the system reduced-motion preference, including when that preference changes while the game is open. Off-screen shop cards are deferred by the browser, and combat particles animate only while visible particles exist.
-Player coins, owned skins, and game progress are saved in localStorage. Optional cross-browser cloud sync uses Firebase Authentication (Google sign-in) and Realtime Database.
+Player coins, owned skins, and game progress are saved in localStorage. Guests can play with a local-only save, or use Firebase Anonymous sign-in for guest cloud saves when enabled. Google sign-in syncs progress to a Google account.
 
 Firebase cloud-save setup:
 1. Create a Firebase project and register a Web app in the Firebase console.
-2. Enable Google under Authentication > Sign-in method, and add your deployed site domain under Authentication > Settings > Authorized domains.
+2. Enable Google under Authentication > Sign-in method, and add your deployed site domain under Authentication > Settings > Authorized domains. Enable Anonymous too if you want guest cloud saves; guests can still play with local saves without it.
 3. Create a Realtime Database. Replace the placeholder values in js/firebase-sync.js with the Web app config from Project settings. Use the database URL shown in the Realtime Database console.
 4. Paste the latest firebase-database.rules.json into Realtime Database > Rules and publish it. The rules must include both rooms and matchmaking sections for Online Arena. Room joins atomically claim the guest slot and add the guest as a member; publish these rules along with the latest site code or joins and Quick Match can be rejected.
-5. Serve the site over HTTP/HTTPS (not file://), then sign in with Google from the landing page before entering Adventure or Online Arena. Returning users can access their cloud save in another browser or an incognito session by signing into the same Google account.
+5. Serve the site over HTTP/HTTPS (not file://), then choose Play as guest or sign in with Google from the landing page. Guest saves are local to the browser unless Firebase Anonymous sign-in is enabled; Google saves are available across browsers by signing in to the same Google account.
 
 The Firebase web config identifies the project and is not a service-account secret. Realtime Database rules restrict each save to its authenticated owner's UID, room writes to signed-in room members, and matchmaking queue entries to their owner. Online match logic runs in the clients, so matches are not cheat-proof; trusted competitive play would require server-authoritative game logic.
 Or serve locally:  python3 -m http.server 8000   then visit http://localhost:8000

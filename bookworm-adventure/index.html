@@ -63,8 +63,15 @@
             <span id="library-cta-label">Sign in with Google</span>
             <span aria-hidden="true">→</span>
           </button>
+          <button
+            id="play-as-guest"
+            class="landing-guest-cta"
+            type="button"
+          >
+            Play as guest
+          </button>
           <p id="landing-auth-status" class="landing-auth-status" aria-live="polite">
-            Sign in with Google before entering the library.
+            Sign in with Google or play as a guest.
           </p>
           <div class="hero-highlights" aria-label="Game highlights">
             <span><strong>∞</strong> story chapters</span>
@@ -426,7 +433,11 @@
           </button>
         </header>
         <div class="mode-options">
-          <a class="mode-card" href="multiplayer.html">
+          <a
+            class="mode-card"
+            id="online-arena-option"
+            href="multiplayer.html"
+          >
             <span class="mode-icon mode-icon-arena" aria-hidden="true">⚔</span>
             <span class="mode-card-copy">
               <strong>Online Arena</strong>

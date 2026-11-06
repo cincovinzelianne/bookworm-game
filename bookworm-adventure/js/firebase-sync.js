@@ -6,6 +6,7 @@ import {
   setPersistence,
   browserLocalPersistence,
   signInWithPopup,
+  signInAnonymously,
   signOut,
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 import {
@@ -33,12 +34,57 @@ const signInButton = document.getElementById("bGoogleSignIn");
 const signOutButton = document.getElementById("bGoogleSignOut");
 const accountStatus = document.getElementById("accountStatus");
 const landingAuthStatus = document.getElementById("landing-auth-status");
+const localGuestSessionKey = "wormwood-local-guest-session";
 let auth;
 let database;
 let currentUser = null;
 let syncReady = false;
 let queuedSave = false;
 let saveTimer;
+
+function getLocalGuestUser() {
+  try {
+    return localStorage.getItem(localGuestSessionKey) === "true"
+      ? {
+          uid: "local-guest",
+          isAnonymous: true,
+          localOnly: true,
+          displayName: "Guest",
+        }
+      : null;
+  } catch (error) {
+    console.error("Could not read the local guest session:", error);
+    return null;
+  }
+}
+
+function saveLocalGuestSession() {
+  try {
+    localStorage.setItem(localGuestSessionKey, "true");
+  } catch (error) {
+    console.error("Could not update the local guest session:", error);
+    throw new Error("Could not save your guest session in this browser.", {
+      cause: error,
+    });
+  }
+}
+
+function clearLocalGuestSession() {
+  try {
+    localStorage.removeItem(localGuestSessionKey);
+  } catch (error) {
+    console.error("Could not clear the local guest session:", error);
+  }
+}
+
+function startLocalGuestSession() {
+  saveLocalGuestSession();
+  const user = getLocalGuestUser();
+  if (!user) throw new Error("Could not start a guest session in this browser.");
+  showSignedIn(user);
+  announceAuthState(user);
+  return user;
+}
 
 function setStatus(message) {
   if (accountStatus) accountStatus.textContent = message;
@@ -49,7 +95,11 @@ function showSignedIn(user) {
   if (signOutButton) signOutButton.hidden = !user;
   setStatus(
     user
-      ? `Signed in as ${user.displayName || user.email}.`
+      ? user.isAnonymous
+        ? user.localOnly
+          ? "Playing as a guest. Progress is saved only in this browser."
+          : "Playing as a guest. Progress is saved in this browser and synced to your guest account."
+        : `Signed in as ${user.displayName || user.email}.`
       : "Progress is saved in this browser.",
   );
 }
@@ -67,7 +117,11 @@ async function writeSave(data) {
   }
   try {
     await set(ref(database, `users/${currentUser.uid}/save`), data);
-    setStatus(`Cloud save synced for ${currentUser.displayName || currentUser.email}.`);
+    setStatus(
+      currentUser.isAnonymous
+        ? "Cloud save synced to your guest account."
+        : `Cloud save synced for ${currentUser.displayName || currentUser.email}.`,
+    );
   } catch (error) {
     console.error("Could not sync save to Firebase:", error);
     setStatus("Cloud sync failed. Your local save is still available.");
@@ -556,7 +610,29 @@ window.WormwoodFirebaseAuth = {
     const result = await signInWithPopup(auth, new GoogleAuthProvider());
     return result.user;
   },
+  async signInAsGuest() {
+    if (!auth) return startLocalGuestSession();
+    await setPersistence(auth, browserLocalPersistence);
+    try {
+      const result = await signInAnonymously(auth);
+      clearLocalGuestSession();
+      return result.user;
+    } catch (error) {
+      if (
+        error.code === "auth/operation-not-allowed" ||
+        error.code === "auth/admin-restricted-operation"
+      ) {
+        console.warn(
+          "Firebase anonymous sign-in is unavailable; using a local guest save.",
+          error,
+        );
+        return startLocalGuestSession();
+      }
+      throw error;
+    }
+  },
   async signOut() {
+    clearLocalGuestSession();
     if (auth) await signOut(auth);
   },
 };
@@ -567,8 +643,9 @@ if (!configured) {
     "Firebase is not configured. Sign-in is currently unavailable.";
   setStatus(message);
   if (landingAuthStatus) landingAuthStatus.textContent = message;
-  resolveAuthReady(null);
-  announceAuthState(null);
+  const localGuest = getLocalGuestUser();
+  resolveAuthReady(localGuest);
+  announceAuthState(localGuest);
 } else {
   const app = initializeApp(firebaseConfig);
   auth = getAuth(app);
@@ -603,6 +680,16 @@ if (!configured) {
     currentUser = user;
     syncReady = false;
     queuedSave = false;
+    if (user) clearLocalGuestSession();
+    if (!user) {
+      const localGuest = getLocalGuestUser();
+      if (localGuest) {
+        showSignedIn(localGuest);
+        resolveAuthReady(localGuest);
+        announceAuthState(localGuest);
+        return;
+      }
+    }
     showSignedIn(user);
     if (!user) {
       if (document.body.classList.contains("auth-ready")) {
@@ -626,7 +713,11 @@ if (!configured) {
         queuedSave = false;
         await writeSave(window.WormwoodGame.getSaveData());
       } else {
-        setStatus(`Cloud save loaded for ${user.displayName || user.email}.`);
+        setStatus(
+          user.isAnonymous
+            ? "Guest cloud save loaded."
+            : `Cloud save loaded for ${user.displayName || user.email}.`,
+        );
       }
       resolveAuthReady(user);
       announceAuthState(user);
