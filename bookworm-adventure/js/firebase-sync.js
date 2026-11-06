@@ -348,9 +348,9 @@ window.WormwoodFirebaseRooms = {
     let claim;
     try {
       claim = await runTransaction(roomRef, (room) => {
+        const guestMember = room?.members?.[room.guestUid];
         const guestSlotOccupied = Boolean(
-          room?.guestUid &&
-            room.members?.[room.guestUid]?.online !== false,
+          room?.guestUid && guestMember && guestMember.online !== false,
         );
         if (
           !room ||
