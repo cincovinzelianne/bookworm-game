@@ -147,11 +147,26 @@ function setBattleCharacter(container, member) {
   )
     container.style.setProperty("--skin-accent", member.skinAccent);
   if (renderedCharacterSkins.get(container) === member.skinSvg) return;
-  const parsed = new DOMParser().parseFromString(
-    member.skinSvg,
-    "image/svg+xml",
-  );
-  const svg = parsed.documentElement;
+  const parser = new DOMParser();
+  let parsed = parser.parseFromString(member.skinSvg, "image/svg+xml");
+  let svg = parsed.documentElement;
+  const openingTag = member.skinSvg.match(/<svg\b[^>]*>/i)?.[0];
+  if (svg.localName === "svg" && !svg.namespaceURI && openingTag) {
+    const namespacedOpeningTag = /\sxmlns\s*=/.test(openingTag)
+      ? openingTag.replace(
+          /\sxmlns\s*=\s*(["']).*?\1/i,
+          ' xmlns="http://www.w3.org/2000/svg"',
+        )
+      : openingTag.replace(
+          /^<svg\b/i,
+          '<svg xmlns="http://www.w3.org/2000/svg"',
+        );
+    parsed = parser.parseFromString(
+      member.skinSvg.replace(openingTag, namespacedOpeningTag),
+      "image/svg+xml",
+    );
+    svg = parsed.documentElement;
+  }
   if (
     svg.localName !== "svg" ||
     svg.namespaceURI !== "http://www.w3.org/2000/svg" ||
