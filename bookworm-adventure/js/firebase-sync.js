@@ -326,6 +326,7 @@ window.WormwoodFirebaseRooms = {
     const roomRef = roomReference(normalizedCode);
     const roomSnapshot = await get(roomRef);
     if (!roomSnapshot.exists()) throw new Error("Room not found. Check the code.");
+    const skinSvg = await getPlayerSkinSvg();
     const members = roomSnapshot.child("members");
     if (
       members.hasChild(currentUser.uid) &&
@@ -352,7 +353,6 @@ window.WormwoodFirebaseRooms = {
     const name = (
       displayName || currentUser.displayName || "Player 2"
     ).slice(0, 24);
-    const skinSvg = await getPlayerSkinSvg();
     const member = { uid, name, online: true };
     if (skinSvg) member.skinSvg = skinSvg;
     let claim;
